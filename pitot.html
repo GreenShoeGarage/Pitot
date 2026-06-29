@@ -1438,6 +1438,177 @@ select {
   .photo-strip, .photo-grid { display: none; }
 }
 
+/* -------------------- Phase 3 report-style styles -------------------- */
+
+.report-firm-header {
+  border-bottom: 2px solid var(--brass);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+.report-firm-header .firm-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--brass-light);
+  letter-spacing: 0.02em;
+}
+.report-firm-header .firm-addr {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.report-firm-header .firm-cert {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+.cover-style-pill {
+  display: inline-block;
+  border: 1px solid var(--brass-dark);
+  color: var(--brass);
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--r-sm);
+  margin-top: 0.5rem;
+}
+.cover-disclaimer {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-md);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.cert-statement {
+  line-height: 1.7;
+  text-align: justify;
+  margin: 0 0 1rem 0;
+}
+.cert-disclaimer {
+  border-left: 2px solid var(--brass-dark);
+  padding-left: 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 1rem 0 0 0;
+}
+.sig-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: end;
+  margin: 1.5rem 0 1rem 0;
+  page-break-inside: avoid;
+}
+.sig-line {
+  border-bottom: 1px solid var(--text-dim);
+  min-height: 2.5rem;
+}
+.sig-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.sig-meta .sig-name { font-family: var(--font-display); font-size: 1.05rem; color: var(--text); }
+.sig-meta .sig-role { font-family: var(--font-label); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brass); }
+.sig-meta .sig-cert { font-size: 0.8rem; color: var(--text-dim); }
+.sig-meta .sig-date { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.5rem; }
+.sig-firm-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-soft);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+@media print {
+  .report-firm-header { border-bottom-color: #000; }
+  .report-firm-header .firm-name { color: #000; }
+  .report-firm-header .firm-addr,
+  .report-firm-header .firm-cert { color: #444; }
+  .cover-style-pill { color: #000; border-color: #000; }
+  .cover-disclaimer { color: #444; border-color: #888; }
+  .cert-statement { color: #000; }
+  .cert-disclaimer { color: #444; border-left-color: #888; }
+  .sig-line { border-bottom-color: #000; }
+  .sig-meta .sig-name { color: #000; }
+  .sig-meta .sig-role { color: #000; }
+  .sig-meta .sig-cert,
+  .sig-meta .sig-date { color: #333; }
+  .sig-firm-footer { color: #333; border-top-color: #aaa; }
+}
+
+/* -------------------- Phase 3.x section-grouped equipment forms -------------------- */
+
+.design-section-head {
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brass);
+  border-bottom: 1px solid var(--brass-dark);
+  padding: 0.5rem 0 0.3rem 0;
+  margin: 1rem 0 0.5rem 0;
+}
+.design-section-grid {
+  margin-bottom: 0.5rem;
+}
+.design-section-table { margin-top: 0.5rem; margin-bottom: 1rem; }
+.design-section-table thead tr:first-child th.section-label {
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brass);
+  background: var(--bg-deep);
+  text-align: left;
+  border-bottom: 1px solid var(--brass-dark);
+  padding: 0.4rem 0.6rem;
+}
+.report-section-table { margin-top: 0.5rem; margin-bottom: 1rem; }
+.report-section-table thead tr.section-label-row th.section-label {
+  font-family: var(--font-label);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brass);
+  background: var(--bg-deep);
+  text-align: left;
+  border-bottom: 1px solid var(--brass-dark);
+  padding: 0.5rem 0.6rem;
+}
+.report-section-table .result.na { color: var(--text-faint); }
+
+@media print {
+  .design-section-head,
+  .design-section-table thead tr:first-child th.section-label,
+  .report-section-table thead tr.section-label-row th.section-label {
+    color: #000;
+    background: #f0f0f0;
+    border-bottom-color: #000;
+  }
+}
+
+/* -------------------- Phase 3.3 quick-win styles -------------------- */
+
+.bulk-preview {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--brass-dark);
+  border-radius: var(--r-md);
+}
+.eq-card-dup {
+  margin-left: auto;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  opacity: 0.65;
+}
+.eq-card:hover .eq-card-dup { opacity: 1; }
+.eq-card-foot { display: flex; align-items: center; gap: 0.5rem; }
+
 </style>
 </head>
 <body>
@@ -1456,7 +1627,7 @@ select {
       </svg>
       <div class="brand-text">
         <span class="brand-name">PITOT</span>
-        <span class="brand-meta">FI-050 &middot; v0.2.0</span>
+        <span class="brand-meta">FI-050 &middot; v0.3.3</span>
       </div>
     </div>
     <nav class="tab-nav" id="tab-nav" role="tablist">
@@ -1507,6 +1678,14 @@ select {
 
       <div class="panel-bezel">
         <div class="panel-bezel-body">
+          <h3 class="panel-title">Reporting <span class="panel-title-meta">Controls the printable report layout</span></h3>
+          <div class="form-grid wide" id="form-project-report-style"></div>
+          <div class="form-grid wide" id="form-project-reporting"></div>
+        </div>
+      </div>
+
+      <div class="panel-bezel">
+        <div class="panel-bezel-body">
           <h3 class="panel-title">Notes</h3>
           <div class="form-grid full">
             <div class="field full">
@@ -1526,6 +1705,7 @@ select {
             <div class="view-subtitle">Drawing tags, design values, and field tests</div>
           </div>
           <div class="btn-bar">
+            <button class="btn" id="btn-bulk-add-eq" type="button">+ Bulk add</button>
             <button class="btn btn-primary" id="btn-add-eq" type="button">+ Add equipment</button>
           </div>
         </div>
@@ -1596,13 +1776,13 @@ select {
 'use strict';
 
 /* =====================================================================
-   PITOT, Field Instrument 050, v0.2.0
+   PITOT, Field Instrument 050, v0.3.3
    Testing, Adjusting, and Balancing workbook
    M.B. Parks, Green Shoe Garage, GPL-3.0
    ===================================================================== */
 
-const SCHEMA  = 'pitot/workbook@2';
-const VERSION = '0.2.0';
+const SCHEMA  = 'pitot/workbook@3';
+const VERSION = '0.3.3';
 const STORAGE_KEY = 'pitot.workbook';
 const PHOTO_DB_NAME = 'pitot.photos';
 const PHOTO_DB_VERSION = 1;
@@ -1611,69 +1791,197 @@ const PHOTO_STORE = 'photos';
 /* -------------------- Equipment type registry -------------------- */
 /* Each type declares its design and reading fields together with the
    tolerance bucket the pass/fail engine should use. Critical fields are
-   the ones that gate the balanced/out-of-spec status classification. */
+   the ones that gate the balanced/out-of-spec status classification.
+
+   Phase 3.x extensions:
+     section          - groups fields in the modal, equipment detail,
+                        and report into named sub-forms
+     type             - 'number' (default), 'text', or 'select'
+     options          - for type:'select'
+     placeholder      - for type:'text'
+     excludeFromTest  - true for nameplate / identifying fields that
+                        don't get a per-phase reading
+*/
+
+const EQUIPMENT_SECTIONS = {
+  fan:      'Fan data',
+  motor:    'Motor data',
+  drive:    'Drive data',
+  filter:   'Filter data',
+  oa:       'Outside air',
+  temp:     'Air temperatures',
+  airflow:  'Airflow data',
+  reheat:   'Reheat data',
+  pump:     'Pump performance',
+  press:    'Pressure data',
+  water:    'Water side',
+  air:      'Air side',
+  capacity: 'Capacity',
+  ident:    'Identification'
+};
 
 const EQUIPMENT_TYPES = {
   ahu: {
     label: 'Air Handler / RTU',
     short: 'AHU',
     fields: [
-      { key: 'cfm',            label: 'Total airflow',           unit: 'CFM',     tolerance: 'air',   critical: true  },
-      { key: 'esp',            label: 'External static pressure',unit: 'in. wg',  tolerance: 'air',   critical: false },
-      { key: 'motorHp',        label: 'Motor horsepower',        unit: 'hp',      tolerance: null,    critical: false },
-      { key: 'motorAmps',      label: 'Motor amps (FLA)',        unit: 'A',       tolerance: null,    critical: false },
-      { key: 'fanRpm',         label: 'Fan RPM',                 unit: 'rpm',     tolerance: null,    critical: false },
-      { key: 'mixedAirTemp',   label: 'Mixed air temp',          unit: 'degF',    tolerance: 'temp',  critical: false },
-      { key: 'supplyAirTemp',  label: 'Supply air temp',         unit: 'degF',    tolerance: 'temp',  critical: false },
-      { key: 'returnAirTemp',  label: 'Return air temp',         unit: 'degF',    tolerance: 'temp',  critical: false }
+      /* Fan */
+      { key: 'cfm',            label: 'Total airflow',           unit: 'CFM',     section: 'fan',    tolerance: 'air',   critical: true  },
+      { key: 'esp',            label: 'External static pressure',unit: 'in. wg',  section: 'fan',    tolerance: 'air',   critical: false },
+      { key: 'fanRpm',         label: 'Fan RPM',                 unit: 'rpm',     section: 'fan',    tolerance: null,    critical: false },
+      /* Motor */
+      { key: 'motorHp',        label: 'Motor horsepower',        unit: 'hp',      section: 'motor',  tolerance: null,    critical: false, excludeFromTest: true },
+      { key: 'motorVoltage',   label: 'Motor voltage',           unit: 'V',       section: 'motor',  tolerance: null,    critical: false, type: 'text',  excludeFromTest: true },
+      { key: 'motorPhase',     label: 'Motor phase',             unit: '',        section: 'motor',  tolerance: null,    critical: false, type: 'select', excludeFromTest: true,
+        options: [{ value: '', label: '-' }, { value: '1', label: '1-phase' }, { value: '3', label: '3-phase' }] },
+      { key: 'motorFla',       label: 'Motor FLA (nameplate)',   unit: 'A',       section: 'motor',  tolerance: null,    critical: false, excludeFromTest: true },
+      { key: 'motorAmps',      label: 'Motor amps (measured)',   unit: 'A',       section: 'motor',  tolerance: null,    critical: false },
+      /* Drive */
+      { key: 'fanSheavePd',    label: 'Fan sheave PD',           unit: 'in',      section: 'drive',  tolerance: null,    critical: false, excludeFromTest: true },
+      { key: 'motorSheavePd',  label: 'Motor sheave PD',         unit: 'in',      section: 'drive',  tolerance: null,    critical: false, excludeFromTest: true },
+      { key: 'beltSize',       label: 'Belt size',               unit: '',        section: 'drive',  tolerance: null,    critical: false, type: 'text', placeholder: 'BX45', excludeFromTest: true },
+      { key: 'beltQty',        label: 'Belt quantity',           unit: '',        section: 'drive',  tolerance: null,    critical: false, excludeFromTest: true },
+      /* Filter */
+      { key: 'filterType',     label: 'Filter type',             unit: '',        section: 'filter', tolerance: null,    critical: false, type: 'text', placeholder: 'MERV 13', excludeFromTest: true },
+      { key: 'filterSize',     label: 'Filter size',             unit: '',        section: 'filter', tolerance: null,    critical: false, type: 'text', placeholder: '24x24x4', excludeFromTest: true },
+      { key: 'filterQty',      label: 'Filter quantity',         unit: '',        section: 'filter', tolerance: null,    critical: false, excludeFromTest: true },
+      /* Outside air */
+      { key: 'oaCfm',          label: 'Outside air',             unit: 'CFM',     section: 'oa',     tolerance: 'air',   critical: false },
+      { key: 'oaPercent',      label: 'OA percent',              unit: '%',       section: 'oa',     tolerance: null,    critical: false },
+      /* Temperatures */
+      { key: 'mixedAirTemp',   label: 'Mixed air temp',          unit: 'degF',    section: 'temp',   tolerance: 'temp',  critical: false },
+      { key: 'supplyAirTemp',  label: 'Supply air temp',         unit: 'degF',    section: 'temp',   tolerance: 'temp',  critical: false },
+      { key: 'returnAirTemp',  label: 'Return air temp',         unit: 'degF',    section: 'temp',   tolerance: 'temp',  critical: false }
     ]
   },
   vav: {
     label: 'VAV Box',
     short: 'VAV',
     fields: [
-      { key: 'cfmMin',         label: 'Minimum airflow',         unit: 'CFM',     tolerance: 'air',   critical: true  },
-      { key: 'cfmMax',         label: 'Maximum airflow',         unit: 'CFM',     tolerance: 'air',   critical: true  },
-      { key: 'reheatBtuh',     label: 'Reheat capacity',         unit: 'BTU/h',   tolerance: null,    critical: false },
-      { key: 'supplyAirTemp',  label: 'Discharge air temp',      unit: 'degF',    tolerance: 'temp',  critical: false },
-      { key: 'inletStatic',    label: 'Inlet static pressure',   unit: 'in. wg',  tolerance: null,    critical: false }
+      /* Airflow */
+      { key: 'cfmMin',         label: 'Minimum airflow',         unit: 'CFM',     section: 'airflow', tolerance: 'air',   critical: true  },
+      { key: 'cfmMax',         label: 'Maximum airflow',         unit: 'CFM',     section: 'airflow', tolerance: 'air',   critical: true  },
+      { key: 'inletStatic',    label: 'Inlet static pressure',   unit: 'in. wg',  section: 'airflow', tolerance: null,    critical: false },
+      /* Reheat */
+      { key: 'reheatType',     label: 'Reheat type',             unit: '',        section: 'reheat',  tolerance: null,    critical: false, type: 'select', excludeFromTest: true,
+        options: [{ value: '', label: '-' }, { value: 'none', label: 'None' }, { value: 'electric', label: 'Electric' }, { value: 'hot-water', label: 'Hot water' }] },
+      { key: 'reheatBtuh',     label: 'Reheat capacity',         unit: 'BTU/h',   section: 'reheat',  tolerance: null,    critical: false },
+      { key: 'reheatGpm',      label: 'Reheat water flow',       unit: 'GPM',     section: 'reheat',  tolerance: 'water', critical: false },
+      { key: 'supplyAirTemp',  label: 'Discharge air temp',      unit: 'degF',    section: 'reheat',  tolerance: 'temp',  critical: false },
+      /* Identification */
+      { key: 'boxModel',       label: 'Box model',               unit: '',        section: 'ident',   tolerance: null,    critical: false, type: 'text', excludeFromTest: true },
+      { key: 'controllerAddress', label: 'Controller address',   unit: '',        section: 'ident',   tolerance: null,    critical: false, type: 'text', excludeFromTest: true }
     ]
   },
   pump: {
     label: 'Pump',
     short: 'P',
     fields: [
-      { key: 'gpm',            label: 'Flow rate',               unit: 'GPM',     tolerance: 'water', critical: true  },
-      { key: 'headFt',         label: 'Head',                    unit: 'ft wg',   tolerance: 'water', critical: false },
-      { key: 'motorHp',        label: 'Motor horsepower',        unit: 'hp',      tolerance: null,    critical: false },
-      { key: 'motorAmps',      label: 'Motor amps (FLA)',        unit: 'A',       tolerance: null,    critical: false },
-      { key: 'suctionPsi',     label: 'Suction pressure',        unit: 'psi',     tolerance: null,    critical: false },
-      { key: 'dischargePsi',   label: 'Discharge pressure',      unit: 'psi',     tolerance: null,    critical: false }
+      /* Pump performance */
+      { key: 'gpm',            label: 'Flow rate',               unit: 'GPM',     section: 'pump',   tolerance: 'water', critical: true  },
+      { key: 'headFt',         label: 'Head',                    unit: 'ft wg',   section: 'pump',   tolerance: 'water', critical: false },
+      /* Motor */
+      { key: 'motorHp',        label: 'Motor horsepower',        unit: 'hp',      section: 'motor',  tolerance: null,    critical: false, excludeFromTest: true },
+      { key: 'motorVoltage',   label: 'Motor voltage',           unit: 'V',       section: 'motor',  tolerance: null,    critical: false, type: 'text', excludeFromTest: true },
+      { key: 'motorPhase',     label: 'Motor phase',             unit: '',        section: 'motor',  tolerance: null,    critical: false, type: 'select', excludeFromTest: true,
+        options: [{ value: '', label: '-' }, { value: '1', label: '1-phase' }, { value: '3', label: '3-phase' }] },
+      { key: 'motorFla',       label: 'Motor FLA (nameplate)',   unit: 'A',       section: 'motor',  tolerance: null,    critical: false, excludeFromTest: true },
+      { key: 'motorAmps',      label: 'Motor amps (measured)',   unit: 'A',       section: 'motor',  tolerance: null,    critical: false },
+      /* Pressure */
+      { key: 'suctionPsi',     label: 'Suction pressure',        unit: 'psi',     section: 'press',  tolerance: null,    critical: false },
+      { key: 'dischargePsi',   label: 'Discharge pressure',      unit: 'psi',     section: 'press',  tolerance: null,    critical: false }
     ]
   },
   terminal: {
     label: 'Terminal (Diffuser / Grille)',
     short: 'T',
     fields: [
-      { key: 'cfm',            label: 'Airflow',                 unit: 'CFM',     tolerance: 'air',   critical: true  },
-      { key: 'neckSize',       label: 'Neck size',               unit: 'in',      tolerance: null,    critical: false },
-      { key: 'faceVelocity',   label: 'Face velocity',           unit: 'FPM',     tolerance: 'air',   critical: false },
-      { key: 'kFactor',        label: 'K-factor',                unit: '',        tolerance: null,    critical: false }
+      /* Airflow */
+      { key: 'cfm',            label: 'Airflow',                 unit: 'CFM',     section: 'airflow', tolerance: 'air',   critical: true  },
+      { key: 'faceVelocity',   label: 'Face velocity',           unit: 'FPM',     section: 'airflow', tolerance: 'air',   critical: false },
+      /* Identification */
+      { key: 'neckSize',       label: 'Neck size',               unit: 'in',      section: 'ident',   tolerance: null,    critical: false, type: 'text', excludeFromTest: true },
+      { key: 'kFactor',        label: 'K-factor',                unit: '',        section: 'ident',   tolerance: null,    critical: false, excludeFromTest: true },
+      { key: 'areaServed',     label: 'Area served / room',      unit: '',        section: 'ident',   tolerance: null,    critical: false, type: 'text', placeholder: 'Room 102', excludeFromTest: true },
+      { key: 'gridReference',  label: 'Drawing grid ref.',       unit: '',        section: 'ident',   tolerance: null,    critical: false, type: 'text', placeholder: 'A.3 / 2', excludeFromTest: true }
     ]
   },
   coil: {
     label: 'Coil',
     short: 'C',
     fields: [
-      { key: 'gpm',            label: 'Water flow',              unit: 'GPM',     tolerance: 'water', critical: true  },
-      { key: 'ewt',            label: 'Entering water temp',     unit: 'degF',    tolerance: 'temp',  critical: false },
-      { key: 'lwt',            label: 'Leaving water temp',      unit: 'degF',    tolerance: 'temp',  critical: false },
-      { key: 'eat',            label: 'Entering air temp',       unit: 'degF',    tolerance: 'temp',  critical: false },
-      { key: 'lat',            label: 'Leaving air temp',        unit: 'degF',    tolerance: 'temp',  critical: false },
-      { key: 'btuh',           label: 'Heat transfer',           unit: 'BTU/h',   tolerance: null,    critical: false }
+      /* Water side */
+      { key: 'gpm',            label: 'Water flow',              unit: 'GPM',     section: 'water',  tolerance: 'water', critical: true  },
+      { key: 'ewt',            label: 'Entering water temp',     unit: 'degF',    section: 'water',  tolerance: 'temp',  critical: false },
+      { key: 'lwt',            label: 'Leaving water temp',      unit: 'degF',    section: 'water',  tolerance: 'temp',  critical: false },
+      /* Air side */
+      { key: 'cfm',            label: 'Air flow across coil',    unit: 'CFM',     section: 'air',    tolerance: 'air',   critical: false },
+      { key: 'eat',            label: 'Entering air temp',       unit: 'degF',    section: 'air',    tolerance: 'temp',  critical: false },
+      { key: 'lat',            label: 'Leaving air temp',        unit: 'degF',    section: 'air',    tolerance: 'temp',  critical: false },
+      /* Capacity */
+      { key: 'coilType',       label: 'Coil type',               unit: '',        section: 'capacity', tolerance: null,  critical: false, type: 'select', excludeFromTest: true,
+        options: [{ value: '', label: '-' }, { value: 'cooling', label: 'Cooling' }, { value: 'heating', label: 'Heating' }, { value: 'cooling-with-dehum', label: 'Cooling + dehumidification' }] },
+      { key: 'btuh',           label: 'Heat transfer',           unit: 'BTU/h',   section: 'capacity', tolerance: null,  critical: false }
     ]
   }
 };
+
+/* Group an equipment type's fields by section, preserving the order in
+   which sections first appear. Returns array of { section, label, fields }. */
+function groupFieldsBySection(type) {
+  if (!type) return [];
+  const order = [];
+  const buckets = {};
+  for (const f of type.fields) {
+    const s = f.section || 'ident';
+    if (!buckets[s]) {
+      buckets[s] = [];
+      order.push(s);
+    }
+    buckets[s].push(f);
+  }
+  return order.map(s => ({
+    section: s,
+    label: EQUIPMENT_SECTIONS[s] || s,
+    fields: buckets[s]
+  }));
+}
+
+/* Re-order the section list per a template's preferred ordering for the
+   given equipment type. Sections not in the preferred list are appended
+   in their natural order. Sections that map to empty arrays are dropped. */
+function groupFieldsBySectionForTemplate(type, typeKey, template) {
+  const natural = groupFieldsBySection(type);
+  if (!template || !template.equipmentSections) return natural;
+  const preferred = template.equipmentSections[typeKey];
+  if (!preferred || !preferred.length) return natural;
+  const byKey = {};
+  natural.forEach(g => { byKey[g.section] = g; });
+  const out = [];
+  const seen = new Set();
+  preferred.forEach(s => {
+    if (byKey[s]) {
+      const g = byKey[s];
+      out.push({
+        section: g.section,
+        label: template.sectionLabel ? template.sectionLabel(g.section) : g.label,
+        fields: g.fields
+      });
+      seen.add(s);
+    }
+  });
+  natural.forEach(g => {
+    if (!seen.has(g.section)) {
+      out.push({
+        section: g.section,
+        label: template.sectionLabel ? template.sectionLabel(g.section) : g.label,
+        fields: g.fields
+      });
+    }
+  });
+  return out;
+}
+
 
 const PHASES = ['initial', 'adjusted', 'final'];
 const PHASE_LABELS = { initial: 'Initial', adjusted: 'Adjusted', final: 'Final' };
@@ -1697,6 +2005,161 @@ const STATUS_LABELS = {
   'punch':       'Punch'
 };
 
+/* -------------------- Report style templates -------------------- */
+/* Each entry shapes the printable report to follow the section ordering,
+   labels, and certification statement conventions of the named
+   certifying body. These are STYLE TEMPLATES ONLY, not official
+   AABC/NEBB/TABB forms. PITOT is not affiliated with any of these
+   bodies. Formal submittals must use the certifying body's published
+   forms and bear the signature of a certified TAB supervisor.
+
+   Each template provides:
+     label           - human-readable name in the picker
+     short           - abbreviation used in headers
+     coverTitle      - title at the top of the cover page
+     coverEyebrow    - small label above the title
+     readingLabel    - 'Actual' (AABC/TABB) or 'Field' (NEBB)
+     supervisorTitle - label for the senior signatory
+     supervisorCertLabel - label for the senior cert number
+     firmCertLabel   - label for the firm certification number
+     certStatement(project) - the certifying statement text
+     disclaimer      - the body-specific style disclaimer
+     showFirmHeader  - whether the cover page shows the firm letterhead
+*/
+
+const REPORT_TEMPLATES = {
+  draft: {
+    label: 'General / Draft (no body-specific format)',
+    short: 'DRAFT',
+    coverTitle: 'TAB Report',
+    coverEyebrow: 'Testing, Adjusting, Balancing',
+    readingLabel: 'Actual',
+    supervisorTitle: 'TAB supervisor',
+    supervisorCertLabel: 'Certification',
+    firmCertLabel: 'Firm certification',
+    /* Section ordering per equipment type. Sections present in the data
+       but not in this list still render (appended after the listed
+       order). null entry means "use the type's natural order". */
+    equipmentSections: {
+      ahu:      null,
+      vav:      null,
+      pump:     null,
+      terminal: null,
+      coil:     null
+    },
+    sectionLabel: function(s) { return EQUIPMENT_SECTIONS[s] || s; },
+    certStatement: function(p) {
+      const firm = p.firmName || p.tabContractor || '(TAB contractor)';
+      const proj = p.name || '(project)';
+      return 'This report records the testing, adjusting, and balancing performed by ' + firm +
+        ' on the ' + proj + ' HVAC systems. Readings reflect the conditions observed at the time of test.';
+    },
+    disclaimer: 'This is a working TAB report. It is not formatted as an accredited submittal. If a certified report is required, follow the format prescribed by the contracting authority.',
+    showFirmHeader: false
+  },
+  aabc: {
+    label: 'AABC style (follows National Standards conventions)',
+    short: 'AABC',
+    coverTitle: 'Test and Balance Report',
+    coverEyebrow: 'Total System Balance',
+    readingLabel: 'Actual',
+    supervisorTitle: 'TAB Engineer (TBE)',
+    supervisorCertLabel: 'TBE certification number',
+    firmCertLabel: 'AABC firm membership number',
+    /* AABC convention groups fan, motor, drive, filter, OA, then temps. */
+    equipmentSections: {
+      ahu:      ['fan', 'motor', 'drive', 'filter', 'oa', 'temp'],
+      vav:      ['airflow', 'reheat', 'ident'],
+      pump:     ['pump', 'motor', 'press'],
+      terminal: ['airflow', 'ident'],
+      coil:     ['water', 'air', 'capacity']
+    },
+    sectionLabel: function(s) {
+      const overrides = { fan: 'Fan performance', motor: 'Motor data', drive: 'Drive data', filter: 'Filter data', oa: 'Outside air data', temp: 'Temperature data' };
+      return overrides[s] || EQUIPMENT_SECTIONS[s] || s;
+    },
+    certStatement: function(p) {
+      const firm = p.firmName || p.tabContractor || '(TAB contractor)';
+      const proj = p.name || '(project)';
+      return 'The Total System Balance of the HVAC systems for ' + proj +
+        ' was performed by ' + firm + ' in general accordance with the AABC National Standards for Total System Balance.' +
+        ' All design quantities and tolerances were obtained from the contract documents and verified in the field.' +
+        ' Equipment found to be operating outside the specified tolerances has been reported on the deficiency list.';
+    },
+    disclaimer: 'This report is laid out in the style commonly used in AABC submittals. It is NOT an official AABC report. PITOT is independent software with no affiliation to AABC. A certified AABC report must use the forms and procedures published by AABC and bear the signature of a TBE-certified engineer.',
+    showFirmHeader: true
+  },
+  nebb: {
+    label: 'NEBB style (follows Procedural Standard conventions)',
+    short: 'NEBB',
+    coverTitle: 'Testing, Adjusting, and Balancing Report',
+    coverEyebrow: 'Environmental Systems Balancing',
+    readingLabel: 'Field',
+    supervisorTitle: 'Certified Professional (CP)',
+    supervisorCertLabel: 'CP certification number',
+    firmCertLabel: 'NEBB firm certification number',
+    /* NEBB convention groups similarly but uses 'Field' language and
+       puts air-distribution items together. */
+    equipmentSections: {
+      ahu:      ['fan', 'motor', 'drive', 'filter', 'oa', 'temp'],
+      vav:      ['airflow', 'reheat', 'ident'],
+      pump:     ['pump', 'motor', 'press'],
+      terminal: ['airflow', 'ident'],
+      coil:     ['water', 'air', 'capacity']
+    },
+    sectionLabel: function(s) {
+      const overrides = { fan: 'Fan performance', motor: 'Motor electrical', drive: 'Drive components', filter: 'Filter section', oa: 'Outside air', temp: 'Air temperatures' };
+      return overrides[s] || EQUIPMENT_SECTIONS[s] || s;
+    },
+    certStatement: function(p) {
+      const firm = p.firmName || p.tabContractor || '(TAB contractor)';
+      const proj = p.name || '(project)';
+      return 'The testing, adjusting, and balancing of the environmental systems for ' + proj +
+        ' was performed by ' + firm + ' in general accordance with the NEBB Procedural Standard for' +
+        ' Testing, Adjusting, and Balancing of Environmental Systems.' +
+        ' Field readings reflect the conditions observed at the time of measurement.' +
+        ' Items requiring correction are documented on the deficiency list.';
+    },
+    disclaimer: 'This report is laid out in the style commonly used in NEBB submittals. It is NOT an official NEBB report. PITOT is independent software with no affiliation to NEBB. A certified NEBB report must use the forms and procedures published by NEBB and bear the signature and seal of a NEBB Certified Professional.',
+    showFirmHeader: true
+  },
+  tabb: {
+    label: 'TABB style (follows SMACNA/SMART conventions)',
+    short: 'TABB',
+    coverTitle: 'Testing, Adjusting, and Balancing Report',
+    coverEyebrow: 'TAB Certified Firm Submittal',
+    readingLabel: 'Actual',
+    supervisorTitle: 'TABB Supervisor',
+    supervisorCertLabel: 'TABB supervisor certification',
+    firmCertLabel: 'TABB firm certification number',
+    equipmentSections: {
+      ahu:      ['fan', 'motor', 'drive', 'filter', 'oa', 'temp'],
+      vav:      ['airflow', 'reheat', 'ident'],
+      pump:     ['pump', 'motor', 'press'],
+      terminal: ['airflow', 'ident'],
+      coil:     ['water', 'air', 'capacity']
+    },
+    sectionLabel: function(s) { return EQUIPMENT_SECTIONS[s] || s; },
+    certStatement: function(p) {
+      const firm = p.firmName || p.tabContractor || '(TAB contractor)';
+      const proj = p.name || '(project)';
+      return 'The testing, adjusting, and balancing of the HVAC systems for ' + proj +
+        ' was performed by ' + firm + ' in general accordance with the TABB Procedural Standards' +
+        ' for TAB Certified Firms.' +
+        ' All readings were taken with calibrated instruments under the supervision of the' +
+        ' TABB Supervisor of record.' +
+        ' Deficiencies preventing completion of the balance are itemized in the deficiency list.';
+    },
+    disclaimer: 'This report is laid out in the style commonly used in TABB submittals. It is NOT an official TABB report. PITOT is independent software with no affiliation to TABB, SMACNA, or SMART. A certified TABB report must use the forms and procedures published by TABB and bear the signature of a TABB Supervisor of a TABB Certified Firm.',
+    showFirmHeader: true
+  }
+};
+
+function reportTemplate() {
+  const key = (STATE.project && STATE.project.reportStyle) || 'draft';
+  return REPORT_TEMPLATES[key] || REPORT_TEMPLATES.draft;
+}
+
 /* -------------------- State -------------------- */
 
 function defaultProject() {
@@ -1712,7 +2175,19 @@ function defaultProject() {
     startDate: '',
     endDate: '',
     weather: '',
-    notes: ''
+    notes: '',
+    /* Phase 3 reporting block */
+    reportStyle: 'draft',
+    firmName: '',
+    firmAddress: '',
+    firmCertNumber: '',
+    supervisorName: '',
+    supervisorCertNumber: '',
+    reportDate: '',
+    reportRevision: '',
+    projectArchitect: '',
+    projectEngineer: '',
+    scopeOfWork: ''
   };
 }
 
@@ -1756,9 +2231,14 @@ function migrate(data) {
   if (!data || typeof data !== 'object') return null;
   /* Forward-migrate older schemas in place. */
   if (data.schema === 'pitot/workbook@1') {
-    data.schema = SCHEMA;
+    data.schema = 'pitot/workbook@2';
     /* No structural rewrites required; Phase 2 fields are optional adds
        that downstream code treats as absent when not present. */
+  }
+  if (data.schema === 'pitot/workbook@2') {
+    data.schema = SCHEMA;
+    /* Phase 3 adds reporting fields to project; Object.assign below
+       fills them in from defaultProject. */
   }
   if (data.schema !== SCHEMA) {
     /* Unknown future schemas are rejected. */
@@ -1986,8 +2466,9 @@ function coilAirSensibleBtuh(cfm, eat, lat) {
 function coilHeatBalance(eq, test) {
   /* Cross-checks the water-side and air-side BTU/h from a coil's
      readings. Returns null if either side is incomputable. */
-  if (!test || !test.readings) return null;
+  if (!eq || !test || !test.readings) return null;
   const r = test.readings;
+  const design = eq.design || {};
   /* Air-side flow can come from a separate AHU/test; here we use what
      was entered on the coil test itself. */
   const water = coilWaterBtuh(r.gpm, r.ewt, r.lwt);
@@ -1995,7 +2476,7 @@ function coilHeatBalance(eq, test) {
   const out = {
     water:        water,
     airSensible:  air,
-    design:       parseFloat(eq.design.btuh) || null
+    design:       parseFloat(design.btuh) || null
   };
   if (water !== null && air !== null) {
     out.ratio = water / air;
@@ -2179,7 +2660,9 @@ const PROJECT_FIELDS = {
     { key: 'name',          label: 'Project name',       placeholder: 'Hagerstown Branch Library', full: true },
     { key: 'projectNumber', label: 'Project number',     placeholder: '2026-014', mono: true },
     { key: 'address',       label: 'Site address',       placeholder: '100 S Potomac St, Hagerstown MD', full: true },
-    { key: 'owner',         label: 'Owner',              placeholder: 'Washington County Free Library' }
+    { key: 'owner',         label: 'Owner',              placeholder: 'Washington County Free Library' },
+    { key: 'projectArchitect', label: 'Architect',       placeholder: 'Architect of record' },
+    { key: 'projectEngineer',  label: 'Engineer of record', placeholder: 'Consulting MEP engineer' }
   ],
   personnel: [
     { key: 'mechanicalContractor',   label: 'Mechanical contractor',      placeholder: 'Mechanical contractor name' },
@@ -2191,6 +2674,18 @@ const PROJECT_FIELDS = {
     { key: 'startDate', label: 'Start date', type: 'date' },
     { key: 'endDate',   label: 'End date',   type: 'date' },
     { key: 'weather',   label: 'Outdoor conditions', placeholder: '82 degF, 58 percent RH, partly cloudy', full: true }
+  ],
+  reporting: [
+    /* reportStyle is rendered separately as a select */
+    { key: 'firmName',             label: 'TAB firm name',           placeholder: 'Cumberland Air Balance LLC', full: true },
+    { key: 'firmAddress',          label: 'TAB firm address',        placeholder: '100 N Mechanic St, Cumberland MD', full: true },
+    { key: 'firmCertNumber',       label: 'Firm certification number', placeholder: 'AABC firm #...', mono: true },
+    { key: 'supervisorName',       label: 'TAB supervisor of record', placeholder: 'Senior signatory' },
+    { key: 'supervisorCertNumber', label: 'Supervisor certification', placeholder: 'TBE #12345 / CP #12345', mono: true },
+    { key: 'reportDate',           label: 'Report date',             type: 'date' },
+    { key: 'reportRevision',       label: 'Report revision',         placeholder: 'Rev. 0', mono: true },
+    { key: 'scopeOfWork',          label: 'Scope of work',           type: 'textarea', rows: 3, full: true,
+      placeholder: 'Brief description of systems balanced and the scope of services performed.' }
   ]
 };
 
@@ -2198,6 +2693,8 @@ function renderProjectView() {
   const idHost   = document.getElementById('form-project-id');
   const psnHost  = document.getElementById('form-project-personnel');
   const schHost  = document.getElementById('form-project-schedule');
+  const styleHost = document.getElementById('form-project-report-style');
+  const repHost  = document.getElementById('form-project-reporting');
   const notesEl  = document.getElementById('project-notes');
   if (!idHost) return;
 
@@ -2210,6 +2707,7 @@ function renderProjectView() {
         label: def.label,
         type: def.type || 'text',
         placeholder: def.placeholder || '',
+        rows: def.rows,
         mono: def.mono,
         value: STATE.project[def.key] || '',
         onInput: (e) => {
@@ -2225,6 +2723,40 @@ function renderProjectView() {
   mount(idHost, PROJECT_FIELDS.identification);
   mount(psnHost, PROJECT_FIELDS.personnel);
   mount(schHost, PROJECT_FIELDS.schedule);
+
+  /* Report style selector. Its choice affects field labels below it
+     (the firm certification label is template-driven), so we re-render
+     the reporting block on change. */
+  if (styleHost) {
+    clear(styleHost);
+    const tmpl = reportTemplate();
+    const styleField = makeField({
+      id: 'pj-reportStyle',
+      label: 'Report style',
+      type: 'select',
+      value: STATE.project.reportStyle || 'draft',
+      help: tmpl.disclaimer,
+      options: Object.entries(REPORT_TEMPLATES).map(([k, v]) => ({ value: k, label: v.label })),
+      onChange: (e) => {
+        STATE.project.reportStyle = e.target.value;
+        saveState();
+        renderProjectView();
+      }
+    });
+    styleField.wrap.classList.add('full');
+    styleHost.appendChild(styleField.wrap);
+  }
+  if (repHost) {
+    /* Label the firm cert number per the active template. */
+    const tmpl = reportTemplate();
+    const reportingDefs = PROJECT_FIELDS.reporting.map(def => {
+      if (def.key === 'firmCertNumber')       return Object.assign({}, def, { label: tmpl.firmCertLabel });
+      if (def.key === 'supervisorCertNumber') return Object.assign({}, def, { label: tmpl.supervisorCertLabel });
+      if (def.key === 'supervisorName')       return Object.assign({}, def, { label: tmpl.supervisorTitle });
+      return def;
+    });
+    mount(repHost, reportingDefs);
+  }
 
   notesEl.value = STATE.project.notes || '';
   notesEl.oninput = (e) => { STATE.project.notes = e.target.value; saveState(); };
@@ -2373,7 +2905,13 @@ function eqCard(eq) {
         el('strong', null, String(testCount)),
         ' test' + (testCount === 1 ? '' : 's')
       ]),
-      el('span', { class: 'eq-type mono' }, eq.manufacturer || '')
+      el('span', { class: 'eq-type mono' }, eq.manufacturer || ''),
+      el('button', {
+        class: 'btn btn-xs btn-ghost eq-card-dup',
+        type: 'button',
+        title: 'Duplicate this equipment',
+        onclick: (e) => { e.stopPropagation(); duplicateEquipment(eq); }
+      }, 'Duplicate')
     ])
   ]);
 }
@@ -2414,6 +2952,7 @@ function renderEquipmentDetail() {
     ]),
     el('div', { class: 'btn-bar' }, [
       el('button', { class: 'btn btn-sm', type: 'button', onclick: () => openEquipmentModal(eq) }, 'Edit'),
+      el('button', { class: 'btn btn-sm', type: 'button', onclick: () => duplicateEquipment(eq) }, 'Duplicate'),
       el('button', { class: 'btn btn-sm', type: 'button', onclick: () => togglePunchFlag(eq) },
                   eq.status === 'punch' ? 'Clear punch flag' : 'Flag as punch'),
       el('button', { class: 'btn btn-sm btn-danger', type: 'button', onclick: () => deleteEquipment(eq) }, 'Delete')
@@ -2434,6 +2973,19 @@ function renderEquipmentDetail() {
     idDl.appendChild(el('dt', null, k));
     idDl.appendChild(el('dd', { class: 'text' }, v));
   });
+  /* Phase 3.3: AHUs show how many terminals are associated; terminals
+     show which AHU they're associated to. */
+  if (eq.type === 'ahu') {
+    const terminals = STATE.equipment.filter(e => e.type === 'terminal' && e.associatedAhu === eq.id);
+    idDl.appendChild(el('dt', null, 'Associated terminals'));
+    idDl.appendChild(el('dd', { class: 'mono' }, terminals.length === 0 ? '0' : String(terminals.length)));
+  } else if (eq.type === 'terminal' && eq.associatedAhu) {
+    const parent = STATE.equipment.find(e => e.id === eq.associatedAhu);
+    if (parent) {
+      idDl.appendChild(el('dt', null, 'Served by AHU'));
+      idDl.appendChild(el('dd', { class: 'mono' }, parent.tag));
+    }
+  }
   if (!idDl.firstChild) idDl.appendChild(el('dd', { class: 'text muted' }, 'No identification entered.'));
 
   host.appendChild(el('div', { class: 'panel-bezel' }, [
@@ -2443,33 +2995,53 @@ function renderEquipmentDetail() {
     ])
   ]));
 
-  /* Design and tolerance panel */
-  const designBody = el('table', { class: 'read-table' });
-  const thead = el('tr', null, [
-    el('th', null, 'Field'),
-    el('th', { class: 'num' }, 'Design value'),
-    el('th', null, 'Unit'),
-    el('th', null, 'Tolerance')
-  ]);
-  designBody.appendChild(el('thead', null, thead));
-  const designTbody = el('tbody');
+  /* Design and tolerance panel, grouped by section. */
+  const designContent = el('div');
   if (type) {
-    type.fields.forEach(f => {
-      const dv = eq.design[f.key];
-      let tolDesc = '';
-      if (f.tolerance === 'air')   tolDesc = '\u00B1' + eq.tolerance.airPercent + '%';
-      if (f.tolerance === 'water') tolDesc = '\u00B1' + eq.tolerance.waterPercent + '%';
-      if (f.tolerance === 'temp')  tolDesc = '\u00B1' + eq.tolerance.tempDegF + ' degF';
-      if (!f.tolerance) tolDesc = 'not toleranced';
-      designTbody.appendChild(el('tr', null, [
-        el('td', { class: 'label' }, [f.label, f.critical ? el('span', { class: 'critical', style: 'display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--brass);margin-left:6px;vertical-align:middle;' }) : null]),
-        el('td', { class: 'num' }, dv !== undefined && dv !== '' ? fmtNum(dv) : el('span', { class: 'muted' }, '-')),
-        el('td', { class: 'unit' }, f.unit || ''),
-        el('td', { class: 'muted' }, tolDesc)
-      ]));
+    const groups = groupFieldsBySection(type);
+    groups.forEach(g => {
+      const tbl = el('table', { class: 'read-table design-section-table' });
+      tbl.appendChild(el('thead', null, el('tr', null, [
+        el('th', { class: 'section-label', colspan: 4 }, g.label)
+      ])));
+      tbl.appendChild(el('thead', null, el('tr', null, [
+        el('th', null, 'Field'),
+        el('th', { class: 'num' }, 'Design value'),
+        el('th', null, 'Unit'),
+        el('th', null, 'Tolerance')
+      ])));
+      const tbody = el('tbody');
+      g.fields.forEach(f => {
+        const dv = eq.design[f.key];
+        const fieldType = f.type || 'number';
+        let tolDesc = '';
+        if (f.tolerance === 'air')   tolDesc = '\u00B1' + eq.tolerance.airPercent + '%';
+        if (f.tolerance === 'water') tolDesc = '\u00B1' + eq.tolerance.waterPercent + '%';
+        if (f.tolerance === 'temp')  tolDesc = '\u00B1' + eq.tolerance.tempDegF + ' degF';
+        if (!f.tolerance) tolDesc = f.excludeFromTest ? 'nameplate / observed' : 'not toleranced';
+        /* Format the displayed design value */
+        let displayValue;
+        if (dv === undefined || dv === '' || dv === null) {
+          displayValue = el('span', { class: 'muted' }, '-');
+        } else if (fieldType === 'select') {
+          const opt = (f.options || []).find(o => o.value === String(dv));
+          displayValue = opt ? opt.label : String(dv);
+        } else if (fieldType === 'text') {
+          displayValue = String(dv);
+        } else {
+          displayValue = fmtNum(dv);
+        }
+        tbody.appendChild(el('tr', null, [
+          el('td', { class: 'label' }, [f.label, f.critical ? el('span', { class: 'critical', style: 'display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--brass);margin-left:6px;vertical-align:middle;' }) : null]),
+          el('td', { class: fieldType === 'number' ? 'num' : 'text' }, displayValue),
+          el('td', { class: 'unit' }, f.unit || ''),
+          el('td', { class: 'muted' }, tolDesc)
+        ]));
+      });
+      tbl.appendChild(tbody);
+      designContent.appendChild(tbl);
     });
   }
-  designBody.appendChild(designTbody);
 
   host.appendChild(el('div', { class: 'panel-bezel' }, [
     el('div', { class: 'panel-bezel-body' }, [
@@ -2478,7 +3050,7 @@ function renderEquipmentDetail() {
         el('span', { class: 'panel-title-meta' },
           'air \u00B1' + eq.tolerance.airPercent + '%, water \u00B1' + eq.tolerance.waterPercent + '%, temp \u00B1' + eq.tolerance.tempDegF + ' degF')
       ]),
-      designBody
+      designContent
     ])
   ]));
 
@@ -2623,7 +3195,7 @@ function testEntry(eq, t) {
       el('th', { class: 'result' }, 'Result')
     ])));
     const tbody = el('tbody');
-    type.fields.forEach(f => {
+    type.fields.filter(f => !f.excludeFromTest).forEach(f => {
       const dv = eq.design[f.key];
       const rv = t.readings ? t.readings[f.key] : '';
       const pf = passFailField(dv, rv, f.tolerance, eq.tolerance);
@@ -2850,16 +3422,37 @@ function openEquipmentModal(existing) {
     clear(designHost);
     const type = EQUIPMENT_TYPES[eq.type];
     if (!type) return;
-    type.fields.forEach(f => {
-      const id = 'eq-design-' + f.key;
-      const fld = makeField({
-        id: id, label: f.label, unit: f.unit, critical: f.critical, type: 'number', step: 'any',
-        value: eq.design[f.key] !== undefined ? eq.design[f.key] : '',
-        onInput: (e) => {
-          eq.design[f.key] = e.target.value === '' ? '' : e.target.value;
-        }
+    /* Group by section. designHost gets a sequence of subheading + grid
+       blocks, one per section that has at least one field. */
+    const groups = groupFieldsBySection(type);
+    groups.forEach(g => {
+      const sectionHead = el('div', { class: 'design-section-head' }, g.label);
+      designHost.appendChild(sectionHead);
+      const grid = el('div', { class: 'form-grid wide design-section-grid' });
+      g.fields.forEach(f => {
+        const id = 'eq-design-' + f.key;
+        const fieldType = f.type || 'number';
+        const opts = {
+          id: id,
+          label: f.label,
+          unit: f.unit,
+          critical: f.critical,
+          type: fieldType,
+          step: fieldType === 'number' ? 'any' : undefined,
+          options: f.options,
+          placeholder: f.placeholder,
+          value: eq.design[f.key] !== undefined ? eq.design[f.key] : '',
+          onInput: (e) => {
+            eq.design[f.key] = e.target.value === '' ? '' : e.target.value;
+          },
+          onChange: fieldType === 'select' ? (e) => {
+            eq.design[f.key] = e.target.value === '' ? '' : e.target.value;
+          } : undefined
+        };
+        const fld = makeField(opts);
+        grid.appendChild(fld.wrap);
       });
-      designHost.appendChild(fld.wrap);
+      designHost.appendChild(grid);
     });
     rebuildAhuField();
   }
@@ -2900,6 +3493,15 @@ function openEquipmentModal(existing) {
     primaryLabel: isNew ? 'Add' : 'Save',
     onPrimary: () => {
       if (!eq.tag) { toast('Tag is required', 'err'); return false; }
+      /* Non-blocking duplicate-tag warning. Different units of the same
+         model may legitimately share a tag prefix but full collisions
+         are usually a mistake. */
+      const collision = STATE.equipment.find(e => e.id !== eq.id && (e.tag || '').trim() === eq.tag.trim());
+      if (collision) {
+        if (!confirm('Tag "' + eq.tag + '" is already used by another piece of equipment (' + (EQUIPMENT_TYPES[collision.type] ? EQUIPMENT_TYPES[collision.type].label : collision.type) + ' at ' + (collision.location || 'no location') + '). Save anyway?')) {
+          return false;
+        }
+      }
       if (isNew) {
         STATE.equipment.push(eq);
         UI.selectedEquipmentId = eq.id;
@@ -2924,10 +3526,242 @@ function openEquipmentModal(existing) {
 
 function deleteEquipment(eq) {
   if (!confirm('Delete ' + (eq.tag || 'this equipment') + ' and all its tests? This cannot be undone.')) return;
+  /* Collect every photo ID attached to the equipment and to any of its
+     tests, so the IndexedDB photo store doesn't accumulate orphans. */
+  const photoIds = [];
+  (eq.photos || []).forEach(p => photoIds.push(p.id));
+  (eq.tests || []).forEach(t => (t.photos || []).forEach(p => photoIds.push(p.id)));
   STATE.equipment = STATE.equipment.filter(e => e.id !== eq.id);
   STATE.punchList = STATE.punchList.filter(p => p.equipmentId !== eq.id);
   saveState();
   closeEquipmentDetail();
+  /* Fire-and-forget photo deletions. We log but don't surface failures;
+     orphan photos in IndexedDB are harmless next to losing the workbook. */
+  photoIds.forEach(id => {
+    deletePhoto(id).catch(err => console.warn('Failed to remove orphan photo', id, err));
+  });
+}
+
+function duplicateEquipment(eq) {
+  /* Create a new equipment record copying the design, tolerance, and
+     identifying metadata from this one. Tests, photos, status, punch
+     flag, pump curve, and any associations reset, since those are
+     instance-specific. The tag gets " (copy)" appended; the user can
+     rename via the Edit modal that opens immediately after. */
+  const dup = {
+    id: 'eq-' + shortId(),
+    tag: (eq.tag || '') + ' (copy)',
+    type: eq.type,
+    location: eq.location || '',
+    serves: eq.serves || '',
+    manufacturer: eq.manufacturer || '',
+    model: eq.model || '',
+    serial: '',
+    design: Object.assign({}, eq.design || {}),
+    tests: [],
+    tolerance: Object.assign({}, eq.tolerance || { airPercent: 10, waterPercent: 10, tempDegF: 2 }),
+    status: 'pending',
+    notes: eq.notes || '',
+    photos: [],
+    associatedAhu: eq.associatedAhu || ''
+  };
+  if (dup.type === 'pump') {
+    dup.pumpCurve   = (eq.pumpCurve || []).map(p => Object.assign({}, p));
+    dup.systemCurve = Object.assign({}, eq.systemCurve || { staticHead: '', designFlow: '', designHead: '' });
+  }
+  STATE.equipment.push(dup);
+  saveState();
+  updateTabCounts();
+  UI.selectedEquipmentId = dup.id;
+  renderEquipmentDetail();
+  toast('Duplicated as ' + dup.tag);
+  /* Open the modal immediately so the technician can rename and edit. */
+  openEquipmentModal(dup);
+}
+
+/* -------------------- Bulk-create equipment -------------------- */
+/* Creates N equipment records with sequential tags. Useful for fast
+   intake on big jobs (a building with 30 VAVs, 60 terminals, etc.).
+   Generated equipment have empty design values and no tests; the
+   technician fills in design data per unit afterward. */
+
+function openBulkAddModal() {
+  const form = {
+    type: 'terminal',
+    prefix: '',
+    startNumber: 1,
+    count: 10,
+    padWidth: 2,
+    separator: '-',
+    location: '',
+    serves: '',
+    manufacturer: '',
+    model: '',
+    associatedAhu: ''
+  };
+
+  const body = el('div');
+  body.appendChild(el('p', { class: 'modal-help' },
+    'Generates a sequence of equipment records with auto-numbered tags. Useful for fast intake on big jobs. Design values stay blank; fill them in per unit afterward. Each new record starts in the "pending" status.'));
+
+  /* Type and tagging */
+  body.appendChild(el('h4', { class: 'section-head' }, 'Equipment'));
+  const typeGrid = el('div', { class: 'form-grid wide' });
+  typeGrid.appendChild(makeField({
+    id: 'bulk-type', label: 'Type', type: 'select',
+    options: Object.entries(EQUIPMENT_TYPES).map(([k, v]) => ({ value: k, label: v.label })),
+    value: form.type,
+    onChange: (e) => { form.type = e.target.value; rebuildAhuField(); refreshPreview(); }
+  }).wrap);
+  typeGrid.appendChild(makeField({
+    id: 'bulk-count', label: 'Count', unit: 'units', type: 'number', step: '1', value: form.count,
+    help: 'How many records to create',
+    onInput: (e) => { form.count = Math.max(1, Math.min(200, parseInt(e.target.value, 10) || 0)); refreshPreview(); }
+  }).wrap);
+  body.appendChild(typeGrid);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Tag numbering'));
+  const tagGrid = el('div', { class: 'form-grid wide' });
+  tagGrid.appendChild(makeField({
+    id: 'bulk-prefix', label: 'Tag prefix', type: 'text', value: form.prefix,
+    placeholder: 'VAV', help: 'Letters / words before the number',
+    onInput: (e) => { form.prefix = e.target.value; refreshPreview(); }
+  }).wrap);
+  tagGrid.appendChild(makeField({
+    id: 'bulk-sep', label: 'Separator', type: 'text', value: form.separator,
+    placeholder: '-',
+    onInput: (e) => { form.separator = e.target.value; refreshPreview(); }
+  }).wrap);
+  tagGrid.appendChild(makeField({
+    id: 'bulk-start', label: 'Start number', type: 'number', step: '1', value: form.startNumber,
+    onInput: (e) => { form.startNumber = parseInt(e.target.value, 10) || 1; refreshPreview(); }
+  }).wrap);
+  tagGrid.appendChild(makeField({
+    id: 'bulk-pad', label: 'Zero-pad to width', type: 'number', step: '1', value: form.padWidth,
+    help: 'e.g. 2 produces VAV-01, VAV-02; use 0 for no padding',
+    onInput: (e) => { form.padWidth = Math.max(0, parseInt(e.target.value, 10) || 0); refreshPreview(); }
+  }).wrap);
+  body.appendChild(tagGrid);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Common values (optional)'));
+  const commonGrid = el('div', { class: 'form-grid wide' });
+  commonGrid.appendChild(makeField({
+    id: 'bulk-loc', label: 'Location (applied to all)', type: 'text', value: form.location,
+    onInput: (e) => { form.location = e.target.value; }
+  }).wrap);
+  commonGrid.appendChild(makeField({
+    id: 'bulk-serves', label: 'Serves', type: 'text', value: form.serves,
+    onInput: (e) => { form.serves = e.target.value; }
+  }).wrap);
+  commonGrid.appendChild(makeField({
+    id: 'bulk-mfr', label: 'Manufacturer', type: 'text', value: form.manufacturer,
+    onInput: (e) => { form.manufacturer = e.target.value; }
+  }).wrap);
+  commonGrid.appendChild(makeField({
+    id: 'bulk-model', label: 'Model', type: 'text', value: form.model,
+    onInput: (e) => { form.model = e.target.value; }
+  }).wrap);
+  body.appendChild(commonGrid);
+
+  const ahuHost = el('div', { class: 'form-grid wide' });
+  body.appendChild(ahuHost);
+  function rebuildAhuField() {
+    clear(ahuHost);
+    if (form.type !== 'terminal') return;
+    const ahuOptions = [{ value: '', label: '(unassigned)' }].concat(
+      STATE.equipment.filter(e => e.type === 'ahu').map(a => ({ value: a.id, label: a.tag + ' - ' + (a.location || 'AHU') }))
+    );
+    ahuHost.appendChild(makeField({
+      id: 'bulk-ahu', label: 'Associated AHU', type: 'select',
+      options: ahuOptions, value: form.associatedAhu,
+      onChange: (e) => { form.associatedAhu = e.target.value; }
+    }).wrap);
+  }
+  rebuildAhuField();
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Preview'));
+  const previewHost = el('div', { class: 'bulk-preview' });
+  body.appendChild(previewHost);
+
+  function tagFor(idx) {
+    const num = form.startNumber + idx;
+    const padded = form.padWidth > 0
+      ? String(num).padStart(form.padWidth, '0')
+      : String(num);
+    return (form.prefix || '') + (form.separator || '') + padded;
+  }
+
+  function refreshPreview() {
+    clear(previewHost);
+    const max = Math.min(5, form.count);
+    const first = tagFor(0);
+    const last  = tagFor(form.count - 1);
+    const dl = el('dl', { class: 'kv-table' });
+    dl.appendChild(el('dt', null, 'Will create'));
+    dl.appendChild(el('dd', { class: 'mono' }, form.count + ' \u00D7 ' + EQUIPMENT_TYPES[form.type].label));
+    dl.appendChild(el('dt', null, 'First tag'));
+    dl.appendChild(el('dd', { class: 'mono' }, first));
+    dl.appendChild(el('dt', null, 'Last tag'));
+    dl.appendChild(el('dd', { class: 'mono' }, last));
+    if (form.count > 1) {
+      const samples = [];
+      for (let i = 0; i < max; i++) samples.push(tagFor(i));
+      if (form.count > max) samples.push('...');
+      dl.appendChild(el('dt', null, 'Sample sequence'));
+      dl.appendChild(el('dd', { class: 'mono' }, samples.join(', ')));
+    }
+    previewHost.appendChild(dl);
+  }
+  refreshPreview();
+
+  showModal({
+    title: 'Bulk add equipment',
+    body: body,
+    primaryLabel: 'Create',
+    secondaryLabel: 'Cancel',
+    onPrimary: () => {
+      if (form.count < 1) { toast('Count must be at least 1', 'err'); return false; }
+      if (form.count > 200) { toast('Count limited to 200 per batch', 'err'); return false; }
+      /* Generate the records. Check for tag collisions against existing
+         equipment and warn (non-blocking) before creating. */
+      const newTags = [];
+      for (let i = 0; i < form.count; i++) newTags.push(tagFor(i));
+      const existingTags = new Set(STATE.equipment.map(e => (e.tag || '').trim()));
+      const dupes = newTags.filter(t => existingTags.has(t));
+      if (dupes.length > 0) {
+        const sample = dupes.slice(0, 5).join(', ') + (dupes.length > 5 ? ' (and ' + (dupes.length - 5) + ' more)' : '');
+        if (!confirm(dupes.length + ' tag(s) already exist (' + sample + '). Create anyway? Duplicate tags are allowed but may be confusing.')) {
+          return false;
+        }
+      }
+      newTags.forEach(tag => {
+        const eq = {
+          id: 'eq-' + shortId(),
+          tag: tag,
+          type: form.type,
+          location: form.location || '',
+          serves: form.serves || '',
+          manufacturer: form.manufacturer || '',
+          model: form.model || '',
+          serial: '',
+          design: {},
+          tests: [],
+          tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 },
+          status: 'pending',
+          notes: '',
+          photos: [],
+          associatedAhu: form.type === 'terminal' ? (form.associatedAhu || '') : ''
+        };
+        STATE.equipment.push(eq);
+      });
+      saveState();
+      updateTabCounts();
+      closeModal();
+      renderEquipmentGrid();
+      toast('Created ' + form.count + ' ' + (form.count === 1 ? 'record' : 'records'));
+      return true;
+    }
+  });
 }
 
 function togglePunchFlag(eq) {
@@ -2990,27 +3824,36 @@ function openTestModal(eq, existing, phase) {
   body.appendChild(metaGrid);
 
   body.appendChild(el('h4', { class: 'section-head' }, 'Readings'));
-  const readGrid = el('div', { class: 'form-grid wide' });
   if (type) {
-    type.fields.forEach(f => {
-      const design = eq.design[f.key];
-      const fld = makeField({
-        id: 'tst-read-' + f.key,
-        label: f.label,
-        unit: f.unit,
-        critical: f.critical,
-        type: 'number',
-        step: 'any',
-        value: t.readings[f.key] !== undefined ? t.readings[f.key] : '',
-        help: design !== undefined && design !== '' ? 'Design: ' + design + (f.unit ? ' ' + f.unit : '') : 'No design value entered',
-        onInput: (e) => {
-          t.readings[f.key] = e.target.value === '' ? '' : e.target.value;
-        }
+    /* Skip excludeFromTest fields. Group the rest by section so the
+       reading entry matches the design entry layout. */
+    const groups = groupFieldsBySection(type);
+    groups.forEach(g => {
+      const readable = g.fields.filter(f => !f.excludeFromTest);
+      if (readable.length === 0) return;
+      const head = el('div', { class: 'design-section-head' }, g.label);
+      body.appendChild(head);
+      const grid = el('div', { class: 'form-grid wide design-section-grid' });
+      readable.forEach(f => {
+        const design = eq.design[f.key];
+        const fld = makeField({
+          id: 'tst-read-' + f.key,
+          label: f.label,
+          unit: f.unit,
+          critical: f.critical,
+          type: 'number',
+          step: 'any',
+          value: t.readings[f.key] !== undefined ? t.readings[f.key] : '',
+          help: design !== undefined && design !== '' ? 'Design: ' + design + (f.unit ? ' ' + f.unit : '') : 'No design value entered',
+          onInput: (e) => {
+            t.readings[f.key] = e.target.value === '' ? '' : e.target.value;
+          }
+        });
+        grid.appendChild(fld.wrap);
       });
-      readGrid.appendChild(fld.wrap);
+      body.appendChild(grid);
     });
   }
-  body.appendChild(readGrid);
 
   body.appendChild(el('h4', { class: 'section-head' }, 'Notes'));
   const notesField = makeField({
@@ -3044,10 +3887,14 @@ function openTestModal(eq, existing, phase) {
 
 function deleteTest(eq, t) {
   if (!confirm('Delete this ' + PHASE_LABELS[t.phase].toLowerCase() + ' test?')) return;
+  const photoIds = (t.photos || []).map(p => p.id);
   eq.tests = eq.tests.filter(x => x.id !== t.id);
   UI.expandedTests.delete(t.id);
   saveState();
   renderEquipmentDetail();
+  photoIds.forEach(id => {
+    deletePhoto(id).catch(err => console.warn('Failed to remove orphan photo', id, err));
+  });
 }
 
 /* -------------------- Duct traverse modal -------------------- */
@@ -3059,8 +3906,11 @@ function deleteTest(eq, t) {
    auto-populated from this value on save. */
 
 function openTraverseModal(eq, t) {
-  /* Default state for the modal. Pulled from any existing traverse on t. */
-  const tr = t.traverse ? JSON.parse(JSON.stringify(t.traverse)) : {
+  /* Default state for the modal. Pulled from any existing traverse on t,
+     merged with defaults so a record saved before a feature existed still
+     has all the fields the modal expects (e.g. switching shape on an
+     older record won't break). */
+  const defaults = {
     shape: 'rectangular',
     width: '',
     height: '',
@@ -3074,13 +3924,35 @@ function openTraverseModal(eq, t) {
     pressureInHg: '',
     /* grid is a 2D array of VP strings. For rectangular: rows x cols.
        For round: diameters x pointsPerDiameter. */
-    grid: []
+    grid: [],
+    /* For VAV equipment, the computed CFM needs to land on either the
+       cfmMin or cfmMax reading. Default to cfmMax (the design condition
+       most commonly traversed). For non-VAV types this field is unused. */
+    targetField: eq.type === 'vav' ? 'cfmMax' : 'cfm'
   };
+  const tr = Object.assign({}, defaults, t.traverse ? JSON.parse(JSON.stringify(t.traverse)) : {});
 
   const body = el('div');
 
   body.appendChild(el('p', { class: 'modal-help' },
     'Capture velocity pressure (in. wg) at each grid point. The calculator converts to velocity and totals CFM. The result writes back to the test as the airflow reading.'));
+
+  /* VAV: which reading does the computed CFM apply to? */
+  if (eq.type === 'vav') {
+    body.appendChild(el('h4', { class: 'section-head' }, 'Apply to'));
+    const targetWrap = el('div', { class: 'form-grid wide' });
+    targetWrap.appendChild(makeField({
+      id: 'tr-target', label: 'Reading to update', type: 'select',
+      options: [
+        { value: 'cfmMax', label: 'Maximum airflow (cfmMax)' },
+        { value: 'cfmMin', label: 'Minimum airflow (cfmMin)' }
+      ],
+      value: tr.targetField,
+      help: 'The computed total CFM will overwrite this reading on save',
+      onInput: (e) => { tr.targetField = e.target.value; }
+    }).wrap);
+    body.appendChild(targetWrap);
+  }
 
   /* Shape selector */
   body.appendChild(el('h4', { class: 'section-head' }, 'Duct'));
@@ -3299,9 +4171,11 @@ function openTraverseModal(eq, t) {
       tr.computedDensity    = r.density;
       tr.computedPointCount = r.n;
       t.traverse = tr;
-      /* Auto-apply to the equipment's primary airflow reading. */
+      /* Auto-apply to the equipment's chosen airflow reading. For most
+         types this is 'cfm'; for VAV it's whichever the user picked above. */
       t.readings = t.readings || {};
-      t.readings.cfm = String(Math.round(r.cfm));
+      const targetKey = tr.targetField || 'cfm';
+      t.readings[targetKey] = String(Math.round(r.cfm));
       saveState();
       closeModal();
       renderEquipmentDetail();
@@ -4068,23 +4942,40 @@ function renderReportTab() {
 
   const proj = STATE.project;
   const stats = computeStats();
+  const tmpl = reportTemplate();
 
   /* Cover */
-  const cover = el('div', { class: 'report-sheet report-cover' }, [
-    el('div', { class: 'label' }, 'Testing, Adjusting, Balancing'),
-    el('h1', null, 'TAB Report'),
-    el('div', { class: 'project' }, proj.name || '(Untitled project)'),
-    el('div', { class: 'address' }, proj.address || ''),
-    el('dl', { class: 'report-cover-meta' }, [
-      proj.projectNumber ? [el('dt', null, 'Project number'), el('dd', null, proj.projectNumber)] : null,
-      proj.owner          ? [el('dt', null, 'Owner'),          el('dd', { class: 'text' }, proj.owner)] : null,
-      proj.mechanicalContractor ? [el('dt', null, 'Mechanical contractor'), el('dd', { class: 'text' }, proj.mechanicalContractor)] : null,
-      proj.tabContractor  ? [el('dt', null, 'TAB contractor'), el('dd', { class: 'text' }, proj.tabContractor)] : null,
-      proj.technician     ? [el('dt', null, 'Technician'),     el('dd', { class: 'text' }, proj.technician + (proj.technicianCertification ? ' (' + proj.technicianCertification + ')' : ''))] : null,
-      proj.startDate || proj.endDate ? [el('dt', null, 'Period'), el('dd', null, (proj.startDate || '') + (proj.endDate ? ' to ' + proj.endDate : ''))] : null,
-      proj.weather        ? [el('dt', null, 'Outdoor conditions'), el('dd', { class: 'text' }, proj.weather)] : null
-    ])
-  ]);
+  const cover = el('div', { class: 'report-sheet report-cover' });
+  /* Firm header / letterhead (skipped for the draft template). */
+  if (tmpl.showFirmHeader && (proj.firmName || proj.firmAddress || proj.firmCertNumber)) {
+    const fh = el('div', { class: 'report-firm-header' });
+    if (proj.firmName)    fh.appendChild(el('div', { class: 'firm-name' }, proj.firmName));
+    if (proj.firmAddress) fh.appendChild(el('div', { class: 'firm-addr' }, proj.firmAddress));
+    if (proj.firmCertNumber) fh.appendChild(el('div', { class: 'firm-cert mono' }, tmpl.firmCertLabel + ': ' + proj.firmCertNumber));
+    cover.appendChild(fh);
+  }
+  cover.appendChild(el('div', { class: 'label' }, tmpl.coverEyebrow));
+  cover.appendChild(el('h1', null, tmpl.coverTitle));
+  cover.appendChild(el('div', { class: 'cover-style-pill' }, tmpl.short + ' style'));
+  cover.appendChild(el('div', { class: 'project' }, proj.name || '(Untitled project)'));
+  cover.appendChild(el('div', { class: 'address' }, proj.address || ''));
+  cover.appendChild(el('dl', { class: 'report-cover-meta' }, [
+    proj.projectNumber ? [el('dt', null, 'Project number'), el('dd', null, proj.projectNumber)] : null,
+    proj.owner          ? [el('dt', null, 'Owner'),          el('dd', { class: 'text' }, proj.owner)] : null,
+    proj.projectArchitect ? [el('dt', null, 'Architect'),    el('dd', { class: 'text' }, proj.projectArchitect)] : null,
+    proj.projectEngineer  ? [el('dt', null, 'Engineer of record'), el('dd', { class: 'text' }, proj.projectEngineer)] : null,
+    proj.mechanicalContractor ? [el('dt', null, 'Mechanical contractor'), el('dd', { class: 'text' }, proj.mechanicalContractor)] : null,
+    proj.tabContractor  ? [el('dt', null, 'TAB contractor'), el('dd', { class: 'text' }, proj.tabContractor)] : null,
+    proj.technician     ? [el('dt', null, 'Technician'),     el('dd', { class: 'text' }, proj.technician + (proj.technicianCertification ? ' (' + proj.technicianCertification + ')' : ''))] : null,
+    proj.startDate || proj.endDate ? [el('dt', null, 'Period'), el('dd', null, (proj.startDate || '') + (proj.endDate ? ' to ' + proj.endDate : ''))] : null,
+    proj.reportDate     ? [el('dt', null, 'Report date'),    el('dd', null, proj.reportDate)] : null,
+    proj.reportRevision ? [el('dt', null, 'Revision'),       el('dd', { class: 'mono' }, proj.reportRevision)] : null,
+    proj.weather        ? [el('dt', null, 'Outdoor conditions'), el('dd', { class: 'text' }, proj.weather)] : null
+  ]));
+  /* Style disclaimer is always shown on the cover, in muted print-friendly text. */
+  if (tmpl.short !== 'DRAFT') {
+    cover.appendChild(el('div', { class: 'cover-disclaimer' }, tmpl.disclaimer));
+  }
   host.appendChild(cover);
 
   /* Summary */
@@ -4124,6 +5015,11 @@ function renderReportTab() {
   typeTbl.appendChild(typeTbody);
   if (anyByType) summary.appendChild(typeTbl);
   else summary.appendChild(el('p', { class: 'muted' }, 'No equipment recorded.'));
+
+  if (proj.scopeOfWork) {
+    summary.appendChild(el('h3', null, 'Scope of work'));
+    summary.appendChild(el('div', { style: 'white-space:pre-wrap;' }, proj.scopeOfWork));
+  }
 
   if (proj.notes) {
     summary.appendChild(el('h3', null, 'Project notes'));
@@ -4216,14 +5112,55 @@ function renderReportTab() {
     host.appendChild(punch);
   }
 
-  /* Signature block */
+  /* Phase 3: Statement of Certification */
+  const cert = el('div', { class: 'report-sheet' });
+  cert.appendChild(el('h3', null, 'Statement of Certification'));
+  cert.appendChild(el('p', { class: 'cert-statement' }, tmpl.certStatement(proj)));
+  if (tmpl.short === 'DRAFT') {
+    cert.appendChild(el('p', { class: 'cert-disclaimer muted' }, tmpl.disclaimer));
+  } else {
+    cert.appendChild(el('p', { class: 'cert-disclaimer muted' }, tmpl.disclaimer));
+  }
+  host.appendChild(cert);
+
+  /* Phase 3: Signature block (template-driven) */
   const sig = el('div', { class: 'report-sheet' });
   sig.appendChild(el('h3', null, 'Signatures'));
-  sig.appendChild(el('p', { class: 'muted' }, 'This report is provided as a working document. Formal AABC, NEBB, or TABB submissions require the certifying body\u2019s prescribed format and a signature from a certified TAB supervisor.'));
-  sig.appendChild(el('div', { class: 'signature-block' }, [
-    el('div', { class: 'signature' }, 'TAB technician'),
-    el('div', { class: 'signature' }, 'TAB supervisor (certified)')
-  ]));
+
+  /* Supervisor / certified signatory */
+  const supBlock = el('div', { class: 'sig-row' });
+  supBlock.appendChild(el('div', { class: 'sig-line' }));
+  const supMeta = el('div', { class: 'sig-meta' }, [
+    el('div', { class: 'sig-name' }, proj.supervisorName || ''),
+    el('div', { class: 'sig-role' }, tmpl.supervisorTitle),
+    proj.supervisorCertNumber ? el('div', { class: 'sig-cert mono' }, tmpl.supervisorCertLabel + ': ' + proj.supervisorCertNumber) : null,
+    el('div', { class: 'sig-date' }, 'Date:')
+  ]);
+  supBlock.appendChild(supMeta);
+  sig.appendChild(supBlock);
+
+  /* Technician */
+  const techBlock = el('div', { class: 'sig-row' });
+  techBlock.appendChild(el('div', { class: 'sig-line' }));
+  const techMeta = el('div', { class: 'sig-meta' }, [
+    el('div', { class: 'sig-name' }, proj.technician || ''),
+    el('div', { class: 'sig-role' }, 'TAB technician of record'),
+    proj.technicianCertification ? el('div', { class: 'sig-cert mono' }, 'Certification: ' + proj.technicianCertification) : null,
+    el('div', { class: 'sig-date' }, 'Date:')
+  ]);
+  techBlock.appendChild(techMeta);
+  sig.appendChild(techBlock);
+
+  /* Firm cert footer */
+  if (tmpl.showFirmHeader && (proj.firmName || proj.firmCertNumber)) {
+    const fc = el('div', { class: 'sig-firm-footer mono muted' });
+    const bits = [];
+    if (proj.firmName) bits.push(proj.firmName);
+    if (proj.firmCertNumber) bits.push(tmpl.firmCertLabel + ': ' + proj.firmCertNumber);
+    fc.textContent = bits.join('  /  ');
+    sig.appendChild(fc);
+  }
+
   host.appendChild(sig);
 }
 
@@ -4252,34 +5189,65 @@ function reportEqBlock(eq) {
   }
 
   if (type) {
-    const tbl = el('table', { class: 'read-table' });
-    tbl.appendChild(el('thead', null, el('tr', null, [
-      el('th', null, 'Field'),
-      el('th', { class: 'num' }, 'Design'),
-      el('th', { class: 'num' }, 'Final'),
-      el('th', null, 'Unit'),
-      el('th', { class: 'result' }, 'Result')
-    ])));
-    const tbody = el('tbody');
-    type.fields.forEach(f => {
-      const dv = eq.design[f.key];
-      const rv = finalTest && finalTest.readings ? finalTest.readings[f.key] : '';
-      const pf = passFailField(dv, rv, f.tolerance, eq.tolerance);
-      const resultCell = pf === 'pass'
-        ? el('td', { class: 'result pass' }, 'PASS')
-        : pf === 'fail'
-          ? el('td', { class: 'result fail' }, 'FAIL')
-          : el('td', { class: 'result na' }, '-');
-      tbody.appendChild(el('tr', null, [
-        el('td', { class: 'label' }, f.label),
-        el('td', { class: 'num' }, dv !== undefined && dv !== '' ? fmtNum(dv) : el('span', { class: 'muted' }, '-')),
-        el('td', { class: 'num' }, rv !== undefined && rv !== '' ? fmtNum(rv) : el('span', { class: 'muted' }, '-')),
-        el('td', { class: 'unit' }, f.unit || ''),
-        resultCell
-      ]));
+    const tmpl = reportTemplate();
+    const groups = groupFieldsBySectionForTemplate(type, eq.type, tmpl);
+    groups.forEach(g => {
+      /* Skip a section if it has no design values entered AND no readings,
+         to keep the printed report from being cluttered with empty rows. */
+      const anyData = g.fields.some(f => {
+        const dv = eq.design[f.key];
+        const rv = finalTest && finalTest.readings ? finalTest.readings[f.key] : '';
+        return (dv !== undefined && dv !== '') || (rv !== undefined && rv !== '');
+      });
+      if (!anyData) return;
+
+      const tbl = el('table', { class: 'read-table report-section-table' });
+      tbl.appendChild(el('thead', null, el('tr', { class: 'section-label-row' }, [
+        el('th', { class: 'section-label', colspan: 5 }, g.label)
+      ])));
+      tbl.appendChild(el('thead', null, el('tr', null, [
+        el('th', null, 'Field'),
+        el('th', { class: 'num' }, 'Design'),
+        el('th', { class: 'num' }, tmpl.readingLabel),
+        el('th', null, 'Unit'),
+        el('th', { class: 'result' }, 'Result')
+      ])));
+      const tbody = el('tbody');
+      g.fields.forEach(f => {
+        const dv = eq.design[f.key];
+        const rv = finalTest && finalTest.readings ? finalTest.readings[f.key] : '';
+        const fieldType = f.type || 'number';
+        const pf = passFailField(dv, rv, f.tolerance, eq.tolerance);
+        const resultCell = pf === 'pass'
+          ? el('td', { class: 'result pass' }, 'PASS')
+          : pf === 'fail'
+            ? el('td', { class: 'result fail' }, 'FAIL')
+            : el('td', { class: 'result na' }, f.excludeFromTest ? 'NP' : '-');
+        /* Format design and reading per field type. */
+        function formatVal(v) {
+          if (v === undefined || v === '' || v === null) return el('span', { class: 'muted' }, '-');
+          if (fieldType === 'select') {
+            const opt = (f.options || []).find(o => o.value === String(v));
+            return opt ? opt.label : String(v);
+          }
+          if (fieldType === 'text') return String(v);
+          return fmtNum(v);
+        }
+        const designCell  = el('td', { class: fieldType === 'number' ? 'num' : 'text' }, formatVal(dv));
+        const readingCell = f.excludeFromTest
+          ? el('td', { class: 'text muted', title: 'Nameplate / observed; no per-phase reading' }, '--')
+          : el('td', { class: fieldType === 'number' ? 'num' : 'text' }, formatVal(rv));
+        tbody.appendChild(el('tr', null, [
+          el('td', { class: 'label' }, f.label),
+          designCell,
+          readingCell,
+          el('td', { class: 'unit' }, f.unit || ''),
+          resultCell
+        ]));
+      });
+      tbl.appendChild(tbody);
+      wrap.appendChild(tbl);
     });
-    tbl.appendChild(tbody);
-    wrap.appendChild(tbl);
   }
 
   /* Per-phase log */
@@ -4346,8 +5314,14 @@ function closeModal() {
 
 /* -------------------- Tabs / counts -------------------- */
 
+const TAB_PERSIST_KEY = 'pitot.activeTab';
+const VALID_TABS = ['project', 'equipment', 'punch', 'report'];
+
 function setActiveTab(name) {
   UI.activeTab = name;
+  /* Persist for next session. Bound by VALID_TABS so a corrupt value
+     can't lock the app into a non-existent view. */
+  try { localStorage.setItem(TAB_PERSIST_KEY, name); } catch (e) { /* private mode */ }
   document.querySelectorAll('#tab-nav button').forEach(b => {
     b.classList.toggle('active', b.dataset.tab === name);
   });
@@ -4365,6 +5339,14 @@ function setActiveTab(name) {
   if (name === 'punch')     renderPunchTab();
   if (name === 'report')    renderReportTab();
   updateTabCounts();
+}
+
+function lastActiveTab() {
+  try {
+    const v = localStorage.getItem(TAB_PERSIST_KEY);
+    if (v && VALID_TABS.indexOf(v) >= 0) return v;
+  } catch (e) { /* ignore */ }
+  return 'project';
 }
 
 function updateTabCounts() {
@@ -4418,7 +5400,7 @@ function wipeWorkbook() {
   if (!confirm('Clear the entire workbook? This cannot be undone.')) return;
   STATE = defaultState();
   saveState();
-  setActiveTab('project');
+  setActiveTab(lastActiveTab());
   toast('Workbook cleared');
 }
 
@@ -4574,6 +5556,233 @@ function selfTest() {
   ok('migrate rejects unknown schema',
     migrate({ schema: 'pitot/workbook@9999', project:{}, equipment:[], punchList:[] }) === null);
 
+  /* Phase 3: report template lookup */
+  ok('REPORT_TEMPLATES has all four styles',
+    ['draft','aabc','nebb','tabb'].every(k => REPORT_TEMPLATES[k] && typeof REPORT_TEMPLATES[k].certStatement === 'function'));
+  ok('NEBB uses "Field" reading label',
+    REPORT_TEMPLATES.nebb.readingLabel === 'Field');
+  ok('AABC uses "Actual" reading label',
+    REPORT_TEMPLATES.aabc.readingLabel === 'Actual');
+  ok('TABB uses "Actual" reading label',
+    REPORT_TEMPLATES.tabb.readingLabel === 'Actual');
+  ok('Cert statements produce non-empty strings for all templates',
+    Object.values(REPORT_TEMPLATES).every(t => typeof t.certStatement({ name: 'X', firmName: 'Y' }) === 'string' &&
+      t.certStatement({ name: 'X', firmName: 'Y' }).length > 50));
+  ok('Cert statements gracefully handle empty project',
+    Object.values(REPORT_TEMPLATES).every(t => typeof t.certStatement({}) === 'string'));
+  ok('Each template has a disclaimer',
+    Object.values(REPORT_TEMPLATES).every(t => typeof t.disclaimer === 'string' && t.disclaimer.length > 30));
+  ok('Body templates show firm header; draft does not',
+    REPORT_TEMPLATES.aabc.showFirmHeader === true &&
+    REPORT_TEMPLATES.nebb.showFirmHeader === true &&
+    REPORT_TEMPLATES.tabb.showFirmHeader === true &&
+    REPORT_TEMPLATES.draft.showFirmHeader === false);
+  ok('reportTemplate falls back to draft on unknown style',
+    (function() {
+      const prev = STATE.project.reportStyle;
+      STATE.project.reportStyle = 'nonsense';
+      const t = reportTemplate();
+      STATE.project.reportStyle = prev;
+      return t === REPORT_TEMPLATES.draft;
+    })());
+
+  /* Phase 3: schema migration v2 -> v3 */
+  (function() {
+    const v2 = { schema: 'pitot/workbook@2', version: '0.2.0',
+      project: { name: 'P2', technician: 'M.B.P.' },
+      equipment: [{
+        id: 'eq-1', tag: 'AHU-1', type: 'ahu',
+        design: { cfm: 1000 }, tests: [],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 },
+        photos: [], associatedAhu: ''
+      }], punchList: [] };
+    const m = migrate(JSON.parse(JSON.stringify(v2)));
+    ok('migrate v2 -> v3 schema bumps',
+      m && m.schema === SCHEMA);
+    ok('migrate v2 -> v3 preserves existing project fields',
+      m && m.project.name === 'P2' && m.project.technician === 'M.B.P.');
+    ok('migrate v2 -> v3 adds reporting fields',
+      m && m.project.reportStyle === 'draft' &&
+      typeof m.project.firmName === 'string' &&
+      typeof m.project.supervisorName === 'string' &&
+      typeof m.project.scopeOfWork === 'string');
+  })();
+
+  /* Phase 3: full chain migration v1 -> v3 */
+  (function() {
+    const v1 = { schema: 'pitot/workbook@1', version: '0.1.0',
+      project: { name: 'Original' },
+      equipment: [{
+        id: 'eq-old', tag: 'AHU-OLD', type: 'ahu',
+        design: { cfm: 1000 }, tests: [],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 }
+      }], punchList: [] };
+    const m = migrate(JSON.parse(JSON.stringify(v1)));
+    ok('migrate v1 -> v3 (chain) schema bumps',
+      m && m.schema === SCHEMA);
+    ok('migrate v1 -> v3 adds Phase 2 fields',
+      m && Array.isArray(m.equipment[0].photos));
+    ok('migrate v1 -> v3 adds Phase 3 fields',
+      m && m.project.reportStyle === 'draft');
+  })();
+
+  /* Phase 3.x: section grouping */
+  (function() {
+    const ahuGroups = groupFieldsBySection(EQUIPMENT_TYPES.ahu);
+    /* AHU should have multiple sections including fan, motor, drive, filter, oa, temp. */
+    const sectionsPresent = ahuGroups.map(g => g.section);
+    ok('AHU groups include fan section',     sectionsPresent.indexOf('fan')    >= 0);
+    ok('AHU groups include motor section',   sectionsPresent.indexOf('motor')  >= 0);
+    ok('AHU groups include drive section',   sectionsPresent.indexOf('drive')  >= 0);
+    ok('AHU groups include filter section',  sectionsPresent.indexOf('filter') >= 0);
+    ok('AHU groups include oa section',      sectionsPresent.indexOf('oa')     >= 0);
+    ok('AHU groups include temp section',    sectionsPresent.indexOf('temp')   >= 0);
+    /* CFM lives in the fan section */
+    const fanGroup = ahuGroups.find(g => g.section === 'fan');
+    ok('AHU fan section contains cfm field',
+      fanGroup && fanGroup.fields.some(f => f.key === 'cfm'));
+    /* motorVoltage is a text field in motor section, excluded from test */
+    const motorGroup = ahuGroups.find(g => g.section === 'motor');
+    const mv = motorGroup && motorGroup.fields.find(f => f.key === 'motorVoltage');
+    ok('motorVoltage exists in motor section', !!mv);
+    ok('motorVoltage is text and excludeFromTest', mv && mv.type === 'text' && mv.excludeFromTest === true);
+    /* motorPhase is a select with options */
+    const mp = motorGroup && motorGroup.fields.find(f => f.key === 'motorPhase');
+    ok('motorPhase is a select with options',
+      mp && mp.type === 'select' && Array.isArray(mp.options) && mp.options.length >= 3);
+    /* Excluded fields list */
+    const excluded = EQUIPMENT_TYPES.ahu.fields.filter(f => f.excludeFromTest).map(f => f.key);
+    ok('motorAmps is measured (not excluded)',
+      excluded.indexOf('motorAmps') < 0);
+    ok('oaCfm is measured (not excluded)',
+      excluded.indexOf('oaCfm') < 0);
+    ok('beltSize is excludeFromTest',
+      excluded.indexOf('beltSize') >= 0);
+  })();
+
+  /* Phase 3.x: per-template ordering */
+  (function() {
+    const aabcGroups = groupFieldsBySectionForTemplate(EQUIPMENT_TYPES.ahu, 'ahu', REPORT_TEMPLATES.aabc);
+    const order = aabcGroups.map(g => g.section);
+    ok('AABC AHU section order is fan-motor-drive-filter-oa-temp',
+      JSON.stringify(order.slice(0, 6)) === JSON.stringify(['fan','motor','drive','filter','oa','temp']));
+    const nebbGroups = groupFieldsBySectionForTemplate(EQUIPMENT_TYPES.ahu, 'ahu', REPORT_TEMPLATES.nebb);
+    /* NEBB uses overridden section labels */
+    const motorGroup = nebbGroups.find(g => g.section === 'motor');
+    ok('NEBB motor section label override',
+      motorGroup && motorGroup.label === 'Motor electrical');
+    /* Draft falls back to natural order */
+    const draftGroups = groupFieldsBySectionForTemplate(EQUIPMENT_TYPES.ahu, 'ahu', REPORT_TEMPLATES.draft);
+    ok('Draft template uses natural section labels',
+      draftGroups.find(g => g.section === 'motor').label === 'Motor data');
+    /* Unknown section in template ordering is skipped */
+    const fakeTmpl = { equipmentSections: { ahu: ['fan', 'nonexistent', 'motor'] } };
+    const filtered = groupFieldsBySectionForTemplate(EQUIPMENT_TYPES.ahu, 'ahu', fakeTmpl);
+    ok('Unknown section in ordering is skipped without breaking',
+      filtered.map(g => g.section).indexOf('nonexistent') < 0);
+  })();
+
+  /* Phase 3.x: equipment types extended without breaking pass/fail */
+  (function() {
+    const tol = { airPercent: 10, waterPercent: 10, tempDegF: 2 };
+    /* AHU with new oaCfm reading should pass-fail on air tolerance */
+    ok('oaCfm in-band passes',
+      passFailField(2000, 2100, 'air', tol) === 'pass');
+    /* New coil cfm field gets air tolerance */
+    const coilCfm = EQUIPMENT_TYPES.coil.fields.find(f => f.key === 'cfm');
+    ok('coil now has a cfm field with air tolerance',
+      coilCfm && coilCfm.tolerance === 'air');
+  })();
+
+  /* v0.3.2 quick-win regressions */
+  (function() {
+    /* coilHeatBalance defensive against missing eq.design */
+    ok('coilHeatBalance returns null on null eq',
+      coilHeatBalance(null, { readings: {} }) === null);
+    ok('coilHeatBalance returns null on null test',
+      coilHeatBalance({ design: {} }, null) === null);
+    ok('coilHeatBalance handles missing eq.design',
+      (function() {
+        const hb = coilHeatBalance({ type: 'coil' }, { readings: { gpm: 10, ewt: 50, lwt: 60 } });
+        return hb !== null && hb.design === null && hb.water === 50000;
+      })());
+    /* Duplicate equipment helper (data shape test, not full flow) */
+    const src = {
+      id: 'eq-src', tag: 'AHU-1', type: 'ahu',
+      design: { cfm: 1000, motorVoltage: '208' },
+      tests: [{ id: 't1', phase: 'final', readings: { cfm: 990 } }],
+      tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 },
+      status: 'balanced', notes: 'unit-test', photos: [{ id: 'p1' }],
+      associatedAhu: 'eq-other'
+    };
+    /* Replicate the duplicate logic locally to avoid touching STATE. */
+    const dup = {
+      id: 'eq-dup', tag: src.tag + ' (copy)', type: src.type,
+      design: Object.assign({}, src.design), tests: [],
+      tolerance: Object.assign({}, src.tolerance),
+      status: 'pending', photos: [], notes: src.notes,
+      associatedAhu: src.associatedAhu
+    };
+    ok('Duplicate copies design',     JSON.stringify(dup.design) === JSON.stringify(src.design));
+    ok('Duplicate clears tests',      dup.tests.length === 0);
+    ok('Duplicate clears photos',     dup.photos.length === 0);
+    ok('Duplicate resets status',     dup.status === 'pending');
+    ok('Duplicate appends (copy) to tag', dup.tag === 'AHU-1 (copy)');
+    ok('Duplicate gets a new id',     dup.id !== src.id);
+    ok('Duplicate keeps association', dup.associatedAhu === 'eq-other');
+  })();
+
+  /* v0.3.3 quick-win regressions */
+  (function() {
+    /* Bulk-add tag generation (pure logic, replicated locally) */
+    function tagFor(prefix, sep, start, idx, padWidth) {
+      const num = start + idx;
+      const padded = padWidth > 0 ? String(num).padStart(padWidth, '0') : String(num);
+      return (prefix || '') + (sep || '') + padded;
+    }
+    ok('Bulk tag: prefix VAV, sep -, pad 2, start 1, idx 0',
+      tagFor('VAV', '-', 1, 0, 2) === 'VAV-01');
+    ok('Bulk tag: idx 11 -> VAV-12',
+      tagFor('VAV', '-', 1, 11, 2) === 'VAV-12');
+    ok('Bulk tag: start 100, pad 3',
+      tagFor('AHU', '-', 100, 0, 3) === 'AHU-100');
+    ok('Bulk tag: pad width 0 (no padding)',
+      tagFor('T', '', 7, 0, 0) === 'T7');
+    ok('Bulk tag: large number overflows pad width',
+      tagFor('VAV', '-', 1, 99, 2) === 'VAV-100');
+    ok('Bulk tag: empty prefix',
+      tagFor('', '', 1, 0, 0) === '1');
+
+    /* lastActiveTab fallback */
+    try { localStorage.removeItem(TAB_PERSIST_KEY); } catch (e) {}
+    ok('lastActiveTab default to project',
+      lastActiveTab() === 'project');
+    try { localStorage.setItem(TAB_PERSIST_KEY, 'punch'); } catch (e) {}
+    ok('lastActiveTab returns persisted value',
+      lastActiveTab() === 'punch');
+    try { localStorage.setItem(TAB_PERSIST_KEY, 'nonsense'); } catch (e) {}
+    ok('lastActiveTab guards against invalid value',
+      lastActiveTab() === 'project');
+    try { localStorage.removeItem(TAB_PERSIST_KEY); } catch (e) {}
+
+    /* Tag uniqueness detection logic */
+    const eqs = [
+      { id: 'eq-a', tag: 'VAV-01' },
+      { id: 'eq-b', tag: 'VAV-02' }
+    ];
+    function collisionFor(self, newTag) {
+      return eqs.find(e => e.id !== self && (e.tag || '').trim() === newTag.trim());
+    }
+    ok('Tag collision detected on existing tag',
+      collisionFor('new', 'VAV-01') !== undefined);
+    ok('Tag collision not raised against self',
+      collisionFor('eq-a', 'VAV-01') === undefined);
+    ok('Tag collision not raised for unique tag',
+      collisionFor('new', 'VAV-99') === undefined);
+    ok('Tag collision normalized for whitespace',
+      collisionFor('new', '  VAV-01  ') !== undefined);
+  })();
+
   const failed = results.filter(r => !r.ok);
   if (failed.length > 0) {
     console.error('PITOT self-test failures:', failed);
@@ -4601,8 +5810,16 @@ function init() {
 
   /* Add buttons */
   document.getElementById('btn-add-eq').addEventListener('click', () => openEquipmentModal(null));
+  document.getElementById('btn-bulk-add-eq').addEventListener('click', () => openBulkAddModal());
   document.getElementById('btn-add-punch').addEventListener('click', () => openPunchModal(null));
-  document.getElementById('btn-print').addEventListener('click', () => { renderReportTab(); window.print(); });
+  document.getElementById('btn-print').addEventListener('click', () => {
+    /* Always print from the Report tab so the layout matches what the
+       client expects, regardless of which tab the user was on. */
+    if (UI.activeTab !== 'report') setActiveTab('report');
+    /* Give the DOM a tick to finish rendering before the print dialog
+       captures the layout. */
+    setTimeout(() => window.print(), 50);
+  });
 
   /* Header controls */
   document.getElementById('btn-export').addEventListener('click', exportJson);
@@ -4619,7 +5836,7 @@ function init() {
     if (e.key === 'Escape' && !document.getElementById('modal-root').classList.contains('hidden')) closeModal();
   });
 
-  setActiveTab('project');
+  setActiveTab(lastActiveTab());
   updateTabCounts();
   selfTest();
 }

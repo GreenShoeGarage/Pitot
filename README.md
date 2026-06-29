@@ -6,214 +6,213 @@ Single HTML file, no build step, no server. Opens directly from disk and persist
 
 ## Status
 
-**v0.2.0 (Phase 2).** Adds duct traverse calculator, flow-hood reading helper, pump operating point with system-curve plot, coil heat balance, air-balance verification across associated terminals, and photo attachments. Bigger touch targets and quick-entry friendly inputs on mobile.
+**v0.3.3 (Phase 3 second quick-win slice).** More small ergonomics fixes that come up the first time a field tech actually uses the tool:
 
-Schema bumped to `pitot/workbook@2`. Workbooks saved under v0.1.0 (`pitot/workbook@1`) are forward-migrated automatically on load. The Phase 1 surface is preserved.
+- **Duplicate button on equipment grid cards.** Previously the duplicate action only appeared on the equipment detail view. Now every card in the grid has a Duplicate button in its footer (low-contrast, brightens on hover) for one-tap cloning without going into the detail page first.
+- **Bulk add equipment** (new `+ Bulk add` button on the equipment toolbar). Lets the technician generate a sequence of equipment records in one shot: pick the type, set a tag prefix, separator, start number, count, optional zero-padding width, optional common location / serves / manufacturer / model, optional associated AHU (for terminals). The modal previews the first and last tags before creating, and warns on tag collisions with existing equipment (non-blocking). Capped at 200 per batch.
+- **Last-active-tab restored on reload.** Open the punch list, close the browser, come back to PITOT, you land on the punch list again. The persisted tab name is sanity-checked against the valid set so a corrupt value can't lock the app into a non-existent view.
+- **AHU detail shows associated terminal count.** Terminal detail shows which AHU it serves. Quick visual confirmation that the air-balance report's plumbing is wired up.
+- **Tag uniqueness warning** when saving equipment. Detects collisions on whitespace-trimmed tags, reports the collision's type and location, and asks for confirmation. Non-blocking: if the duplicate is intentional, the technician can proceed.
+- **Print button switches to the Report tab first.** No more printing the equipment grid by accident.
+
+**v0.3.2** added the VAV traverse target picker, the `coilHeatBalance` defensive guards, the IndexedDB photo cleanup on delete, the equipment Duplicate button on the detail bar, and the traverse modal shape-switch robustness. **v0.3.1** added per-template equipment forms with section grouping. **v0.3.0** added the body-specific report style framing. All preserved here.
+
+Schema is `pitot/workbook@3`. Older workbooks (`@1`, `@2`) are forward-migrated on load. New fields added in v0.3.1 do not require a schema bump because they live in `equipment.design` which is a free-form object; missing fields render as blank.
+
+**These remain STYLE TEMPLATES, not official AABC/NEBB/TABB forms.** PITOT is independent software with no affiliation to any TAB certifying body. A certified submittal must use the certifying body's published forms and bear the signature of a credentialed supervisor.
 
 ## What this is
 
 PITOT is the field workbook a TAB technician fills out, equipment by equipment, while balancing a commercial HVAC system. It captures design intent from the mechanical drawings, records initial / adjusted / final readings, compares the readings against design using configurable tolerance bands, and produces a printable TAB report.
 
-It is named for the pitot tube, the iconic field instrument for HVAC duct traverse measurements (Henri Pitot, 1732). Phase 2 makes good on that name by adding the traverse calculator the instrument is built around.
+It is named for the pitot tube, the iconic field instrument for HVAC duct traverse measurements (Henri Pitot, 1732).
 
 ## What this is not
 
-PITOT is not an accredited TAB certification tool. Formal AABC, NEBB, or TABB submissions must be performed under a certified TAB supervisor and follow the certifying body's prescribed report format. PITOT can serve as the workspace for drafting that report, but the certifying authority's branding, layout, and signature blocks must be added separately.
+PITOT is not an accredited TAB certification tool. The report style templates are LAYOUT TEMPLATES that follow the section ordering, terminology, and certification-statement conventions commonly seen in AABC, NEBB, and TABB submittals. They are NOT the certifying bodies' published forms, and PITOT is not affiliated with AABC, NEBB, TABB, SMACNA, or SMART.
 
-PITOT does not validate that the field instruments used are themselves in calibration. The technician enters the calibration date for each test; that field is documentation, not verification.
+PITOT does not validate that the field instruments used are themselves in calibration.
 
 PITOT is not a controls verification tool. TAB verifies steady-state performance. Sequence-of-operation testing belongs in a commissioning record.
-
-The pass/fail engine uses simple percentage-band tolerance (air and water) and an absolute degF band (temperature). Asymmetric tolerances, weighted criteria, and multi-variable acceptance are deferred.
 
 ## Install and use
 
 1. Download `pitot.html`.
 2. Double-click to open in any modern browser, or serve it from any static host.
-3. State persists to localStorage and IndexedDB, both scoped to the page origin. Different hosts have different stores.
+3. State persists to localStorage and IndexedDB.
 
-There is no install, no account, no telemetry. Network access is used only to load Google Fonts. JSON workbook export does not include photo binaries; photos are stored locally only.
+No install, no account, no telemetry. Google Fonts is the only external resource.
+
+## Equipment field model (v0.3.1)
+
+Each equipment type's fields are now tagged with a `section` and a `type`. The pass/fail engine continues to operate on `tolerance` and `critical` flags; new section / type metadata only affects layout.
+
+### AHU / RTU
+
+- **Fan data**: Total airflow (CFM, critical), External static pressure, Fan RPM
+- **Motor data**: Motor horsepower (nameplate), Motor voltage (nameplate), Motor phase (1 / 3, nameplate), Motor FLA (nameplate), Motor amps (measured per phase)
+- **Drive data**: Fan sheave PD, Motor sheave PD, Belt size, Belt quantity (all nameplate / observed)
+- **Filter data**: Filter type (e.g. MERV 13), Filter size, Filter quantity (all observed)
+- **Outside air**: OA CFM (measured, air tolerance), OA percent
+- **Air temperatures**: Mixed, Supply, Return (all temp tolerance)
+
+### VAV box
+
+- **Airflow data**: Minimum CFM (critical), Maximum CFM (critical), Inlet static pressure
+- **Reheat data**: Reheat type (none / electric / hot water), Reheat capacity (BTU/h), Reheat water flow (GPM, water tolerance), Discharge air temp
+- **Identification**: Box model, Controller address
+
+### Pump
+
+- **Pump performance**: Flow rate (GPM, critical), Head (ft wg)
+- **Motor data**: Motor HP, Motor voltage, Motor phase, Motor FLA (nameplate), Motor amps (measured)
+- **Pressure data**: Suction, Discharge
+
+### Terminal (diffuser / grille)
+
+- **Airflow data**: CFM (critical), Face velocity
+- **Identification**: Neck size, K-factor, Area served (room number), Drawing grid reference
+
+### Coil
+
+- **Water side**: GPM (critical), Entering water temp, Leaving water temp
+- **Air side**: Air flow across coil (CFM, air tolerance), Entering air temp, Leaving air temp
+- **Capacity**: Coil type (cooling / heating / cooling+dehum), Heat transfer (BTU/h)
+
+Nameplate / identifying fields (motor voltage, phase, drive data, filter data, etc.) are marked `excludeFromTest: true`. They are entered once on the equipment record and do NOT appear in the per-test reading form, because they don't change between TAB phases.
+
+## Per-template section ordering
+
+Each body template defines a section order per equipment type. Where the template has no preference (or uses `null`), PITOT renders sections in their natural order from the field registry.
+
+**AABC** uses: fan, motor, drive, filter, oa, temp (for AHUs). Labels: "Fan performance", "Motor data", "Drive data", "Filter data", "Outside air data", "Temperature data".
+
+**NEBB** uses the same ordering but with different labels: "Fan performance", "Motor electrical", "Drive components", "Filter section", "Outside air", "Air temperatures".
+
+**TABB** uses the natural section labels.
+
+**Draft** uses the natural section labels with no reordering.
+
+The Report tab's equipment block prints each section as a labeled sub-table. Sections with no design or reading data are suppressed.
 
 ## Workflow
 
-1. **Project tab.** Enter project name, address, contractors, technician, certification, dates, outdoor conditions.
-2. **Equipment tab.** Add equipment for each item on the mechanical drawings. Pick a type (AHU, VAV, pump, terminal, coil), enter the drawing tag, manufacturer, location, and design values from the schedule. Terminals can be assigned an associated AHU for air-balance verification.
-3. **Test entry.** From an equipment card, add a test record. Mark the phase (initial, adjusted, or final), enter readings against each design field, record the instrument used and its calibration date. From a test record:
-   - **Traverse** opens the duct traverse calculator (AHU and VAV)
-   - **Hood** opens the flow-hood reading helper (terminals)
-   - **Photos** attaches nameplates, panel access shots, or anything else worth keeping
-4. **Status auto-classifies** based on what tests exist and whether the final-phase readings fall within tolerance:
-   - **pending**: no tests recorded
-   - **in-progress**: tests recorded but no final phase, or final phase missing readings on critical fields
-   - **balanced**: final phase, all critical readings within tolerance
-   - **out-of-spec**: final phase, one or more critical readings outside tolerance
-   - **punch**: manually flagged for the punch list
-5. **Punch list.** For items that cannot be balanced due to upstream deficiencies (missing dampers, undersized ductwork, controls not functioning), file a punch item with an owner.
-6. **Pump equipment** has a pump-curve panel showing the manufacturer curve, the system curve, and the computed operating point. Click "Set up pump curve" on the equipment detail.
-7. **Coil tests** automatically display a heat-balance sub-panel comparing water-side and air-sensible BTU/h when both sets of readings are present.
-8. **Report.** The Report tab produces a printable summary: project header, executive summary, equipment grouped by type with readings, air-balance verification, punch list, signature block. Use the browser's print dialog. Letter-size paper, half-inch to six-tenths-inch margins.
-9. **Export.** JSON export from the project tab gives you a portable copy of the workbook. Import is a full replace, with a confirmation prompt. Photos are not included in the export.
-
-## Phase 2 features
-
-### Duct traverse calculator
-
-Captures velocity-pressure readings across a grid and converts them to a total CFM. Supports rectangular ducts (with width, height, lines, and points per line) and round ducts (with diameter, number of diameters, and points per diameter). Position fractions follow either:
-
-- **Log-Tchebycheff** (default): the ASHRAE-tabulated optimal positions
-- **Equal-area**: center-of-area positions for n equal divisions
-
-Optional air-temperature and barometric-pressure inputs apply a density correction relative to standard air (0.075 lb/ft^3, 70 degF, 29.92 in. Hg). The velocity formula is V = 1096.7 sqrt(VP / rho), which reduces to V = 4005 sqrt(VP) at standard conditions.
-
-The computed total CFM is written back to the test's airflow reading automatically.
-
-### Flow-hood reading helper
-
-Averages multiple direct CFM readings from a balometer or capture hood, applies the K-factor and an optional back-pressure compensation multiplier, and writes the corrected total to the test's airflow reading.
-
-### Pump operating point and system-curve plot
-
-Stores manufacturer pump curve points (flow, head) and the system static head and design operating point on the equipment itself. Fits the system curve as H = static + k*Q^2 with k inferred from the design point, then walks pump-curve segments looking for the intersection by linear interpolation.
-
-The plot is an inline SVG: pump curve solid, system curve dashed, design point as a brass diamond, operating point as an amber dot.
-
-### Coil heat balance
-
-For every coil test with both water and air readings, displays:
-
-- Water-side BTU/h: GPM x 500 x dT
-- Air-sensible BTU/h: CFM x 1.08 x dT
-- Design BTU/h (if entered)
-- Percent imbalance between water and air
-
-Imbalance under 10 percent is flagged pass; over 10 percent is flagged fail. Latent loads are not modeled in Phase 2.
-
-### Air-balance verification
-
-Terminals can be tagged with an associated AHU. The report computes, for each AHU, the sum of associated terminal final-phase CFMs and compares against the AHU's final-phase total. Imbalance under 10 percent is flagged pass; over 10 percent is flagged fail.
-
-### Photo attachments
-
-Photos attach to equipment, to specific tests, or to both. They live in IndexedDB under the database name `pitot.photos`, separate from the workbook JSON in localStorage. Thumbnails render inline; full-quality blobs stay local. JSON export does not include binary photo data; only the metadata stubs travel with the workbook.
+1. **Project tab**: project, personnel, schedule, reporting (style, firm, supervisor, dates, scope, architect, engineer), notes.
+2. **Equipment tab**: add equipment. The Add/Edit modal now groups design fields by section (Fan data, Motor data, etc.) for the chosen type. Terminals can be assigned an associated AHU.
+3. **Test entry**: opens a phase-tagged test record. Reading fields are also section-grouped and exclude nameplate / observed fields. Traverse / Hood / Photo buttons attach the relevant Phase 2 sub-records.
+4. **Status auto-classifies**: pending, in-progress, balanced, out-of-spec, or punch.
+5. **Punch list**: deficiencies blocking balance, with owner and priority.
+6. **Pump equipment**: separate pump curve and system curve panel computes the operating point and renders an SVG plot.
+7. **Coil tests**: automatic heat-balance display when water and air readings are both present.
+8. **Report**: template-driven cover, scope of work, equipment-by-type with section sub-tables, air-balance verification, punch list, Statement of Certification, signature block. Print directly.
+9. **Export**: JSON workbook (no photo binaries).
 
 ## Data model
 
-State shape persisted to localStorage under the key `pitot.workbook`:
+Project block adds the v0.3.0 reporting fields. Equipment design is a free-form object; in v0.3.1 the well-known keys grew to match the field registry above. Old workbooks with fewer keys still work; those fields simply render as blank.
 
 ```
 {
-  schema: 'pitot/workbook@2',
-  version: '0.2.0',
+  schema: 'pitot/workbook@3',
+  version: '0.3.1',
   project: { name, address, owner, mechanicalContractor, tabContractor,
              technician, technicianCertification, projectNumber,
-             startDate, endDate, weather, notes },
+             startDate, endDate, weather, notes,
+             reportStyle, firmName, firmAddress, firmCertNumber,
+             supervisorName, supervisorCertNumber,
+             reportDate, reportRevision,
+             projectArchitect, projectEngineer, scopeOfWork },
   equipment: [ {
     id, tag, type, location, serves, manufacturer, model, serial,
-    design: { type-appropriate fields },
-    tests:  [ { id, phase, date, technician, readings, instrumentUsed,
-                instrumentCalDate, notes, photos: [],
-                traverse: {...}?, hood: {...}? } ],
+    design: { ... per-type fields per v0.3.1 ... },
+    tests: [ { id, phase, date, technician, readings, instrumentUsed,
+               instrumentCalDate, notes, photos, traverse?, hood? } ],
     tolerance: { airPercent, waterPercent, tempDegF },
-    status, notes, photos: [],
-    associatedAhu,
-    pumpCurve: [ {flow, head} ]?, systemCurve: {staticHead, designFlow, designHead}?
+    status, notes, photos, associatedAhu,
+    pumpCurve?, systemCurve?
   } ],
-  punchList: [ { id, equipmentId, issue, owner, priority,
-                 dateRaised, dateResolved, resolution, status } ]
+  punchList: [ ... ]
 }
 ```
 
-Photo binaries are stored separately in IndexedDB under the database name `pitot.photos` (object store `photos`). Each record carries `{ id, equipmentId, testId, caption, filename, mimeType, size, blob, added }`.
-
-### Equipment types
-
-- **AHU / RTU**: CFM (critical), external static pressure, motor HP, motor amps, fan RPM, mixed / supply / return air temperatures
-- **VAV box**: minimum CFM (critical), maximum CFM (critical), reheat BTU/h, supply air temperature, inlet static
-- **Pump**: GPM (critical), head feet, motor HP, motor amps, suction PSI, discharge PSI
-- **Terminal (diffuser / grille)**: CFM (critical), neck size, face velocity, K-factor
-- **Coil**: GPM (critical), entering / leaving water temperatures, entering / leaving air temperatures, BTU/h
-
-### Schema migration
-
-`pitot/workbook@1` workbooks are forward-migrated to `@2` on load. The migration adds `photos: []` on equipment and on each test, adds `associatedAhu: ''` on equipment, and adds `pumpCurve: []` and `systemCurve: {...}` on pumps. No existing fields are altered. Workbooks with a schema string PITOT does not recognize are rejected with a console warning, leaving the user with a fresh workbook.
+Photos are in IndexedDB (`pitot.photos`) and not part of the JSON export.
 
 ## Tolerance defaults
 
 - Air: 10 percent
 - Water: 10 percent
-- Temperature: 2 degF (absolute band, not percentage)
-
-Tolerance is per-equipment; edit the values on any equipment card to adjust.
+- Temperature: 2 degF (absolute)
 
 ## Conventions followed
 
 - Single HTML file, all CSS and JS inline, no build step, no npm
 - Opens from `file://`, no backend, no server, no telemetry
-- State persists to localStorage and IndexedDB only
-- Google Fonts (Fraunces, Oswald, Inter, JetBrains Mono) are the only external resources
-- Dark mode default; light mode triggered automatically by print
-- No em dashes anywhere in code, comments, or prose
-- Vintage scientific instrument aesthetic: graphite background, brass accents, cool sky-blue for balanced, signal red for out-of-spec, amber for pending and in-progress
-- Mobile-responsive at 768 / 540 / 380 breakpoints
-- Mobile and coarse-pointer devices get larger touch targets (40 px minimum) and 16 px input font to prevent iOS auto-zoom
+- localStorage + IndexedDB only
+- Google Fonts (Fraunces, Oswald, Inter, JetBrains Mono) only
+- Dark mode default; print flips to light
+- No em dashes anywhere
+- Vintage scientific instrument aesthetic: graphite, brass, sky-blue, signal red, amber
+- Mobile-responsive (768 / 540 / 380 breakpoints) with 40 px touch targets and 16 px input font on coarse pointers
 
 ## Validation performed
 
-Static checks on the v0.2.0 release artifact:
+Static checks on the v0.3.3 release artifact:
 
-- Line count: 4631 lines
-- Em dash count: 0 (literal U+2014, `&mdash;`, `&#8212;`, and `\u2014` escapes all zero)
-- CSS braces balanced: 325 opening, 325 closing
-- JS syntax: `node --check` passes on the extracted script
-- HTML tag structure: matched, stack empty at EOF
+- Line count: 5849 lines
+- Em dash count: 0 across literal U+2014, `&mdash;`, `&#8212;`, and `\u2014` escapes
+- CSS braces balanced: 367 / 367
+- JS syntax: `node --check` passes
+- HTML tag structure: matched, no mismatches, no unclosed
 
-Logic tests (49 cases, all passed):
+Logic tests (106 cases, all passed):
 
-- `passFailField` across in-band, at-the-edge, just-over, and far-out cases for air, water, and temperature buckets, plus null handling
-- `classifyStatus` across all five status states, including the punch override, missing-critical edge, and VAV multi-critical case
-- `vpToVelocity` at standard density and edge cases
-- `airDensity` at standard and altitude
-- `ductArea` rectangular and round
-- `equalAreaPositions` and `logTchebycheffRectangular` against the standard tables
-- `traverseCFM` arithmetic-mean averaging, including with invalid values mixed in
-- `hoodCFM` raw average, K and BP application, empty inputs
-- `coilWaterBtuh`, `coilAirSensibleBtuh`, and full `coilHeatBalance` including the percent-imbalance computation
-- `pumpOperatingPoint` linear-interpolation intersection across a known curve, plus not-enough-points and invalid-system guards
-- `airBalanceReport` returns an array (data-dependent, exercised structurally)
-- Schema migration v1 to v2 (schema bumps, equipment preserved, Phase 2 fields initialized) and rejection of unknown schema versions
+- Phase 1: pass/fail engine, status classification (16 cases)
+- Phase 2: traverse, hood, coil heat balance, pump operating point, air balance, v1 to v2 migration (33 cases)
+- Phase 3.0: report template registry, reading-label flip, certification statements, disclaimers, firm-header policy, draft fallback, v2 to v3 migration, full v1 to v3 chain (15 cases)
+- Phase 3.1: section grouping, field type and excludeFromTest metadata, per-template ordering, label overrides, gracefully skipping unknown sections (19 cases)
+- Phase 3.2: coilHeatBalance defensive guards against null inputs and missing design, duplicate-equipment data shape (10 cases)
+- Phase 3.3: bulk tag generation across pad widths and prefixes, lastActiveTab fallback and invalid-value guarding, tag uniqueness detection (13 cases)
 
-Not validated through automated tests, and requires browser interaction to verify:
+Not validated by the automated tests (browser-only):
 
-- Visual rendering of the new sub-panels, photo strips, and pump plot
-- Photo capture and IndexedDB persistence (no native indexedDB in headless harness)
-- Click and tap handlers on traverse grid cells, hood readings list, pump curve editor rows
-- Print preview of the air-balance section and pump plot
-- localStorage migration across a real page reload from a v0.1.0 workbook
+- Visual rendering of section sub-tables in the report
+- Print preview with section headings across page breaks
+- Equipment-modal section grouping with the new text/select fields populating correctly
+- Re-entering a test for an AHU that has all six sections filled (no overflow / layout issues)
+- Photo capture and IndexedDB persistence
 
-These should be exercised on a real device before fielding on a job.
+## Known issues / known limitations
 
-## Deferred to Phase 3
+- **Asymmetric tolerance not supported.** The pass/fail engine treats all bands as symmetric (+/-). Some specs use "no more than 110 percent of design but at least 95 percent." That's a Phase 4+ change.
+- **Heat balance does not include latent loads.** Cooling coils with significant dehumidification will appear out of balance because the water side captures total capacity while the sensible-only air calc does not.
+- **No multi-AHU air balance roll-up.** A terminal can only be associated with one AHU. Multi-zone systems and dual-duct setups need a different schema.
 
+## Deferred to later in Phase 3
+
+- Per-equipment-type explicit report sub-forms (e.g. NEBB Form 1 layouts at the field-level detail). Currently all bodies share the same section-grouped table layout. Body-specific form templates are a much bigger lift and require careful study of each body's published form layouts (which would also require licensed access to those forms).
 - Multi-theme system matching the WATTMETER family
-- Full TAB report as a separate printable HTML document
-- Body-specific worksheet formats (AABC, NEBB, TABB conventions)
 - PWA package for offline field use
-- BACnet object name mapping
 - Photo OCR for nameplate auto-capture
-- Multi-AHU air balance roll-up across building zones
+- Multi-AHU air-balance roll-up
 
 ## Domain glossary
 
 - **TAB**: Testing, Adjusting, and Balancing
+- **AABC**: Associated Air Balance Council
+- **NEBB**: National Environmental Balancing Bureau
+- **TABB**: Testing, Adjusting and Balancing Bureau (SMACNA/SMART)
+- **TBE**: Test and Balance Engineer (AABC supervisor credential)
+- **CP**: Certified Professional (NEBB supervisor credential)
+- **FLA**: Full Load Amps (motor nameplate)
+- **RLA**: Running Load Amps (measured)
+- **PD**: Pitch Diameter (sheave)
+- **MERV**: Minimum Efficiency Reporting Value (filter rating)
 - **CFM**: cubic feet per minute, volumetric airflow
 - **GPM**: gallons per minute, volumetric water flow
-- **ESP / TESP**: external / total external static pressure across the AHU
-- **Duct traverse**: pitot-tube readings across a duct cross-section, totaled into a single CFM
-- **K-factor**: terminal-specific (or hood-specific) calibration relating reading to actual CFM
-- **VP**: velocity pressure, in. wg, measured at a traverse point
-- **Initial / adjusted / final**: the three phases of TAB measurement
-- **Punch list**: items blocked from balancing by upstream deficiencies, assigned to a responsible party
-- **Operating point**: the intersection of the pump performance curve and the loop system curve
+- **ESP / TESP**: external / total external static pressure across an AHU
+- **VP**: velocity pressure, in. wg
+- **K-factor**: terminal or hood calibration factor
+- **Statement of Certification**: the formal attestation paragraph in a TAB report
 
 ## License
 
