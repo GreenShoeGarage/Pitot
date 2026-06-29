@@ -2,9 +2,31 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>PITOT</title>
 <meta name="description" content="A TAB workbook for the field.">
+<meta name="theme-color" content="#1f2026">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PITOT">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href='data:application/manifest+json,{"name":"PITOT","short_name":"PITOT","description":"A TAB workbook for the field.","start_url":".","scope":".","display":"standalone","orientation":"any","background_color":"%231f2026","theme_color":"%231f2026","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 192 192%27%3E%3Crect width=%27192%27 height=%27192%27 fill=%27%231f2026%27/%3E%3Cg stroke=%27%23b8945a%27 stroke-width=%276%27 fill=%27none%27%3E%3Ccircle cx=%2796%27 cy=%2796%27 r=%2766%27/%3E%3Cpath d=%27M50 96 L142 96 M96 50 L96 142%27/%3E%3Ccircle cx=%2796%27 cy=%2796%27 r=%2718%27 fill=%27%23b8945a%27/%3E%3C/g%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml"},{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27%3E%3Crect width=%27512%27 height=%27512%27 fill=%27%231f2026%27/%3E%3Cg stroke=%27%23b8945a%27 stroke-width=%2716%27 fill=%27none%27%3E%3Ccircle cx=%27256%27 cy=%27256%27 r=%27176%27/%3E%3Cpath d=%27M133 256 L379 256 M256 133 L256 379%27/%3E%3Ccircle cx=%27256%27 cy=%27256%27 r=%2748%27 fill=%27%23b8945a%27/%3E%3C/g%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml"}]}'>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%231f2026%27/%3E%3Cg stroke=%27%23b8945a%27 stroke-width=%273%27 fill=%27none%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2722%27/%3E%3Cpath d=%27M16 32 L48 32 M32 16 L32 48%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%276%27 fill=%27%23b8945a%27/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 180 180%27%3E%3Crect width=%27180%27 height=%27180%27 fill=%27%231f2026%27/%3E%3Cg stroke=%27%23b8945a%27 stroke-width=%275%27 fill=%27none%27%3E%3Ccircle cx=%2790%27 cy=%2790%27 r=%2762%27/%3E%3Cpath d=%2745 90 L135 90 M90 45 L90 135%27/%3E%3Ccircle cx=%2790%27 cy=%2790%27 r=%2716%27 fill=%27%23b8945a%27/%3E%3C/g%3E%3C/svg%3E">
+<script>
+/* Sync theme bootstrap: read the persisted theme out of localStorage and
+   apply the data-theme attribute BEFORE the stylesheet parses, so the
+   user never sees a flash of the default palette while loading. */
+(function() {
+  try {
+    var t = localStorage.getItem('pitot.theme');
+    var valid = ['default','inkwell','blueprint','foundry','fieldnotes','locomotive'];
+    if (t && valid.indexOf(t) >= 0 && t !== 'default') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch (e) { /* private mode */ }
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -62,6 +84,161 @@ input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin
 
   --shadow-card: 0 2px 6px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
   --shadow-elev: 0 8px 24px rgba(0,0,0,0.55), 0 3px 8px rgba(0,0,0,0.35);
+}
+
+/* -------------------- Theme palette overrides --------------------
+   The default (graphite + brass) palette lives in :root above. Themes
+   override only the variables that change. Selected via
+   <html data-theme="..."> from JS. Theme preference is persisted in
+   localStorage under 'pitot.theme', not in the workbook, so two
+   technicians sharing a workbook can prefer different themes. */
+
+html[data-theme="inkwell"] {
+  /* High-contrast monochrome ink-on-paper. Good for projector demos
+     and screenshots in printed proposals. */
+  --bg:           #14141a;
+  --bg-deep:      #0c0c10;
+  --bg-elev:      #1f1f26;
+  --bg-panel:     #1a1a20;
+  --bg-input:     #101015;
+  --border:       #404048;
+  --border-soft:  #2a2a30;
+  --border-strong:#5a5a62;
+  --text:         #ecebe6;
+  --text-dim:     #b8b6b0;
+  --text-faint:   #7a7872;
+  --brass:        #d8d6d0;
+  --brass-light:  #ffffff;
+  --brass-dark:   #8c8a85;
+  --brass-soft:   rgba(216,214,208,0.12);
+  --balanced:     #88a8c4;
+  --balanced-soft:rgba(136,168,196,0.14);
+  --out-of-spec:  #d46868;
+  --out-soft:     rgba(212,104,104,0.13);
+  --pending:      #999791;
+  --pending-soft: rgba(153,151,145,0.10);
+  --in-progress:  #e0c068;
+  --progress-soft:rgba(224,192,104,0.13);
+  --punch:        #c478b8;
+  --punch-soft:   rgba(196,120,184,0.13);
+}
+
+html[data-theme="blueprint"] {
+  /* Ozalid-blueprint inspired. Deep cyanotype blues with cream lines. */
+  --bg:           #1a2b3d;
+  --bg-deep:      #142233;
+  --bg-elev:      #234057;
+  --bg-panel:     #1f344a;
+  --bg-input:     #15263a;
+  --border:       #3a5878;
+  --border-soft:  #294358;
+  --border-strong:#4e6e90;
+  --text:         #e8e0c4;
+  --text-dim:     #b0a888;
+  --text-faint:   #807a60;
+  --brass:        #d4c08c;
+  --brass-light:  #f0dcb0;
+  --brass-dark:   #a89868;
+  --brass-soft:   rgba(212,192,140,0.14);
+  --balanced:     #8cb8d8;
+  --balanced-soft:rgba(140,184,216,0.16);
+  --out-of-spec:  #d88474;
+  --out-soft:     rgba(216,132,116,0.14);
+  --pending:      #a8a08c;
+  --pending-soft: rgba(168,160,140,0.12);
+  --in-progress:  #e0c084;
+  --progress-soft:rgba(224,192,132,0.14);
+  --punch:        #b890b0;
+  --punch-soft:   rgba(184,144,176,0.14);
+}
+
+html[data-theme="foundry"] {
+  /* Warm copper and ash; foundry-floor aesthetic. */
+  --bg:           #28201c;
+  --bg-deep:      #1c1714;
+  --bg-elev:      #362c25;
+  --bg-panel:     #2f261f;
+  --bg-input:     #1f1815;
+  --border:       #4a3e34;
+  --border-soft:  #382e26;
+  --border-strong:#5e4f42;
+  --text:         #ddd0bc;
+  --text-dim:     #a89880;
+  --text-faint:   #6e6354;
+  --brass:        #c47840;
+  --brass-light:  #e8985e;
+  --brass-dark:   #8c5828;
+  --brass-soft:   rgba(196,120,64,0.14);
+  --balanced:     #6e9890;
+  --balanced-soft:rgba(110,152,144,0.16);
+  --out-of-spec:  #c85844;
+  --out-soft:     rgba(200,88,68,0.14);
+  --pending:      #9c8f78;
+  --pending-soft: rgba(156,143,120,0.12);
+  --in-progress:  #d4904c;
+  --progress-soft:rgba(212,144,76,0.14);
+  --punch:        #a86c84;
+  --punch-soft:   rgba(168,108,132,0.14);
+}
+
+html[data-theme="fieldnotes"] {
+  /* Kraft-paper + black-ink memo-pad look. Lighter overall but still
+     dark-comfortable. */
+  --bg:           #2c2820;
+  --bg-deep:      #1e1c16;
+  --bg-elev:      #3a3528;
+  --bg-panel:     #322d22;
+  --bg-input:     #25211a;
+  --border:       #524a38;
+  --border-soft:  #3c3528;
+  --border-strong:#6c6248;
+  --text:         #e8e0c8;
+  --text-dim:     #b0a888;
+  --text-faint:   #7c7458;
+  --brass:        #b89058;
+  --brass-light:  #d4ac74;
+  --brass-dark:   #8c6c38;
+  --brass-soft:   rgba(184,144,88,0.14);
+  --balanced:     #708890;
+  --balanced-soft:rgba(112,136,144,0.14);
+  --out-of-spec:  #b85048;
+  --out-soft:     rgba(184,80,72,0.13);
+  --pending:      #9c947c;
+  --pending-soft: rgba(156,148,124,0.12);
+  --in-progress:  #c89858;
+  --progress-soft:rgba(200,152,88,0.14);
+  --punch:        #a06c80;
+  --punch-soft:   rgba(160,108,128,0.13);
+}
+
+html[data-theme="locomotive"] {
+  /* B&O / C&O railroad inspired. Coal-black, signal red, brass. A nod
+     to Mountain Maryland railroad heritage. */
+  --bg:           #18181c;
+  --bg-deep:      #0e0e12;
+  --bg-elev:      #242428;
+  --bg-panel:     #1d1d22;
+  --bg-input:     #131318;
+  --border:       #383840;
+  --border-soft:  #28282e;
+  --border-strong:#4c4c54;
+  --text:         #e0dcd0;
+  --text-dim:     #a8a498;
+  --text-faint:   #707068;
+  --brass:        #c8a060;
+  --brass-light:  #e4bc7c;
+  --brass-dark:   #98763c;
+  --brass-soft:   rgba(200,160,96,0.14);
+  --balanced:     #6c8c9c;
+  --balanced-soft:rgba(108,140,156,0.14);
+  --out-of-spec:  #c43838;
+  --out-soft:     rgba(196,56,56,0.14);
+  --pending:      #989088;
+  --pending-soft: rgba(152,144,136,0.12);
+  --in-progress:  #d09040;
+  --progress-soft:rgba(208,144,64,0.14);
+  --punch:        #a05878;
+  --punch-soft:   rgba(160,88,120,0.13);
 }
 
 html { background: var(--bg-deep); }
@@ -397,6 +574,23 @@ select {
 .btn-danger:hover { background: var(--out-soft); color: var(--out-of-spec); border-color: var(--out-of-spec); }
 .btn-ghost { border-color: transparent; background: transparent; color: var(--text-dim); }
 .btn-ghost:hover { color: var(--brass-light); background: var(--brass-soft); }
+
+/* Phase 5.0 polish: visible focus ring on buttons for keyboard users.
+   Default browser outline gets stripped on hover/active by various
+   frameworks, but for keyboard navigation we want an explicit indicator
+   that respects the brass palette. :focus-visible avoids ring-on-click
+   while keeping ring-on-tab. */
+.btn:focus-visible,
+.btn-icon:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 1px;
+}
 .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.72rem; }
 .btn-xs { padding: 0.25rem 0.55rem; font-size: 0.68rem; letter-spacing: 0.08em; }
 
@@ -927,6 +1121,20 @@ select {
   from { opacity: 0; transform: translateX(8px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+/* At narrow viewports the toast can crowd the bulk action bar; raise
+   it above and pin to both sides so long messages stay readable. */
+@media (max-width: 540px) {
+  .toast-host {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 5.5rem; /* clear the bulk action bar */
+  }
+  .toast {
+    max-width: none;
+    min-width: 0;
+    width: 100%;
+  }
+}
 
 /* ====================== REPORT VIEW ====================== */
 
@@ -1136,7 +1344,41 @@ select {
   #app { max-width: none; padding: 0; }
   .app-header, .tab-nav, .header-controls, .btn, .btn-icon, .modal-root,
   .detail-back, .view-header > .btn-bar, .eq-toolbar, .report-actions,
-  .test-actions, button { display: none !important; }
+  .test-actions, button,
+  /* Phase 4 components that never belong in print */
+  .bulk-action-bar, .toast, .csv-import, .csv-steps,
+  .ocr-host, .ocr-snippets, .ocr-snippet { display: none !important; }
+
+  /* Theme palettes defeat the print :root override via specificity.
+     Reset all theme overrides at print time so the printed report is
+     always the light palette regardless of which theme is active. */
+  html[data-theme] {
+    --bg:           #ffffff;
+    --bg-deep:      #ffffff;
+    --bg-elev:      #f6f4ef;
+    --bg-panel:     #ffffff;
+    --bg-input:     #ffffff;
+    --border:       #888;
+    --border-soft:  #c4c4c4;
+    --border-strong:#666;
+    --text:         #1a1a1a;
+    --text-dim:     #3d3d3d;
+    --text-faint:   #6a6a6a;
+    --brass:        #6b4d20;
+    --brass-light:  #4a3415;
+    --brass-dark:   #3a2810;
+    --brass-soft:   #f1ead9;
+    --balanced:     #1a5680;
+    --balanced-soft:#e8f0f6;
+    --out-of-spec:  #8b1a1a;
+    --out-soft:     #f6e7e7;
+    --pending:      #4d4d4d;
+    --pending-soft: #ededed;
+    --in-progress:  #8a5b0d;
+    --progress-soft:#f6ecd6;
+    --punch:        #5a2a52;
+    --punch-soft:   #efe1ec;
+  }
 
   main > section { display: none !important; }
   main > section#view-report { display: block !important; }
@@ -1609,6 +1851,285 @@ select {
 .eq-card:hover .eq-card-dup { opacity: 1; }
 .eq-card-foot { display: flex; align-items: center; gap: 0.5rem; }
 
+/* -------------------- Phase 4 styles -------------------- */
+
+.ocr-host {}
+.ocr-result { margin-top: 0.5rem; }
+.ocr-snippets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+.ocr-snippet {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+}
+.ocr-snippet.ocr-applied { border-color: var(--balanced); opacity: 0.7; }
+.ocr-text {
+  font-size: 0.9rem;
+  color: var(--text);
+  word-break: break-word;
+}
+.ocr-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  color: var(--text);
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+@media print {
+  .ocr-snippet { background: #fff; border-color: #888; color: #000; }
+  .ocr-text { color: #000; }
+}
+
+/* -------------------- CSV import styles -------------------- */
+
+.csv-steps {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.csv-step {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-sm);
+  color: var(--text-faint);
+  background: var(--bg-deep);
+}
+.csv-step.active { color: var(--bg); background: var(--brass); border-color: var(--brass); }
+.csv-step.done   { color: var(--brass); border-color: var(--brass-dark); }
+.csv-stage { min-height: 200px; }
+.csv-textarea {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--r-md);
+  resize: vertical;
+  margin-bottom: 0.5rem;
+}
+.csv-textarea:focus { outline: none; border-color: var(--brass); }
+.csv-sample-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  font-size: 0.75rem;
+}
+.csv-sample-cell {
+  padding: 0.15rem 0.4rem;
+  background: var(--bg-input);
+  border-radius: var(--r-sm);
+  color: var(--text);
+}
+.csv-mapping-table, .csv-preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.csv-mapping-table th, .csv-preview-table th {
+  text-align: left;
+  background: var(--bg-elev);
+  font-family: var(--font-label);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--brass-light);
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--brass-dark);
+}
+.csv-mapping-table td, .csv-preview-table td {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.csv-target-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  color: var(--text);
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  width: 100%;
+}
+.csv-target-select:focus { outline: none; border-color: var(--brass); }
+.csv-warn { color: var(--in-progress); }
+.csv-warnings {
+  list-style: none;
+  padding: 0.75rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--in-progress);
+  border-radius: var(--r-md);
+  font-size: 0.8rem;
+}
+.csv-warnings li { padding: 0.15rem 0; }
+
+/* -------------------- Phase 4.2 styles -------------------- */
+
+.tol-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.tol-row {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.5rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+}
+.tol-row-label {
+  font-family: var(--font-label);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brass-light);
+  padding-top: 0.4rem;
+}
+.tol-row-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+@media (max-width: 768px) {
+  .tol-row { grid-template-columns: 1fr; }
+  .tol-row-inputs { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 540px) {
+  .tol-row-inputs { grid-template-columns: 1fr; }
+}
+
+/* Bulk-select mode */
+.eq-card-selectable {
+  cursor: pointer;
+  position: relative;
+}
+.eq-card-selectable:hover { background: var(--bg-elev); }
+.eq-card-checkbox {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--brass-dark);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--brass);
+  background: var(--bg-deep);
+  font-weight: 700;
+}
+.eq-card-selected {
+  border-color: var(--brass);
+  box-shadow: 0 0 0 2px var(--brass-soft) inset;
+}
+.eq-card-selected .eq-card-checkbox {
+  background: var(--brass);
+  color: var(--bg-deep);
+}
+
+/* Floating bulk action bar */
+.bulk-action-bar {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--brass);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-elev);
+  z-index: 50;
+  flex-wrap: wrap;
+  max-width: 95vw;
+}
+.bulk-action-bar .bulk-count {
+  font-family: var(--font-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brass);
+  padding-right: 0.5rem;
+  border-right: 1px solid var(--border-soft);
+  font-size: 0.8rem;
+}
+
+/* Bulk-edit modal rows */
+.bulk-edit-host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.bulk-edit-row {
+  display: grid;
+  grid-template-columns: auto 1fr 1.5fr;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-sm);
+}
+.bulk-edit-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brass); }
+.bulk-edit-label {
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.bulk-edit-input { display: flex; gap: 0.4rem; align-items: center; }
+.bulk-edit-input input,
+.bulk-edit-input select {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  color: var(--text);
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+.bulk-edit-input input:focus,
+.bulk-edit-input select:focus { outline: none; border-color: var(--brass); }
+.unit-suffix { font-family: var(--font-mono); font-size: 0.75rem; min-width: 2.5rem; }
+
+@media (max-width: 540px) {
+  .bulk-edit-row { grid-template-columns: auto 1fr; }
+  .bulk-edit-input { grid-column: 1 / -1; }
+}
+
 </style>
 </head>
 <body>
@@ -1627,7 +2148,7 @@ select {
       </svg>
       <div class="brand-text">
         <span class="brand-name">PITOT</span>
-        <span class="brand-meta">FI-050 &middot; v0.3.3</span>
+        <span class="brand-meta">FI-050 &middot; v0.5.0</span>
       </div>
     </div>
     <nav class="tab-nav" id="tab-nav" role="tablist">
@@ -1637,6 +2158,7 @@ select {
       <button data-tab="report"    type="button">Report</button>
     </nav>
     <div class="header-controls">
+      <button class="btn-icon" id="btn-theme"  title="Cycle theme" type="button">&#x25D1;</button>
       <button class="btn-icon" id="btn-export" title="Export workbook as JSON" type="button">&#x2913;</button>
       <button class="btn-icon" id="btn-import" title="Import workbook from JSON" type="button">&#x2912;</button>
       <button class="btn-icon" id="btn-wipe"   title="Clear workbook" type="button">&times;</button>
@@ -1705,6 +2227,9 @@ select {
             <div class="view-subtitle">Drawing tags, design values, and field tests</div>
           </div>
           <div class="btn-bar">
+            <button class="btn" id="btn-bulk-select" type="button">Select</button>
+            <button class="btn" id="btn-export-csv" type="button">Export CSV</button>
+            <button class="btn" id="btn-import-csv" type="button">+ Import CSV</button>
             <button class="btn" id="btn-bulk-add-eq" type="button">+ Bulk add</button>
             <button class="btn btn-primary" id="btn-add-eq" type="button">+ Add equipment</button>
           </div>
@@ -1776,13 +2301,13 @@ select {
 'use strict';
 
 /* =====================================================================
-   PITOT, Field Instrument 050, v0.3.3
+   PITOT, Field Instrument 050, v0.5.0
    Testing, Adjusting, and Balancing workbook
    M.B. Parks, Green Shoe Garage, GPL-3.0
    ===================================================================== */
 
-const SCHEMA  = 'pitot/workbook@3';
-const VERSION = '0.3.3';
+const SCHEMA  = 'pitot/workbook@4';
+const VERSION = '0.5.0';
 const STORAGE_KEY = 'pitot.workbook';
 const PHOTO_DB_NAME = 'pitot.photos';
 const PHOTO_DB_VERSION = 1;
@@ -1916,8 +2441,10 @@ const EQUIPMENT_TYPES = {
       { key: 'lwt',            label: 'Leaving water temp',      unit: 'degF',    section: 'water',  tolerance: 'temp',  critical: false },
       /* Air side */
       { key: 'cfm',            label: 'Air flow across coil',    unit: 'CFM',     section: 'air',    tolerance: 'air',   critical: false },
-      { key: 'eat',            label: 'Entering air temp',       unit: 'degF',    section: 'air',    tolerance: 'temp',  critical: false },
-      { key: 'lat',            label: 'Leaving air temp',        unit: 'degF',    section: 'air',    tolerance: 'temp',  critical: false },
+      { key: 'eat',            label: 'Entering air temp (DB)',  unit: 'degF',    section: 'air',    tolerance: 'temp',  critical: false },
+      { key: 'eatWb',          label: 'Entering air wet bulb',   unit: 'degF',    section: 'air',    tolerance: 'temp',  critical: false },
+      { key: 'lat',            label: 'Leaving air temp (DB)',   unit: 'degF',    section: 'air',    tolerance: 'temp',  critical: false },
+      { key: 'latWb',          label: 'Leaving air wet bulb',    unit: 'degF',    section: 'air',    tolerance: 'temp',  critical: false },
       /* Capacity */
       { key: 'coilType',       label: 'Coil type',               unit: '',        section: 'capacity', tolerance: null,  critical: false, type: 'select', excludeFromTest: true,
         options: [{ value: '', label: '-' }, { value: 'cooling', label: 'Cooling' }, { value: 'heating', label: 'Heating' }, { value: 'cooling-with-dehum', label: 'Cooling + dehumidification' }] },
@@ -2162,6 +2689,26 @@ function reportTemplate() {
 
 /* -------------------- State -------------------- */
 
+/* Single source of truth for the per-equipment tolerance defaults.
+   AABC and NEBB both publish a default air balance tolerance of +/-10%,
+   and a hydronic balance default of +/-10%. Temperature is an absolute
+   band of 2 degF. The asymmetric high/low overrides start blank so the
+   symmetric value applies in both directions; the technician can set
+   one or both to override per spec. */
+function defaultTolerance() {
+  return {
+    airPercent: 10,
+    waterPercent: 10,
+    tempDegF: 2,
+    airPercentHigh: '',
+    airPercentLow: '',
+    waterPercentHigh: '',
+    waterPercentLow: '',
+    tempDegFHigh: '',
+    tempDegFLow: ''
+  };
+}
+
 function defaultProject() {
   return {
     name: '',
@@ -2187,7 +2734,9 @@ function defaultProject() {
     reportRevision: '',
     projectArchitect: '',
     projectEngineer: '',
-    scopeOfWork: ''
+    scopeOfWork: '',
+    /* Phase 4.3: site elevation for psychrometric pressure correction. */
+    altitudeFt: ''
   };
 }
 
@@ -2210,7 +2759,10 @@ let UI = {
   filterStatus: '',
   searchTerm: '',
   saveTimer: null,
-  expandedTests: new Set()
+  expandedTests: new Set(),
+  /* Phase 4.2: bulk select mode for multi-equipment edit. */
+  bulkSelectMode: false,
+  bulkSelected: new Set()
 };
 
 function shortId() { return Math.random().toString(36).slice(2, 8); }
@@ -2236,9 +2788,14 @@ function migrate(data) {
        that downstream code treats as absent when not present. */
   }
   if (data.schema === 'pitot/workbook@2') {
-    data.schema = SCHEMA;
+    data.schema = 'pitot/workbook@3';
     /* Phase 3 adds reporting fields to project; Object.assign below
        fills them in from defaultProject. */
+  }
+  if (data.schema === 'pitot/workbook@3') {
+    data.schema = SCHEMA;
+    /* Phase 4 adds equipment.zone (free-text label used by the
+       multi-AHU air-balance roll-up). Backfilled below. */
   }
   if (data.schema !== SCHEMA) {
     /* Unknown future schemas are rejected. */
@@ -2248,13 +2805,15 @@ function migrate(data) {
   data.equipment = Array.isArray(data.equipment) ? data.equipment : [];
   data.punchList = Array.isArray(data.punchList) ? data.punchList : [];
   for (const eq of data.equipment) {
-    eq.tolerance = Object.assign({ airPercent: 10, waterPercent: 10, tempDegF: 2 }, eq.tolerance || {});
+    eq.tolerance = Object.assign(defaultTolerance(), eq.tolerance || {});
     eq.design    = eq.design || {};
     eq.tests     = Array.isArray(eq.tests) ? eq.tests : [];
     eq.notes     = eq.notes || '';
     /* Phase 2 fields */
     eq.photos        = Array.isArray(eq.photos) ? eq.photos : [];
     eq.associatedAhu = eq.associatedAhu || '';
+    /* Phase 4 field */
+    eq.zone          = eq.zone || '';
     if (eq.type === 'pump') {
       eq.pumpCurve   = Array.isArray(eq.pumpCurve) ? eq.pumpCurve : [];
       eq.systemCurve = eq.systemCurve || { staticHead: '', designFlow: '', designHead: '' };
@@ -2277,7 +2836,17 @@ function saveState() {
       setSaveIndicator('saved');
     } catch (err) {
       console.error('Save failed:', err);
-      toast('Save failed: ' + err.message, 'err');
+      /* Quota errors are common when localStorage fills up (the typical
+         limit is around 5 MB, which can be reached after a few hundred
+         equipment records or many photo references). Surface a more
+         actionable message than the raw exception text. */
+      const isQuota = err && (err.name === 'QuotaExceededError' ||
+                              err.code === 22 ||
+                              /quota|storage/i.test(err.message || ''));
+      const msg = isQuota
+        ? 'Save failed: browser storage is full. Export the workbook as JSON to back it up, then clear old equipment to free space.'
+        : 'Save failed: ' + (err.message || 'unknown error');
+      toast(msg, 'err');
       setSaveIndicator('saved');
     }
   }, 200);
@@ -2301,13 +2870,63 @@ function passFailField(designVal, readingVal, tolType, tolerance) {
   const reading = parseFloat(readingVal);
   if (!isFinite(design) || !isFinite(reading)) return null;
 
-  if (tolType === 'temp') {
-    const band = Math.abs(tolerance.tempDegF);
-    return Math.abs(reading - design) <= band ? 'pass' : 'fail';
+  /* Resolve the symmetric default and any high/low override. The
+     tolerance object is allowed to specify only one side (e.g. an
+     asymmetric +0/-5 spec); the unspecified side falls back to the
+     symmetric value. Empty strings and undefined are treated as "not
+     overridden". */
+  function resolveBand(symKey, highKey, lowKey) {
+    const sym = parseFloat(tolerance[symKey]);
+    const hi  = tolerance[highKey];
+    const lo  = tolerance[lowKey];
+    const highBand = (hi !== undefined && hi !== null && hi !== '') ? parseFloat(hi) : sym;
+    const lowBand  = (lo !== undefined && lo !== null && lo !== '') ? parseFloat(lo) : sym;
+    return { high: isFinite(highBand) ? highBand : 0, low: isFinite(lowBand) ? lowBand : 0 };
   }
-  const percent = (tolType === 'air' ? tolerance.airPercent : tolerance.waterPercent);
-  const band = Math.abs(design * percent / 100);
-  return Math.abs(reading - design) <= band ? 'pass' : 'fail';
+
+  if (tolType === 'temp') {
+    const b = resolveBand('tempDegF', 'tempDegFHigh', 'tempDegFLow');
+    /* Temperature bands are absolute degF, not percent. Reading above
+       design by up to high band passes; below by up to low band passes. */
+    return (reading <= design + Math.abs(b.high) && reading >= design - Math.abs(b.low))
+      ? 'pass' : 'fail';
+  }
+  /* Air and water bands are percent of design. */
+  const symKey  = tolType === 'air' ? 'airPercent'      : 'waterPercent';
+  const highKey = tolType === 'air' ? 'airPercentHigh'  : 'waterPercentHigh';
+  const lowKey  = tolType === 'air' ? 'airPercentLow'   : 'waterPercentLow';
+  const b = resolveBand(symKey, highKey, lowKey);
+  const upper = design * (1 + Math.abs(b.high) / 100);
+  const lower = design * (1 - Math.abs(b.low)  / 100);
+  return (reading <= upper && reading >= lower) ? 'pass' : 'fail';
+}
+
+/* Pretty-print a tolerance band for the design panel and report.
+   Returns "+/-10%" for symmetric, "+10%/-5%" for asymmetric, "+/-2 degF"
+   etc. The unit argument controls the percent-vs-absolute display. */
+function formatToleranceBand(tolerance, tolType) {
+  if (!tolerance || !tolType) return '';
+  function pickKeys() {
+    if (tolType === 'air')   return { sym: 'airPercent',   hi: 'airPercentHigh',   lo: 'airPercentLow',   unit: '%' };
+    if (tolType === 'water') return { sym: 'waterPercent', hi: 'waterPercentHigh', lo: 'waterPercentLow', unit: '%' };
+    if (tolType === 'temp')  return { sym: 'tempDegF',     hi: 'tempDegFHigh',     lo: 'tempDegFLow',     unit: ' degF' };
+    return null;
+  }
+  const k = pickKeys();
+  if (!k) return '';
+  const sym = parseFloat(tolerance[k.sym]);
+  const hi  = tolerance[k.hi];
+  const lo  = tolerance[k.lo];
+  const hiSet = (hi !== undefined && hi !== null && hi !== '');
+  const loSet = (lo !== undefined && lo !== null && lo !== '');
+  if (!hiSet && !loSet) {
+    /* Symmetric */
+    return '\u00B1' + sym + k.unit;
+  }
+  const hiVal = hiSet ? parseFloat(hi) : sym;
+  const loVal = loSet ? parseFloat(lo) : sym;
+  if (hiVal === loVal) return '\u00B1' + hiVal + k.unit;
+  return '+' + hiVal + k.unit + ' / -' + loVal + k.unit;
 }
 
 function classifyStatus(eq) {
@@ -2463,24 +3082,93 @@ function coilAirSensibleBtuh(cfm, eat, lat) {
   return c * 1.08 * dT;
 }
 
+/* -------------------- Psychrometric helpers --------------------
+   Sea-level standard atmosphere assumed. The Magnus approximation for
+   saturation pressure is good to about 0.1% across normal HVAC
+   conditions; coupled with the standard ASHRAE humidity-ratio formula
+   from wet-bulb, the enthalpy result is accurate to within a few
+   tenths of a BTU/lb. That's plenty for TAB use where the input
+   precision is whole degrees F. */
+
+function saturationPressurePsi(tempF) {
+  /* Returns saturation pressure of water vapor at tempF in psi.
+     Magnus formula: Pws_hPa = 6.112 * exp(17.62 * T_C / (T_C + 243.12))
+     Conversion: 1 hPa = 0.0145038 psi. */
+  if (!isFinite(tempF)) return 0;
+  const tC = (tempF - 32) * 5 / 9;
+  const pHpa = 6.112 * Math.exp(17.62 * tC / (tC + 243.12));
+  return pHpa * 0.0145038;
+}
+
+function humidityRatioFromWb(tdbF, twbF, pAtmPsi) {
+  /* ASHRAE handbook formula for humidity ratio (lb water / lb dry air)
+     given dry-bulb and wet-bulb in degF. */
+  if (!isFinite(tdbF) || !isFinite(twbF)) return 0;
+  const P = pAtmPsi || 14.696;
+  const pws_wb = saturationPressurePsi(twbF);
+  if (pws_wb >= P) return 0;
+  const ws_wb = 0.62198 * pws_wb / (P - pws_wb);
+  const w = ((1093 - 0.556 * twbF) * ws_wb - 0.240 * (tdbF - twbF)) /
+            (1093 + 0.444 * tdbF - twbF);
+  return Math.max(0, w);
+}
+
+function airEnthalpy(tdbF, twbF, pAtmPsi) {
+  /* Returns moist air enthalpy in BTU per pound of dry air. */
+  if (!isFinite(tdbF)) return 0;
+  if (!isFinite(twbF)) twbF = tdbF; /* dry-only fallback: treat as if no humidity */
+  const w = humidityRatioFromWb(tdbF, twbF, pAtmPsi);
+  return 0.240 * tdbF + w * (1061 + 0.444 * tdbF);
+}
+
+/* Compute site barometric pressure from project altitude in feet. Uses
+   the ICAO standard atmosphere formula:
+     P_psi = 14.696 * (1 - 6.8754e-6 * altitudeFt)^5.2559
+   Returns the sea-level reference (14.696 psi) if altitude is not set. */
+function projectBarometricPsi() {
+  const alt = parseFloat(STATE && STATE.project && STATE.project.altitudeFt);
+  if (!isFinite(alt) || alt <= 0) return 14.696;
+  return 14.696 * Math.pow(1 - 6.8754e-6 * alt, 5.2559);
+}
+
+function coilAirTotalBtuh(cfm, eatDb, eatWb, latDb, latWb, pAtmPsi) {
+  /* Total air load using enthalpy: BTU/h = 4.5 * CFM * (h_in - h_out).
+     4.5 = 60 min/h * 0.075 lb/ft^3 standard air density. */
+  const c = parseFloat(cfm);
+  const tdb_in  = parseFloat(eatDb);
+  const twb_in  = parseFloat(eatWb);
+  const tdb_out = parseFloat(latDb);
+  const twb_out = parseFloat(latWb);
+  if (!isFinite(c) || c <= 0) return null;
+  if (!isFinite(tdb_in) || !isFinite(twb_in) || !isFinite(tdb_out) || !isFinite(twb_out)) return null;
+  /* Cap wet-bulb at dry-bulb (RH cannot exceed 100%) defensively. */
+  const wb_in  = Math.min(twb_in,  tdb_in);
+  const wb_out = Math.min(twb_out, tdb_out);
+  const h_in  = airEnthalpy(tdb_in,  wb_in,  pAtmPsi);
+  const h_out = airEnthalpy(tdb_out, wb_out, pAtmPsi);
+  return c * 4.5 * Math.abs(h_in - h_out);
+}
+
 function coilHeatBalance(eq, test) {
-  /* Cross-checks the water-side and air-side BTU/h from a coil's
-     readings. Returns null if either side is incomputable. */
   if (!eq || !test || !test.readings) return null;
   const r = test.readings;
   const design = eq.design || {};
-  /* Air-side flow can come from a separate AHU/test; here we use what
-     was entered on the coil test itself. */
+  const pAtmPsi = projectBarometricPsi();
   const water = coilWaterBtuh(r.gpm, r.ewt, r.lwt);
-  const air   = coilAirSensibleBtuh(r.cfm, r.eat, r.lat);
+  const airSensible = coilAirSensibleBtuh(r.cfm, r.eat, r.lat);
+  const airTotal    = coilAirTotalBtuh(r.cfm, r.eat, r.eatWb, r.lat, r.latWb, pAtmPsi);
   const out = {
     water:        water,
-    airSensible:  air,
-    design:       parseFloat(design.btuh) || null
+    airSensible:  airSensible,
+    airTotal:     airTotal,
+    airCompared:  airTotal !== null ? airTotal : airSensible,
+    comparedAs:   airTotal !== null ? 'total' : 'sensible',
+    design:       parseFloat(design.btuh) || null,
+    pAtmPsi:      pAtmPsi
   };
-  if (water !== null && air !== null) {
-    out.ratio = water / air;
-    out.balanceErrorPercent = Math.abs(water - air) / Math.max(water, air) * 100;
+  if (water !== null && out.airCompared !== null) {
+    out.ratio = water / out.airCompared;
+    out.balanceErrorPercent = Math.abs(water - out.airCompared) / Math.max(water, out.airCompared) * 100;
   }
   return out;
 }
@@ -2564,6 +3252,57 @@ function airBalanceReport() {
       terminalCount: terminals.length,
       terminalsWithReadings: withReadings,
       terminalSum: sum,
+      imbalancePercent: pct,
+      zone: ahu.zone || ''
+    };
+  });
+}
+
+/* Phase 4: zone-level air balance roll-up. For each zone in use, sum the
+   final-phase CFM across all AHUs in the zone and across all terminals
+   in the zone (regardless of which AHU each terminal is individually
+   associated with), then compare. This handles multi-zone systems where
+   multiple AHUs feed a common air-balance volume. */
+function airBalanceByZoneReport() {
+  /* Collect zones from any AHU or terminal that has one set. */
+  const zonesUsed = new Set();
+  STATE.equipment.forEach(e => {
+    if ((e.type === 'ahu' || e.type === 'terminal') && e.zone) {
+      zonesUsed.add(e.zone);
+    }
+  });
+  return Array.from(zonesUsed).sort().map(zone => {
+    const ahus      = STATE.equipment.filter(e => e.type === 'ahu' && e.zone === zone);
+    const terminals = STATE.equipment.filter(e => e.type === 'terminal' && e.zone === zone);
+    let ahuSum = 0, ahuWithReadings = 0;
+    ahus.forEach(a => {
+      const f = (a.tests || []).find(t => t.phase === 'final');
+      const v = f && f.readings && f.readings.cfm !== '' ? parseFloat(f.readings.cfm) : null;
+      if (v !== null && isFinite(v)) { ahuSum += v; ahuWithReadings++; }
+    });
+    let termSum = 0, termWithReadings = 0;
+    terminals.forEach(t => {
+      const f = (t.tests || []).find(x => x.phase === 'final');
+      const v = f && f.readings && f.readings.cfm !== '' ? parseFloat(f.readings.cfm) : null;
+      if (v !== null && isFinite(v)) { termSum += v; termWithReadings++; }
+    });
+    let designAhuSum = 0;
+    ahus.forEach(a => {
+      const d = parseFloat(a.design.cfm);
+      if (isFinite(d)) designAhuSum += d;
+    });
+    let pct = null;
+    if (ahuSum > 0 && terminals.length > 0) {
+      pct = (termSum - ahuSum) / ahuSum * 100;
+    }
+    return {
+      zone: zone,
+      ahuCount: ahus.length, ahusWithReadings: ahuWithReadings,
+      ahuSum: ahuSum,
+      designAhuSum: designAhuSum,
+      terminalCount: terminals.length,
+      terminalsWithReadings: termWithReadings,
+      terminalSum: termSum,
       imbalancePercent: pct
     };
   });
@@ -2673,6 +3412,7 @@ const PROJECT_FIELDS = {
   schedule: [
     { key: 'startDate', label: 'Start date', type: 'date' },
     { key: 'endDate',   label: 'End date',   type: 'date' },
+    { key: 'altitudeFt',label: 'Site altitude', unit: 'ft', placeholder: 'Optional; e.g. 5280 for Denver', help: 'Used to correct psychrometric calcs for elevation. Leave blank for sea level.' },
     { key: 'weather',   label: 'Outdoor conditions', placeholder: '82 degF, 58 percent RH, partly cloudy', full: true }
   ],
   reporting: [
@@ -2874,12 +3614,23 @@ function eqCard(eq) {
   const critical = type ? type.fields.find(f => f.critical) : null;
   const designVal = (critical && eq.design[critical.key]) || '';
   const finalVal = (critical && finalTest && finalTest.readings && finalTest.readings[critical.key]) || '';
+  const selected = UI.bulkSelectMode && UI.bulkSelected.has(eq.id);
 
-  return el('div', {
-    class: 'eq-card',
+  const card = el('div', {
+    class: 'eq-card' + (UI.bulkSelectMode ? ' eq-card-selectable' : '') + (selected ? ' eq-card-selected' : ''),
     dataset: { status: status },
-    onclick: () => openEquipmentDetail(eq.id)
+    onclick: () => {
+      if (UI.bulkSelectMode) {
+        if (UI.bulkSelected.has(eq.id)) UI.bulkSelected.delete(eq.id);
+        else UI.bulkSelected.add(eq.id);
+        renderEquipmentGrid();
+        updateBulkActionBar();
+      } else {
+        openEquipmentDetail(eq.id);
+      }
+    }
   }, [
+    UI.bulkSelectMode ? el('span', { class: 'eq-card-checkbox' }, selected ? '\u2713' : '') : null,
     el('div', { class: 'eq-card-head' }, [
       el('div', null, [
         el('div', { class: 'eq-tag' }, eq.tag || '(no tag)'),
@@ -2906,7 +3657,7 @@ function eqCard(eq) {
         ' test' + (testCount === 1 ? '' : 's')
       ]),
       el('span', { class: 'eq-type mono' }, eq.manufacturer || ''),
-      el('button', {
+      UI.bulkSelectMode ? null : el('button', {
         class: 'btn btn-xs btn-ghost eq-card-dup',
         type: 'button',
         title: 'Duplicate this equipment',
@@ -2914,6 +3665,7 @@ function eqCard(eq) {
       }, 'Duplicate')
     ])
   ]);
+  return card;
 }
 
 /* -------------------- Equipment detail -------------------- */
@@ -3015,9 +3767,9 @@ function renderEquipmentDetail() {
         const dv = eq.design[f.key];
         const fieldType = f.type || 'number';
         let tolDesc = '';
-        if (f.tolerance === 'air')   tolDesc = '\u00B1' + eq.tolerance.airPercent + '%';
-        if (f.tolerance === 'water') tolDesc = '\u00B1' + eq.tolerance.waterPercent + '%';
-        if (f.tolerance === 'temp')  tolDesc = '\u00B1' + eq.tolerance.tempDegF + ' degF';
+        if (f.tolerance === 'air')   tolDesc = formatToleranceBand(eq.tolerance, 'air');
+        if (f.tolerance === 'water') tolDesc = formatToleranceBand(eq.tolerance, 'water');
+        if (f.tolerance === 'temp')  tolDesc = formatToleranceBand(eq.tolerance, 'temp');
         if (!f.tolerance) tolDesc = f.excludeFromTest ? 'nameplate / observed' : 'not toleranced';
         /* Format the displayed design value */
         let displayValue;
@@ -3048,7 +3800,9 @@ function renderEquipmentDetail() {
       el('h3', { class: 'panel-title' }, [
         'Design and tolerance',
         el('span', { class: 'panel-title-meta' },
-          'air \u00B1' + eq.tolerance.airPercent + '%, water \u00B1' + eq.tolerance.waterPercent + '%, temp \u00B1' + eq.tolerance.tempDegF + ' degF')
+          'air ' + formatToleranceBand(eq.tolerance, 'air') +
+          ', water ' + formatToleranceBand(eq.tolerance, 'water') +
+          ', temp ' + formatToleranceBand(eq.tolerance, 'temp'))
       ]),
       designContent
     ])
@@ -3274,7 +4028,7 @@ function testEntry(eq, t) {
   /* Phase 2: coil heat balance */
   if (eq.type === 'coil') {
     const hb = coilHeatBalance(eq, t);
-    if (hb && (hb.water !== null || hb.airSensible !== null)) {
+    if (hb && (hb.water !== null || hb.airSensible !== null || hb.airTotal !== null)) {
       const panel = el('div', { class: 'sub-panel mt-md' });
       panel.appendChild(el('div', { class: 'sub-panel-head' }, [
         el('span', { class: 'sub-panel-title' }, 'Heat balance')
@@ -3288,6 +4042,18 @@ function testEntry(eq, t) {
         dl.appendChild(el('dt', null, 'Air sensible'));
         dl.appendChild(el('dd', { class: 'mono' }, Math.round(hb.airSensible).toLocaleString() + ' BTU/h'));
       }
+      if (hb.airTotal !== null) {
+        dl.appendChild(el('dt', null, 'Air total (enthalpy)'));
+        dl.appendChild(el('dd', { class: 'mono' }, Math.round(hb.airTotal).toLocaleString() + ' BTU/h'));
+        /* When total and sensible diverge, the latent contribution is the difference. */
+        if (hb.airSensible !== null) {
+          const latent = hb.airTotal - hb.airSensible;
+          if (latent > 0) {
+            dl.appendChild(el('dt', null, 'Latent contribution'));
+            dl.appendChild(el('dd', { class: 'mono' }, Math.round(latent).toLocaleString() + ' BTU/h'));
+          }
+        }
+      }
       if (hb.design !== null) {
         dl.appendChild(el('dt', null, 'Design'));
         dl.appendChild(el('dd', { class: 'mono' }, Math.round(hb.design).toLocaleString() + ' BTU/h'));
@@ -3295,12 +4061,24 @@ function testEntry(eq, t) {
       if (hb.balanceErrorPercent !== undefined) {
         const off = hb.balanceErrorPercent;
         const cls = off <= 10 ? 'pass' : 'fail';
-        dl.appendChild(el('dt', null, 'Imbalance'));
+        const comparedLabel = 'vs air ' + (hb.comparedAs === 'total' ? 'total' : 'sensible');
+        dl.appendChild(el('dt', null, 'Imbalance ' + comparedLabel));
         dl.appendChild(el('dd', { class: 'mono result ' + cls }, off.toFixed(1) + '%'));
       }
+      /* Show the corrected pressure if altitude is set; default 14.696
+         psi at sea level is implied otherwise. */
+      if (hb.pAtmPsi !== undefined && Math.abs(hb.pAtmPsi - 14.696) > 0.05) {
+        dl.appendChild(el('dt', null, 'Site pressure'));
+        dl.appendChild(el('dd', { class: 'mono muted' }, hb.pAtmPsi.toFixed(2) + ' psi (from altitude)'));
+      }
       panel.appendChild(dl);
-      panel.appendChild(el('p', { class: 'muted mt-sm', style: 'font-size:12px;' },
-        'Water-side: GPM x 500 x dT. Air sensible: CFM x 1.08 x dT. Latent loads are not included.'));
+      const explainBits = [
+        'Water-side: GPM x 500 x dT.',
+        'Air sensible: CFM x 1.08 x dT (dry-bulb only).',
+        'Air total: 4.5 x CFM x dh (uses wet-bulb temps for enthalpy).'
+      ];
+      if (hb.airTotal === null) explainBits.push('Enter wet-bulb temps to compute the total air load for dehumidifying coils.');
+      panel.appendChild(el('p', { class: 'muted mt-sm', style: 'font-size:12px;' }, explainBits.join(' ')));
       body.appendChild(panel);
     }
   }
@@ -3358,11 +4136,12 @@ function openEquipmentModal(existing) {
     serial: '',
     design: {},
     tests: [],
-    tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 },
+    tolerance: defaultTolerance(),
     status: 'pending',
     notes: '',
     photos: [],
-    associatedAhu: ''
+    associatedAhu: '',
+    zone: ''
   };
 
   const body = el('div');
@@ -3389,6 +4168,7 @@ function openEquipmentModal(existing) {
   idGrid.appendChild(typeField.wrap);
   idGrid.appendChild(makeField({ id: 'eq-loc', label: 'Location', placeholder: 'Mech room 102', value: eq.location, onInput: (e) => eq.location = e.target.value }).wrap);
   idGrid.appendChild(makeField({ id: 'eq-srv', label: 'Serves', placeholder: 'East wing offices', value: eq.serves, onInput: (e) => eq.serves = e.target.value }).wrap);
+  idGrid.appendChild(makeField({ id: 'eq-zone', label: 'Zone', placeholder: 'North wing / Floor 2', help: 'Used for multi-AHU air-balance roll-up', value: eq.zone, onInput: (e) => eq.zone = e.target.value }).wrap);
   idGrid.appendChild(makeField({ id: 'eq-mfr', label: 'Manufacturer', value: eq.manufacturer, onInput: (e) => eq.manufacturer = e.target.value }).wrap);
   idGrid.appendChild(makeField({ id: 'eq-mdl', label: 'Model', mono: true, value: eq.model, onInput: (e) => eq.model = e.target.value }).wrap);
   idGrid.appendChild(makeField({ id: 'eq-ser', label: 'Serial', mono: true, value: eq.serial, onInput: (e) => eq.serial = e.target.value }).wrap);
@@ -3459,24 +4239,50 @@ function openEquipmentModal(existing) {
   rebuildDesignFields();
 
   /* Tolerance */
-  body.appendChild(el('h4', { class: 'section-head' }, 'Tolerance band'));
-  const tolGrid = el('div', { class: 'form-grid wide' });
-  tolGrid.appendChild(makeField({
-    id: 'eq-tol-air', label: 'Air tolerance', unit: '%', type: 'number', step: '0.5',
-    value: eq.tolerance.airPercent, onInput: (e) => eq.tolerance.airPercent = parseFloat(e.target.value) || 0,
-    help: 'AABC/NEBB default is ±10%'
-  }).wrap);
-  tolGrid.appendChild(makeField({
-    id: 'eq-tol-water', label: 'Water tolerance', unit: '%', type: 'number', step: '0.5',
-    value: eq.tolerance.waterPercent, onInput: (e) => eq.tolerance.waterPercent = parseFloat(e.target.value) || 0,
-    help: 'Hydronic balance default is ±10%'
-  }).wrap);
-  tolGrid.appendChild(makeField({
-    id: 'eq-tol-temp', label: 'Temperature tolerance', unit: 'degF', type: 'number', step: '0.5',
-    value: eq.tolerance.tempDegF, onInput: (e) => eq.tolerance.tempDegF = parseFloat(e.target.value) || 0,
-    help: 'Absolute, not percentage'
-  }).wrap);
-  body.appendChild(tolGrid);
+  body.appendChild(el('h4', { class: 'section-head' }, [
+    'Tolerance band ',
+    el('span', { class: 'panel-title-meta' }, 'Optional asymmetric high/low overrides; leave blank for symmetric')
+  ]));
+  /* Backfill the asymmetric fields if migrating from an older workbook
+     where they don't exist yet. */
+  if (eq.tolerance.airPercentHigh   === undefined) eq.tolerance.airPercentHigh   = '';
+  if (eq.tolerance.airPercentLow    === undefined) eq.tolerance.airPercentLow    = '';
+  if (eq.tolerance.waterPercentHigh === undefined) eq.tolerance.waterPercentHigh = '';
+  if (eq.tolerance.waterPercentLow  === undefined) eq.tolerance.waterPercentLow  = '';
+  if (eq.tolerance.tempDegFHigh     === undefined) eq.tolerance.tempDegFHigh     = '';
+  if (eq.tolerance.tempDegFLow      === undefined) eq.tolerance.tempDegFLow      = '';
+
+  function tolRow(label, symKey, hiKey, loKey, unit, step, symHelp) {
+    const row = el('div', { class: 'tol-row' });
+    row.appendChild(el('div', { class: 'tol-row-label' }, label));
+    const inputs = el('div', { class: 'tol-row-inputs' });
+    inputs.appendChild(makeField({
+      id: 'eq-tol-' + symKey, label: 'Symmetric', unit: unit, type: 'number', step: step,
+      value: eq.tolerance[symKey],
+      help: symHelp,
+      onInput: (e) => { eq.tolerance[symKey] = parseFloat(e.target.value) || 0; }
+    }).wrap);
+    inputs.appendChild(makeField({
+      id: 'eq-tol-' + hiKey, label: 'High override', unit: unit, type: 'number', step: step,
+      value: eq.tolerance[hiKey],
+      help: 'Reading may exceed design by up to this amount',
+      onInput: (e) => { eq.tolerance[hiKey] = e.target.value; }
+    }).wrap);
+    inputs.appendChild(makeField({
+      id: 'eq-tol-' + loKey, label: 'Low override', unit: unit, type: 'number', step: step,
+      value: eq.tolerance[loKey],
+      help: 'Reading may fall below design by up to this amount',
+      onInput: (e) => { eq.tolerance[loKey] = e.target.value; }
+    }).wrap);
+    row.appendChild(inputs);
+    return row;
+  }
+
+  const tolHost = el('div', { class: 'tol-grid' });
+  tolHost.appendChild(tolRow('Air',         'airPercent',   'airPercentHigh',   'airPercentLow',   '%',    '0.5', 'AABC/NEBB default is +/-10%'));
+  tolHost.appendChild(tolRow('Water',       'waterPercent', 'waterPercentHigh', 'waterPercentLow', '%',    '0.5', 'Hydronic balance default is +/-10%'));
+  tolHost.appendChild(tolRow('Temperature', 'tempDegF',     'tempDegFHigh',     'tempDegFLow',     'degF', '0.5', 'Absolute, not percentage'));
+  body.appendChild(tolHost);
 
   /* Notes */
   body.appendChild(el('h4', { class: 'section-head' }, 'Notes'));
@@ -3563,7 +4369,8 @@ function duplicateEquipment(eq) {
     status: 'pending',
     notes: eq.notes || '',
     photos: [],
-    associatedAhu: eq.associatedAhu || ''
+    associatedAhu: eq.associatedAhu || '',
+    zone: eq.zone || ''
   };
   if (dup.type === 'pump') {
     dup.pumpCurve   = (eq.pumpCurve || []).map(p => Object.assign({}, p));
@@ -3579,11 +4386,942 @@ function duplicateEquipment(eq) {
   openEquipmentModal(dup);
 }
 
-/* -------------------- Bulk-create equipment -------------------- */
+/* -------------------- CSV import -------------------- */
+/* Mechanical schedules from the engineer arrive as Excel sheets, which
+   the user can save as CSV or paste as TSV. PITOT accepts either via
+   the import modal, with column-mapping that suggests targets based on
+   common synonyms. The full flow:
+     1. Pick equipment type, paste or upload CSV/TSV, mark whether the
+        first row is a header.
+     2. Review column mapping. Each detected column gets a select for
+        the target PITOT field (or skip). Auto-suggested by fuzzy match.
+     3. Preview the first few rows as they'd be created, then commit.
+   Identification fields (tag, location, serves, manufacturer, model,
+   serial, zone) and per-type design fields are all valid targets.
+   Terminals can map an "AHU" column to associatedAhu by tag lookup. */
+
+function parseCsv(text) {
+  /* Robust enough for typical mechanical-schedule exports. Handles:
+     - quoted fields containing commas or tabs
+     - quoted fields containing doubled-up quotes ("a ""b""")
+     - LF and CRLF line endings
+     - either comma or tab as separator (auto-detected from first line)
+     Returns array of arrays of strings. Trailing blank lines dropped. */
+  if (typeof text !== 'string') return [];
+  /* Strip BOM if present */
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  /* Auto-detect separator: prefer tab if first row has more tabs than commas */
+  const firstNl = text.indexOf('\n');
+  const sample  = firstNl >= 0 ? text.slice(0, firstNl) : text;
+  const sep = sample.split('\t').length > sample.split(',').length ? '\t' : ',';
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let inQuote = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuote) {
+      if (c === '"') {
+        if (text[i+1] === '"') { cell += '"'; i++; }
+        else { inQuote = false; }
+      } else {
+        cell += c;
+      }
+    } else {
+      if (c === '"') {
+        inQuote = true;
+      } else if (c === sep) {
+        row.push(cell);
+        cell = '';
+      } else if (c === '\n') {
+        row.push(cell);
+        cell = '';
+        rows.push(row);
+        row = [];
+      } else if (c === '\r') {
+        /* skip; \r\n handled by the \n branch */
+      } else {
+        cell += c;
+      }
+    }
+  }
+  /* Flush the final cell/row */
+  if (cell.length > 0 || row.length > 0) {
+    row.push(cell);
+    rows.push(row);
+  }
+  /* Drop trailing fully-empty rows */
+  while (rows.length > 0 && rows[rows.length-1].every(c => c === '')) rows.pop();
+  return rows;
+}
+
+/* Synonyms for column-name fuzzy matching. Keys are PITOT field names;
+   values are lowercase normalized strings (alphanumeric only) that
+   commonly appear in mechanical schedules. */
+const CSV_SYNONYMS = {
+  /* Identification */
+  tag:          ['tag', 'mark', 'id', 'designation', 'equipmenttag', 'name'],
+  location:     ['location', 'loc', 'mechroom', 'mechroomno', 'mechanical', 'area', 'room'],
+  serves:       ['serves', 'servicearea', 'serving', 'servesarea'],
+  manufacturer: ['manufacturer', 'mfr', 'make', 'mfg', 'brand', 'maker'],
+  model:        ['model', 'modelno', 'modelnumber'],
+  serial:       ['serial', 'sn', 'serialno', 'serialnumber'],
+  zone:         ['zone', 'building', 'wing', 'floor', 'level', 'system'],
+  associatedAhu:['ahu', 'parentahu', 'feedsfrom', 'fedby', 'supplyahu'],
+  /* Design fields shared across multiple types */
+  cfm:          ['cfm', 'airflow', 'totalairflow', 'designcfm', 'supcfm', 'supplycfm', 'volume'],
+  esp:          ['esp', 'staticpressure', 'externalsp', 'sp', 'tesp', 'externalstaticpressure'],
+  motorHp:      ['hp', 'horsepower', 'motorhp'],
+  motorAmps:    ['amps', 'motoramps', 'measuredamps', 'amperage'],
+  motorFla:     ['fla', 'fullloadamps', 'nameplateamps'],
+  motorVoltage: ['voltage', 'volts', 'v', 'motorvoltage'],
+  motorPhase:   ['phase', 'ph', 'motorphase'],
+  fanRpm:       ['rpm', 'fanrpm', 'fanspeed', 'speed'],
+  fanSheavePd:  ['fansheave', 'fansheavepd', 'fanpd'],
+  motorSheavePd:['motorsheave', 'motorsheavepd', 'motorpd'],
+  beltSize:     ['belt', 'beltsize'],
+  beltQty:      ['beltqty', 'beltquantity', 'beltcount', 'numberofbelts'],
+  filterType:   ['filter', 'filtertype', 'merv'],
+  filterSize:   ['filtersize', 'filterdimensions'],
+  filterQty:    ['filterqty', 'filterquantity', 'filtercount', 'numberoffilters'],
+  oaCfm:        ['oa', 'oacfm', 'outsideair', 'outsideaircfm'],
+  oaPercent:    ['oapercent', 'oapct', 'outsideairpercent'],
+  mixedAirTemp: ['mat', 'mixedair', 'mixedairtemp'],
+  supplyAirTemp:['sat', 'supplyair', 'supplyairtemp', 'dat', 'dischargeair', 'dischargeairtemp'],
+  returnAirTemp:['rat', 'returnair', 'returnairtemp'],
+  /* VAV */
+  cfmMin:       ['cfmmin', 'mincfm', 'minimumcfm', 'minimum', 'mincfmsetpoint'],
+  cfmMax:       ['cfmmax', 'maxcfm', 'maximumcfm', 'maximum', 'maxcfmsetpoint'],
+  inletStatic:  ['inletstatic', 'inletstaticpressure', 'inletsp'],
+  reheatBtuh:   ['reheat', 'reheatbtuh', 'reheatcapacity', 'reheatload'],
+  reheatGpm:    ['reheatgpm', 'reheatflow'],
+  reheatType:   ['reheattype'],
+  boxModel:     ['boxmodel', 'vavmodel'],
+  controllerAddress: ['controlleraddress', 'address', 'ddcaddress'],
+  /* Pump */
+  gpm:          ['gpm', 'flow', 'waterflow', 'designgpm'],
+  headFt:       ['head', 'headft', 'tdh', 'pressurehead', 'designhead'],
+  suctionPsi:   ['suction', 'suctionpsi', 'suctionpressure'],
+  dischargePsi: ['discharge', 'dischargepsi', 'dischargepressure'],
+  /* Terminal */
+  faceVelocity: ['facevelocity', 'fv', 'velocity', 'fpm'],
+  neckSize:     ['neck', 'necksize', 'inletsize', 'duct'],
+  kFactor:      ['k', 'kfactor', 'akfactor'],
+  areaServed:   ['areaserved', 'room', 'roomnumber', 'roomname', 'space'],
+  gridReference:['grid', 'gridreference', 'drawinggrid'],
+  /* Coil */
+  ewt:          ['ewt', 'enteringwater', 'inletwater', 'enteringwatertemp'],
+  lwt:          ['lwt', 'leavingwater', 'outletwater', 'leavingwatertemp'],
+  eat:          ['eat', 'enteringair', 'inletair', 'enteringairtemp', 'eadb', 'enteringairdb'],
+  lat:          ['lat', 'leavingair', 'outletair', 'leavingairtemp', 'ladb', 'leavingairdb'],
+  eatWb:        ['eatwb', 'enteringairwetbulb', 'enteringwb', 'eawb'],
+  latWb:        ['latwb', 'leavingairwetbulb', 'leavingwb', 'lawb'],
+  btuh:         ['btuh', 'capacity', 'btu', 'heatload', 'coilcapacity'],
+  coilType:     ['coiltype', 'service']
+};
+
+const IDENTIFICATION_FIELDS = [
+  { key: 'tag',          label: 'Tag', critical: true },
+  { key: 'location',     label: 'Location' },
+  { key: 'serves',       label: 'Serves' },
+  { key: 'manufacturer', label: 'Manufacturer' },
+  { key: 'model',        label: 'Model' },
+  { key: 'serial',       label: 'Serial' },
+  { key: 'zone',         label: 'Zone' }
+];
+
+function suggestCsvMapping(columnName, type) {
+  if (!columnName) return '';
+  const norm = String(columnName).toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!norm) return '';
+  const validKeys = csvTargetKeys(type);
+  /* Pass 1: exact synonym match */
+  for (const target of Object.keys(CSV_SYNONYMS)) {
+    if (validKeys.indexOf(target) < 0) continue;
+    if (CSV_SYNONYMS[target].indexOf(norm) >= 0) return target;
+  }
+  /* Pass 2: column name contains a synonym, or vice versa, with the
+     longer match winning to favor specificity ('cfmmin' over 'cfm'). */
+  let best = '';
+  let bestLen = 0;
+  for (const target of Object.keys(CSV_SYNONYMS)) {
+    if (validKeys.indexOf(target) < 0) continue;
+    for (const syn of CSV_SYNONYMS[target]) {
+      if (norm === syn) return target; /* exact win short-circuit */
+      if (norm.indexOf(syn) >= 0 && syn.length > bestLen) { best = target; bestLen = syn.length; }
+    }
+  }
+  return best;
+}
+
+function csvTargetKeys(type) {
+  /* Valid mapping targets for the chosen equipment type: identification
+     plus the type's design fields plus the special associatedAhu hook
+     for terminals. */
+  const ids = IDENTIFICATION_FIELDS.map(f => f.key);
+  const designKeys = type && EQUIPMENT_TYPES[type] ? EQUIPMENT_TYPES[type].fields.map(f => f.key) : [];
+  const extras = type === 'terminal' ? ['associatedAhu'] : [];
+  /* De-dupe (zone is in both ids and possibly elsewhere) */
+  const all = ids.concat(designKeys, extras);
+  const seen = {};
+  const out = [];
+  all.forEach(k => { if (!seen[k]) { seen[k] = true; out.push(k); } });
+  return out;
+}
+
+function csvTargetLabel(key, type) {
+  const idField = IDENTIFICATION_FIELDS.find(f => f.key === key);
+  if (idField) return idField.label + (idField.critical ? ' *' : '');
+  if (key === 'associatedAhu') return 'Associated AHU (by tag)';
+  const t = type && EQUIPMENT_TYPES[type];
+  if (t) {
+    const f = t.fields.find(f => f.key === key);
+    if (f) return f.label + (f.unit ? ' (' + f.unit + ')' : '');
+  }
+  return key;
+}
+
+/* -------------------- CSV export -------------------- */
+/* Round-trip-compatible with the import flow: one CSV per equipment
+   type, with column labels that the import suggester recognizes back
+   to the same PITOT field keys. Reading values are optionally included
+   in a separate "Final" column block; the technician can re-import and
+   skip those columns. */
+
+function csvEscape(v) {
+  if (v === undefined || v === null) return '';
+  const s = String(v);
+  if (s.indexOf(',') < 0 && s.indexOf('"') < 0 && s.indexOf('\n') < 0 && s.indexOf('\r') < 0) return s;
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+
+function generateCsvForType(type, opts) {
+  opts = opts || {};
+  const includeReadings = opts.includeReadings !== false;
+  const includeStatus   = opts.includeStatus !== false;
+  const records = STATE.equipment.filter(e => e.type === type);
+  const typeDef = EQUIPMENT_TYPES[type];
+  if (!typeDef) return '';
+
+  /* Header construction. Identification columns first, then design
+     fields, optionally followed by per-field final readings, optionally
+     a Status column. */
+  const idCols = IDENTIFICATION_FIELDS.map(f => ({ label: f.label, key: f.key, source: 'id' }));
+  /* Skip excludeFromTest=true fields for clean round-trip; those would
+     re-import as design but they're really observational. Keep them in
+     so the export is lossless; if the user re-imports they can skip. */
+  const designCols = typeDef.fields.map(f => ({
+    label: f.label + (f.unit ? ' (' + f.unit + ')' : ''),
+    key: f.key, source: 'design', field: f
+  }));
+  /* Terminals can export associatedAhu as a tag, for round-trip. */
+  const ahuCol = (type === 'terminal') ? [{ label: 'Associated AHU (tag)', key: 'associatedAhu', source: 'ahuTag' }] : [];
+  const readingCols = includeReadings
+    ? typeDef.fields.filter(f => !f.excludeFromTest).map(f => ({
+        label: f.label + ' (final)' + (f.unit ? ' (' + f.unit + ')' : ''),
+        key: f.key, source: 'reading', field: f
+      }))
+    : [];
+  const statusCol = includeStatus ? [{ label: 'Status', key: '__status', source: 'status' }] : [];
+
+  const cols = idCols.concat(ahuCol, designCols, readingCols, statusCol);
+  const lines = [];
+  lines.push(cols.map(c => csvEscape(c.label)).join(','));
+
+  records.forEach(eq => {
+    const finalTest = (eq.tests || []).find(t => t.phase === 'final');
+    const row = cols.map(c => {
+      if (c.source === 'id')       return csvEscape(eq[c.key] || '');
+      if (c.source === 'ahuTag') {
+        if (!eq.associatedAhu) return '';
+        const a = STATE.equipment.find(e => e.id === eq.associatedAhu);
+        return csvEscape(a ? (a.tag || '') : '');
+      }
+      if (c.source === 'design')   return csvEscape(eq.design ? (eq.design[c.key] !== undefined ? eq.design[c.key] : '') : '');
+      if (c.source === 'reading') {
+        if (!finalTest || !finalTest.readings) return '';
+        return csvEscape(finalTest.readings[c.key] !== undefined ? finalTest.readings[c.key] : '');
+      }
+      if (c.source === 'status')   return csvEscape(STATUS_LABELS[classifyStatus(eq)] || classifyStatus(eq));
+      return '';
+    });
+    lines.push(row.join(','));
+  });
+
+  return lines.join('\r\n') + '\r\n';
+}
+
+function projectSlug() {
+  const name = (STATE.project && STATE.project.name) || 'pitot';
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'pitot';
+}
+
+function downloadCsvBlob(filename, csvText) {
+  const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+}
+
+function openCsvExportModal() {
+  /* Modal state */
+  const M = {
+    type: 'all',
+    includeReadings: true,
+    includeStatus: true
+  };
+
+  /* Determine which types have at least one record */
+  const typesPresent = Object.keys(EQUIPMENT_TYPES).filter(k =>
+    STATE.equipment.some(e => e.type === k)
+  );
+  if (typesPresent.length === 0) {
+    toast('No equipment to export', 'err');
+    return;
+  }
+
+  const body = el('div');
+  body.appendChild(el('p', { class: 'modal-help' },
+    'Exports equipment as CSV, one file per equipment type. Column labels round-trip back through the import flow. Final-phase readings are emitted in a separate column block per field; re-importing will offer to skip those columns.'));
+
+  const grid = el('div', { class: 'form-grid wide' });
+
+  /* Type select with counts */
+  const opts = [{ value: 'all', label: 'All types (one file each, ' + typesPresent.length + ' downloads)' }].concat(
+    typesPresent.map(k => ({
+      value: k,
+      label: EQUIPMENT_TYPES[k].label + ' (' + STATE.equipment.filter(e => e.type === k).length + ' records)'
+    }))
+  );
+  grid.appendChild(makeField({
+    id: 'csv-exp-type', label: 'Equipment type', type: 'select',
+    options: opts, value: M.type,
+    onChange: (e) => { M.type = e.target.value; }
+  }).wrap);
+  grid.appendChild(makeField({
+    id: 'csv-exp-readings', label: 'Include final-phase readings', type: 'select',
+    options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+    value: M.includeReadings ? 'yes' : 'no',
+    onChange: (e) => { M.includeReadings = e.target.value === 'yes'; }
+  }).wrap);
+  grid.appendChild(makeField({
+    id: 'csv-exp-status', label: 'Include status column', type: 'select',
+    options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+    value: M.includeStatus ? 'yes' : 'no',
+    onChange: (e) => { M.includeStatus = e.target.value === 'yes'; }
+  }).wrap);
+  body.appendChild(grid);
+
+  showModal({
+    title: 'Export equipment as CSV',
+    body: body,
+    primaryLabel: 'Download',
+    secondaryLabel: 'Cancel',
+    onPrimary: () => {
+      const slug = projectSlug();
+      const today = new Date().toISOString().slice(0, 10);
+      const types = M.type === 'all' ? typesPresent : [M.type];
+      types.forEach((t, i) => {
+        const csv = generateCsvForType(t, { includeReadings: M.includeReadings, includeStatus: M.includeStatus });
+        const fname = 'pitot-' + slug + '-' + t + '-' + today + '.csv';
+        /* Stagger downloads slightly so browsers don't suppress them */
+        setTimeout(() => downloadCsvBlob(fname, csv), i * 250);
+      });
+      closeModal();
+      toast('Exported ' + types.length + ' file(s)');
+      return true;
+    }
+  });
+}
+
+function openCsvImportModal() {
+  /* Modal state */
+  const M = {
+    step: 1,         /* 1=input, 2=mapping, 3=preview */
+    type: 'terminal',
+    hasHeader: true,
+    rawText: '',
+    rows: [],        /* parsed CSV rows */
+    headerRow: [],
+    dataRows: [],
+    mapping: {},     /* columnIndex -> target field key */
+    preview: []
+  };
+
+  const body = el('div', { class: 'csv-import' });
+
+  /* Step indicator */
+  const stepIndicator = el('div', { class: 'csv-steps' });
+  function drawStepIndicator() {
+    clear(stepIndicator);
+    ['Input', 'Mapping', 'Preview'].forEach((label, i) => {
+      const num = i + 1;
+      stepIndicator.appendChild(el('span', {
+        class: 'csv-step ' + (M.step === num ? 'active' : M.step > num ? 'done' : '')
+      }, num + '. ' + label));
+    });
+  }
+  body.appendChild(stepIndicator);
+
+  const stageHost = el('div', { class: 'csv-stage' });
+  body.appendChild(stageHost);
+
+  /* ---------- Step 1: input ---------- */
+  function drawStep1() {
+    clear(stageHost);
+    stageHost.appendChild(el('p', { class: 'modal-help' },
+      'Paste CSV or tab-separated text from an Excel sheet, or upload a .csv file. PITOT auto-detects the separator. Equipment type applies to every row imported.'));
+
+    const grid = el('div', { class: 'form-grid wide' });
+    grid.appendChild(makeField({
+      id: 'csv-type', label: 'Equipment type', type: 'select',
+      options: Object.entries(EQUIPMENT_TYPES).map(([k, v]) => ({ value: k, label: v.label })),
+      value: M.type,
+      onChange: (e) => { M.type = e.target.value; }
+    }).wrap);
+    grid.appendChild(makeField({
+      id: 'csv-has-header', label: 'First row is header', type: 'select',
+      options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+      value: M.hasHeader ? 'yes' : 'no',
+      onChange: (e) => { M.hasHeader = e.target.value === 'yes'; }
+    }).wrap);
+    stageHost.appendChild(grid);
+
+    stageHost.appendChild(el('h4', { class: 'section-head' }, 'Paste CSV or TSV'));
+    const ta = el('textarea', {
+      class: 'csv-textarea',
+      rows: 10,
+      placeholder: 'Tag,Location,CFM,ESP\nAHU-1,Mech 101,5000,2.0\nAHU-2,Mech 102,3000,1.5'
+    });
+    ta.value = M.rawText;
+    ta.addEventListener('input', (e) => { M.rawText = e.target.value; });
+    stageHost.appendChild(ta);
+
+    stageHost.appendChild(el('h4', { class: 'section-head' }, 'Or upload a file'));
+    const fileInput = el('input', { type: 'file', accept: '.csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain' });
+    fileInput.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        M.rawText = String(ev.target.result);
+        ta.value = M.rawText;
+        toast('Loaded ' + f.name + ' (' + f.size + ' bytes)');
+      };
+      reader.readAsText(f);
+    });
+    stageHost.appendChild(fileInput);
+  }
+
+  /* ---------- Step 2: mapping ---------- */
+  function drawStep2() {
+    clear(stageHost);
+    M.rows = parseCsv(M.rawText);
+    if (M.rows.length === 0) {
+      stageHost.appendChild(el('p', { class: 'muted' }, 'No rows detected. Go back and paste data.'));
+      return;
+    }
+    if (M.hasHeader) {
+      M.headerRow = M.rows[0];
+      M.dataRows  = M.rows.slice(1);
+    } else {
+      /* Synthesize a header row labeled column 1, 2, etc. */
+      M.headerRow = M.rows[0].map((_, i) => 'Column ' + (i + 1));
+      M.dataRows  = M.rows;
+    }
+    /* Auto-suggest mappings */
+    M.headerRow.forEach((h, i) => {
+      if (M.mapping[i] === undefined) {
+        M.mapping[i] = suggestCsvMapping(h, M.type);
+      }
+    });
+
+    stageHost.appendChild(el('p', { class: 'modal-help' },
+      'Pick a target PITOT field for each detected column. Tag is required; columns set to "(skip)" are ignored on import. Suggestions are based on common mechanical-schedule conventions.'));
+
+    const summary = el('div', { class: 'csv-summary mono muted', style: 'font-size:0.8rem;margin-bottom:0.75rem;' },
+      M.dataRows.length + ' data row(s) detected, ' + M.headerRow.length + ' column(s).');
+    stageHost.appendChild(summary);
+
+    /* Sample row preview */
+    const sample = el('div', { class: 'csv-sample-strip' });
+    if (M.dataRows.length > 0) {
+      sample.appendChild(el('span', { class: 'csv-sample-label muted mono', style: 'font-size:0.7rem;' }, 'First row:'));
+      const sampleRow = M.dataRows[0];
+      sampleRow.forEach((v, i) => {
+        sample.appendChild(el('span', { class: 'csv-sample-cell mono', style: 'font-size:0.75rem;' },
+          (M.headerRow[i] || 'col' + (i+1)) + ': ' + (v || '(empty)')));
+      });
+      stageHost.appendChild(sample);
+    }
+
+    /* Mapping rows */
+    const tbl = el('table', { class: 'csv-mapping-table' });
+    tbl.appendChild(el('thead', null, el('tr', null, [
+      el('th', null, 'CSV column'),
+      el('th', null, 'Sample value'),
+      el('th', null, 'PITOT field')
+    ])));
+    const tbody = el('tbody');
+    const validKeys = csvTargetKeys(M.type);
+    M.headerRow.forEach((h, i) => {
+      const sampleVal = M.dataRows[0] ? (M.dataRows[0][i] || '') : '';
+      const tr = el('tr');
+      tr.appendChild(el('td', { class: 'mono' }, h || '(unnamed)'));
+      tr.appendChild(el('td', { class: 'mono muted' }, sampleVal || '(empty)'));
+      const sel = el('select', { class: 'csv-target-select' });
+      sel.appendChild(el('option', { value: '' }, '(skip)'));
+      validKeys.forEach(k => {
+        const opt = el('option', { value: k }, csvTargetLabel(k, M.type));
+        if (M.mapping[i] === k) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', (e) => { M.mapping[i] = e.target.value; });
+      const td = el('td'); td.appendChild(sel); tr.appendChild(td);
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+    stageHost.appendChild(tbl);
+  }
+
+  /* ---------- Step 3: preview ---------- */
+  function buildRowFromCsv(rowArr) {
+    const ahuLookup = {};
+    STATE.equipment.forEach(e => {
+      if (e.type === 'ahu') ahuLookup[(e.tag || '').trim()] = e.id;
+    });
+    const eq = {
+      id: 'eq-' + shortId(),
+      tag: '',
+      type: M.type,
+      location: '', serves: '', manufacturer: '', model: '', serial: '',
+      zone: '',
+      design: {},
+      tests: [],
+      tolerance: defaultTolerance(),
+      status: 'pending',
+      notes: '',
+      photos: [],
+      associatedAhu: ''
+    };
+    const warnings = [];
+    Object.keys(M.mapping).forEach(idxStr => {
+      const idx = parseInt(idxStr, 10);
+      const target = M.mapping[idxStr];
+      if (!target) return;
+      const raw = (rowArr[idx] !== undefined ? String(rowArr[idx]).trim() : '');
+      if (raw === '') return;
+      if (target === 'tag') eq.tag = raw;
+      else if (target === 'location') eq.location = raw;
+      else if (target === 'serves') eq.serves = raw;
+      else if (target === 'manufacturer') eq.manufacturer = raw;
+      else if (target === 'model') eq.model = raw;
+      else if (target === 'serial') eq.serial = raw;
+      else if (target === 'zone') eq.zone = raw;
+      else if (target === 'associatedAhu') {
+        const id = ahuLookup[raw];
+        if (id) eq.associatedAhu = id;
+        else { eq.associatedAhu = ''; warnings.push('AHU tag "' + raw + '" not found in workbook'); }
+      } else {
+        /* Design field: parse number for numeric fields, keep string for text */
+        const type = EQUIPMENT_TYPES[M.type];
+        const f = type && type.fields.find(x => x.key === target);
+        const fieldType = (f && f.type) || 'number';
+        if (fieldType === 'number') {
+          /* Parse the first number from the cell; common in schedules like "1500 cfm" */
+          const m = raw.match(/-?\d+(\.\d+)?/);
+          eq.design[target] = m ? m[0] : raw;
+        } else {
+          eq.design[target] = raw;
+        }
+      }
+    });
+    return { eq: eq, warnings: warnings };
+  }
+
+  function drawStep3() {
+    clear(stageHost);
+    /* Validate mapping */
+    const mappedTargets = Object.values(M.mapping).filter(v => v);
+    if (mappedTargets.indexOf('tag') < 0) {
+      stageHost.appendChild(el('p', { class: 'muted' }, 'No column is mapped to Tag. Go back and pick a Tag column before importing.'));
+      return;
+    }
+    M.preview = M.dataRows.map(r => buildRowFromCsv(r));
+
+    /* Tag collision check */
+    const existing = new Set(STATE.equipment.map(e => (e.tag || '').trim()));
+    const newTags  = M.preview.map(p => (p.eq.tag || '').trim());
+    const dupes = newTags.filter(t => t && existing.has(t));
+    const missingTags = newTags.filter(t => !t).length;
+    const aggWarnings = [];
+    M.preview.forEach(p => p.warnings.forEach(w => aggWarnings.push(w)));
+
+    /* Headline counts */
+    stageHost.appendChild(el('p', { class: 'modal-help' },
+      'Review the records that would be created. Cancel to revise mapping; Import to commit. Existing equipment is not modified.'));
+    const dl = el('dl', { class: 'kv-table' });
+    dl.appendChild(el('dt', null, 'Records to create'));
+    dl.appendChild(el('dd', { class: 'mono' }, String(M.preview.length)));
+    dl.appendChild(el('dt', null, 'Type'));
+    dl.appendChild(el('dd', null, EQUIPMENT_TYPES[M.type].label));
+    if (dupes.length > 0) {
+      dl.appendChild(el('dt', { class: 'csv-warn' }, 'Tag collisions'));
+      dl.appendChild(el('dd', { class: 'mono csv-warn' }, dupes.length + ' tag(s) already exist'));
+    }
+    if (missingTags > 0) {
+      dl.appendChild(el('dt', { class: 'csv-warn' }, 'Missing tags'));
+      dl.appendChild(el('dd', { class: 'mono csv-warn' }, missingTags + ' row(s) have no tag value'));
+    }
+    if (aggWarnings.length > 0) {
+      dl.appendChild(el('dt', { class: 'csv-warn' }, 'Other warnings'));
+      dl.appendChild(el('dd', { class: 'csv-warn' }, aggWarnings.length + ' issue(s)'));
+    }
+    stageHost.appendChild(dl);
+
+    /* Sample preview */
+    stageHost.appendChild(el('h4', { class: 'section-head' }, 'Sample (first 5 rows)'));
+    const sampleTbl = el('table', { class: 'csv-preview-table' });
+    const mappedKeys = Object.keys(M.mapping).filter(k => M.mapping[k]).map(k => M.mapping[k]);
+    /* Build header: tag first, then any other mapped target keys (deduped) */
+    const headerKeys = ['tag'].concat(mappedKeys.filter(k => k !== 'tag').filter((k, i, a) => a.indexOf(k) === i));
+    sampleTbl.appendChild(el('thead', null, el('tr', null,
+      headerKeys.map(k => el('th', null, csvTargetLabel(k, M.type)))
+    )));
+    const previewBody = el('tbody');
+    M.preview.slice(0, 5).forEach(p => {
+      const tr = el('tr');
+      headerKeys.forEach(k => {
+        let v;
+        if (k === 'tag') v = p.eq.tag;
+        else if (k === 'location') v = p.eq.location;
+        else if (k === 'serves') v = p.eq.serves;
+        else if (k === 'manufacturer') v = p.eq.manufacturer;
+        else if (k === 'model') v = p.eq.model;
+        else if (k === 'serial') v = p.eq.serial;
+        else if (k === 'zone') v = p.eq.zone;
+        else if (k === 'associatedAhu') v = p.eq.associatedAhu || '(unresolved)';
+        else v = p.eq.design[k] !== undefined ? p.eq.design[k] : '';
+        tr.appendChild(el('td', { class: 'mono' }, v || el('span', { class: 'muted' }, '-')));
+      });
+      previewBody.appendChild(tr);
+    });
+    sampleTbl.appendChild(previewBody);
+    stageHost.appendChild(sampleTbl);
+    if (M.preview.length > 5) {
+      stageHost.appendChild(el('p', { class: 'muted', style: 'font-size:0.8rem;' }, '... and ' + (M.preview.length - 5) + ' more rows'));
+    }
+
+    if (aggWarnings.length > 0) {
+      stageHost.appendChild(el('h4', { class: 'section-head' }, 'Warnings'));
+      const ul = el('ul', { class: 'csv-warnings' });
+      aggWarnings.slice(0, 10).forEach(w => ul.appendChild(el('li', { class: 'csv-warn' }, w)));
+      if (aggWarnings.length > 10) ul.appendChild(el('li', { class: 'muted' }, '... and ' + (aggWarnings.length - 10) + ' more'));
+      stageHost.appendChild(ul);
+    }
+  }
+
+  function renderStep() {
+    drawStepIndicator();
+    if (M.step === 1) drawStep1();
+    else if (M.step === 2) drawStep2();
+    else if (M.step === 3) drawStep3();
+    /* Update primary button label via the modal foot */
+    updatePrimaryLabel();
+  }
+
+  /* primary label updater accessor (rebound after showModal) */
+  let updatePrimaryLabel = () => {};
+
+  showModal({
+    title: 'Import equipment from CSV',
+    body: body,
+    primaryLabel: 'Next',
+    secondaryLabel: 'Cancel',
+    onPrimary: () => {
+      if (M.step === 1) {
+        if (!M.rawText.trim()) { toast('Paste or upload some CSV first', 'err'); return false; }
+        M.step = 2;
+        renderStep();
+        return false; /* don't close */
+      }
+      if (M.step === 2) {
+        if (!Object.values(M.mapping).some(v => v === 'tag')) {
+          toast('Map at least the Tag column before continuing', 'err');
+          return false;
+        }
+        M.step = 3;
+        renderStep();
+        return false;
+      }
+      /* Step 3: commit */
+      const validRows = M.preview.filter(p => (p.eq.tag || '').trim());
+      if (validRows.length === 0) { toast('No rows with tags to import', 'err'); return false; }
+      validRows.forEach(p => STATE.equipment.push(p.eq));
+      saveState();
+      updateTabCounts();
+      closeModal();
+      renderEquipmentGrid();
+      toast('Imported ' + validRows.length + ' record(s)');
+      return true;
+    }
+  });
+
+  /* After showModal, find the primary button and let renderStep rename it. */
+  const primaryBtn = document.querySelector('.modal-foot .modal-primary');
+  updatePrimaryLabel = () => {
+    if (primaryBtn) primaryBtn.textContent = M.step === 3 ? 'Import ' + M.preview.length + ' record(s)' : (M.step === 1 ? 'Next: mapping' : 'Next: preview');
+  };
+  renderStep();
+}
+
+
 /* Creates N equipment records with sequential tags. Useful for fast
    intake on big jobs (a building with 30 VAVs, 60 terminals, etc.).
    Generated equipment have empty design values and no tests; the
    technician fills in design data per unit afterward. */
+
+/* -------------------- Bulk equipment edit -------------------- */
+/* Toggle select mode from the equipment toolbar. While active, cards
+   become checkbox-selectable instead of navigating into detail, and a
+   floating action bar appears at the bottom of the equipment grid. The
+   "Apply" button opens a modal where the technician picks which fields
+   to overwrite across the selection (each field has an Apply checkbox;
+   only checked fields are written, so untouched fields are left alone
+   per equipment record). */
+
+function toggleBulkSelectMode() {
+  UI.bulkSelectMode = !UI.bulkSelectMode;
+  if (!UI.bulkSelectMode) UI.bulkSelected.clear();
+  const btn = document.getElementById('btn-bulk-select');
+  if (btn) {
+    btn.textContent = UI.bulkSelectMode ? 'Cancel selection' : 'Select';
+    btn.classList.toggle('btn-primary', UI.bulkSelectMode);
+  }
+  renderEquipmentGrid();
+  updateBulkActionBar();
+}
+
+function bulkSelectAll() {
+  /* Selects every visible (filtered) equipment, not the whole workbook,
+     so search + status filters scope the selection appropriately. */
+  filteredEquipment().forEach(eq => UI.bulkSelected.add(eq.id));
+  renderEquipmentGrid();
+  updateBulkActionBar();
+}
+
+function bulkSelectNone() {
+  UI.bulkSelected.clear();
+  renderEquipmentGrid();
+  updateBulkActionBar();
+}
+
+function filteredEquipment() {
+  /* Mirror of the grid's own filter logic. Kept simple and tolerant. */
+  let list = STATE.equipment.slice();
+  if (UI.filterType)   list = list.filter(e => e.type === UI.filterType);
+  if (UI.filterStatus) list = list.filter(e => classifyStatus(e) === UI.filterStatus);
+  if (UI.searchTerm) {
+    const q = UI.searchTerm.toLowerCase();
+    list = list.filter(e =>
+      (e.tag || '').toLowerCase().indexOf(q) >= 0 ||
+      (e.location || '').toLowerCase().indexOf(q) >= 0 ||
+      (e.notes || '').toLowerCase().indexOf(q) >= 0
+    );
+  }
+  return list;
+}
+
+function updateBulkActionBar() {
+  let bar = document.getElementById('bulk-action-bar');
+  if (!UI.bulkSelectMode) {
+    if (bar) bar.remove();
+    return;
+  }
+  if (!bar) {
+    bar = el('div', { id: 'bulk-action-bar', class: 'bulk-action-bar' });
+    document.body.appendChild(bar);
+  }
+  clear(bar);
+  const count = UI.bulkSelected.size;
+  bar.appendChild(el('span', { class: 'bulk-count' }, count + ' selected'));
+  bar.appendChild(el('button', { class: 'btn btn-sm btn-ghost', type: 'button', onclick: bulkSelectAll }, 'Select all visible'));
+  bar.appendChild(el('button', { class: 'btn btn-sm btn-ghost', type: 'button', onclick: bulkSelectNone }, 'Clear'));
+  bar.appendChild(el('button', {
+    class: 'btn btn-sm btn-primary', type: 'button',
+    disabled: count === 0 ? 'disabled' : undefined,
+    onclick: () => { if (count > 0) openBulkEditModal(); }
+  }, 'Apply edits'));
+  bar.appendChild(el('button', {
+    class: 'btn btn-sm btn-danger', type: 'button',
+    disabled: count === 0 ? 'disabled' : undefined,
+    onclick: () => bulkDeleteSelected()
+  }, 'Delete selected'));
+  bar.appendChild(el('button', { class: 'btn btn-sm', type: 'button', onclick: toggleBulkSelectMode }, 'Done'));
+}
+
+function bulkDeleteSelected() {
+  const ids = Array.from(UI.bulkSelected);
+  if (ids.length === 0) return;
+  if (!confirm('Delete ' + ids.length + ' equipment record(s) and all their tests? This cannot be undone.')) return;
+  /* Collect photos to clean up. */
+  const photoIds = [];
+  ids.forEach(id => {
+    const eq = STATE.equipment.find(e => e.id === id);
+    if (!eq) return;
+    (eq.photos || []).forEach(p => photoIds.push(p.id));
+    (eq.tests || []).forEach(t => (t.photos || []).forEach(p => photoIds.push(p.id)));
+  });
+  STATE.equipment = STATE.equipment.filter(e => ids.indexOf(e.id) < 0);
+  STATE.punchList = STATE.punchList.filter(p => ids.indexOf(p.equipmentId) < 0);
+  UI.bulkSelected.clear();
+  saveState();
+  updateTabCounts();
+  renderEquipmentGrid();
+  updateBulkActionBar();
+  toast('Deleted ' + ids.length + ' record(s)');
+  photoIds.forEach(id => {
+    deletePhoto(id).catch(err => console.warn('Failed to remove orphan photo', id, err));
+  });
+}
+
+function openBulkEditModal() {
+  /* Bulk-edit modal: each editable field has an "Apply" checkbox and an
+     input. Only checked fields are written to selected equipment;
+     unchecked fields are left untouched per record. */
+  const selectedIds = Array.from(UI.bulkSelected);
+  if (selectedIds.length === 0) return;
+  const selected = selectedIds.map(id => STATE.equipment.find(e => e.id === id)).filter(Boolean);
+  const distinctTypes = Array.from(new Set(selected.map(e => e.type)));
+
+  const F = {
+    location:        { apply: false, value: '' },
+    serves:          { apply: false, value: '' },
+    zone:            { apply: false, value: '' },
+    manufacturer:    { apply: false, value: '' },
+    model:           { apply: false, value: '' },
+    associatedAhu:   { apply: false, value: '' },
+    airPercent:      { apply: false, value: '' },
+    waterPercent:    { apply: false, value: '' },
+    tempDegF:        { apply: false, value: '' },
+    airPercentHigh:  { apply: false, value: '' },
+    airPercentLow:   { apply: false, value: '' },
+    waterPercentHigh:{ apply: false, value: '' },
+    waterPercentLow: { apply: false, value: '' },
+    tempDegFHigh:    { apply: false, value: '' },
+    tempDegFLow:     { apply: false, value: '' }
+  };
+
+  const body = el('div');
+  body.appendChild(el('p', { class: 'modal-help' },
+    'Applies the checked fields to the ' + selected.length + ' selected record(s). Unchecked fields are left unchanged per record. Identification fields overwrite the existing value; tolerance fields overwrite the per-equipment tolerance. Tag, design values, and tests are never touched by bulk edit.'));
+
+  if (distinctTypes.length > 1) {
+    body.appendChild(el('p', { class: 'csv-warn', style: 'font-size:0.85rem;' },
+      'Selection spans ' + distinctTypes.length + ' equipment types. Only fields common to all types will apply meaningfully. The Associated AHU field is only written to terminals.'));
+  }
+
+  /* Build a row helper: checkbox + label + input + optional unit */
+  function row(host, label, fieldKey, opts) {
+    opts = opts || {};
+    const rowEl = el('div', { class: 'bulk-edit-row' });
+    const cb = el('input', { type: 'checkbox', id: 'bulk-cb-' + fieldKey });
+    cb.addEventListener('change', (e) => { F[fieldKey].apply = e.target.checked; });
+    rowEl.appendChild(cb);
+    rowEl.appendChild(el('label', { class: 'bulk-edit-label', for: 'bulk-cb-' + fieldKey }, label));
+    const inputWrap = el('div', { class: 'bulk-edit-input' });
+    if (opts.type === 'select') {
+      const sel = el('select');
+      (opts.options || []).forEach(o => {
+        sel.appendChild(el('option', { value: o.value }, o.label));
+      });
+      sel.addEventListener('change', (e) => { F[fieldKey].value = e.target.value; cb.checked = true; F[fieldKey].apply = true; });
+      inputWrap.appendChild(sel);
+    } else {
+      const inp = el('input', { type: opts.type || 'text', step: opts.step });
+      if (opts.placeholder) inp.setAttribute('placeholder', opts.placeholder);
+      inp.addEventListener('input', (e) => { F[fieldKey].value = e.target.value; cb.checked = true; F[fieldKey].apply = true; });
+      inputWrap.appendChild(inp);
+    }
+    if (opts.unit) inputWrap.appendChild(el('span', { class: 'unit-suffix muted' }, opts.unit));
+    rowEl.appendChild(inputWrap);
+    host.appendChild(rowEl);
+  }
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Identification'));
+  const idHost = el('div', { class: 'bulk-edit-host' });
+  row(idHost, 'Location',     'location',     { placeholder: 'Mech room 102' });
+  row(idHost, 'Serves',       'serves',       { placeholder: 'East wing offices' });
+  row(idHost, 'Zone',         'zone',         { placeholder: 'North wing' });
+  row(idHost, 'Manufacturer', 'manufacturer', { placeholder: 'Trane' });
+  row(idHost, 'Model',        'model',        { placeholder: 'M-Series' });
+  /* Associated AHU only meaningful if any selected record is a terminal */
+  if (selected.some(e => e.type === 'terminal')) {
+    const ahuOptions = [{ value: '', label: '(unassigned)' }].concat(
+      STATE.equipment.filter(e => e.type === 'ahu').map(a => ({ value: a.id, label: a.tag + (a.location ? ' - ' + a.location : '') }))
+    );
+    row(idHost, 'Associated AHU (terminals only)', 'associatedAhu', { type: 'select', options: ahuOptions });
+  }
+  body.appendChild(idHost);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Tolerance overrides'));
+  const tolHost = el('div', { class: 'bulk-edit-host' });
+  row(tolHost, 'Air tolerance (symmetric)',   'airPercent',   { type: 'number', step: '0.5', unit: '%' });
+  row(tolHost, 'Air high override',           'airPercentHigh',  { type: 'number', step: '0.5', unit: '%' });
+  row(tolHost, 'Air low override',            'airPercentLow',   { type: 'number', step: '0.5', unit: '%' });
+  row(tolHost, 'Water tolerance (symmetric)', 'waterPercent', { type: 'number', step: '0.5', unit: '%' });
+  row(tolHost, 'Water high override',         'waterPercentHigh',  { type: 'number', step: '0.5', unit: '%' });
+  row(tolHost, 'Water low override',          'waterPercentLow',   { type: 'number', step: '0.5', unit: '%' });
+  row(tolHost, 'Temp tolerance (symmetric)',  'tempDegF',     { type: 'number', step: '0.5', unit: 'degF' });
+  row(tolHost, 'Temp high override',          'tempDegFHigh', { type: 'number', step: '0.5', unit: 'degF' });
+  row(tolHost, 'Temp low override',           'tempDegFLow',  { type: 'number', step: '0.5', unit: 'degF' });
+  body.appendChild(tolHost);
+
+  showModal({
+    title: 'Bulk edit ' + selected.length + ' record(s)',
+    body: body,
+    primaryLabel: 'Apply',
+    secondaryLabel: 'Cancel',
+    onPrimary: () => {
+      const applied = Object.entries(F).filter(([, v]) => v.apply);
+      if (applied.length === 0) {
+        toast('No fields are checked to apply', 'err');
+        return false;
+      }
+      let written = 0;
+      selected.forEach(eq => {
+        applied.forEach(([key, slot]) => {
+          if (key === 'associatedAhu') {
+            if (eq.type !== 'terminal') return; /* skip non-terminals */
+            eq.associatedAhu = slot.value;
+          } else if (['airPercent', 'waterPercent', 'tempDegF'].indexOf(key) >= 0) {
+            const num = parseFloat(slot.value);
+            if (isFinite(num)) eq.tolerance[key] = num;
+          } else if (['airPercentHigh', 'airPercentLow', 'waterPercentHigh', 'waterPercentLow', 'tempDegFHigh', 'tempDegFLow'].indexOf(key) >= 0) {
+            eq.tolerance[key] = slot.value; /* may be empty string to clear */
+          } else {
+            eq[key] = slot.value;
+          }
+        });
+        written++;
+      });
+      saveState();
+      updateTabCounts();
+      closeModal();
+      renderEquipmentGrid();
+      updateBulkActionBar();
+      toast('Updated ' + written + ' record(s)');
+      return true;
+    }
+  });
+}
 
 function openBulkAddModal() {
   const form = {
@@ -3597,7 +5335,8 @@ function openBulkAddModal() {
     serves: '',
     manufacturer: '',
     model: '',
-    associatedAhu: ''
+    associatedAhu: '',
+    zone: ''
   };
 
   const body = el('div');
@@ -3660,6 +5399,12 @@ function openBulkAddModal() {
   commonGrid.appendChild(makeField({
     id: 'bulk-model', label: 'Model', type: 'text', value: form.model,
     onInput: (e) => { form.model = e.target.value; }
+  }).wrap);
+  commonGrid.appendChild(makeField({
+    id: 'bulk-zone', label: 'Zone', type: 'text', value: form.zone,
+    placeholder: 'North wing / Floor 2',
+    help: 'Applied to all new records; used by multi-AHU roll-up',
+    onInput: (e) => { form.zone = e.target.value; }
   }).wrap);
   body.appendChild(commonGrid);
 
@@ -3746,11 +5491,12 @@ function openBulkAddModal() {
           serial: '',
           design: {},
           tests: [],
-          tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 },
+          tolerance: defaultTolerance(),
           status: 'pending',
           notes: '',
           photos: [],
-          associatedAhu: form.type === 'terminal' ? (form.associatedAhu || '') : ''
+          associatedAhu: form.type === 'terminal' ? (form.associatedAhu || '') : '',
+          zone: form.zone || ''
         };
         STATE.equipment.push(eq);
       });
@@ -4695,6 +6441,130 @@ function thumbnailFor(photoRef) {
   return img;
 }
 
+/* -------------------- Nameplate OCR -------------------- */
+/* Uses the browser TextDetector API when available. This is currently
+   shipped in Chromium-based browsers and Edge on platforms with the
+   underlying OS-level text recognition (Android, ChromeOS, some
+   desktops). Safari and Firefox do not implement TextDetector at the
+   time of writing. We do NOT pull in tesseract.js or any other OCR
+   library, since that would either inflate the bundle past the
+   single-file budget or require loading from a CDN, which violates the
+   no-external-resources rule (Google Fonts is the only exception). When
+   TextDetector is unavailable we tell the user plainly and suggest they
+   type the values in manually.
+
+   Output: a list of detected text snippets, each with a "use as ..."
+   picker that writes the value into one of the equipment's design
+   fields. Numeric strings are offered first to whichever numeric design
+   field is empty; freeform strings to any text design field. */
+
+function runNameplateOcr(eq, file, host) {
+  clear(host);
+  if (!('TextDetector' in window)) {
+    host.appendChild(el('div', { class: 'ocr-result' }, [
+      el('h4', { class: 'section-head', style: 'margin-top:0;' }, 'OCR not available'),
+      el('p', { class: 'muted' },
+        'This browser does not support the TextDetector API used for in-browser OCR. ' +
+        'PITOT does not load external OCR libraries from a CDN. ' +
+        'Type the nameplate values into the Edit modal manually, or open this file in a Chromium-based browser on Android, ChromeOS, or a desktop with text-recognition support.')
+    ]));
+    return;
+  }
+  host.appendChild(el('p', { class: 'muted' }, 'Scanning image...'));
+
+  /* Load the file into an ImageBitmap and pass to the detector. */
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const detector = new window.TextDetector();
+        detector.detect(img).then(results => {
+          renderOcrResults(eq, host, results || []);
+        }).catch(err => {
+          clear(host);
+          host.appendChild(el('p', { class: 'muted' }, 'OCR failed: ' + (err.message || 'unknown error')));
+        });
+      } catch (err) {
+        clear(host);
+        host.appendChild(el('p', { class: 'muted' }, 'OCR failed: ' + (err.message || 'unknown error')));
+      }
+    };
+    img.onerror = () => {
+      clear(host);
+      host.appendChild(el('p', { class: 'muted' }, 'Could not decode image for OCR.'));
+    };
+    img.src = e.target.result;
+  };
+  reader.onerror = () => {
+    clear(host);
+    host.appendChild(el('p', { class: 'muted' }, 'Could not read the image file.'));
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderOcrResults(eq, host, results) {
+  clear(host);
+  if (results.length === 0) {
+    host.appendChild(el('p', { class: 'muted' }, 'No text detected on the image. Try a clearer photo of the nameplate.'));
+    return;
+  }
+  /* Flatten the detector output. Each TextDetector result has rawValue
+     (the text) and a bounding box. */
+  const snippets = results.map(r => (r.rawValue || '').trim()).filter(s => s.length > 0);
+  if (snippets.length === 0) {
+    host.appendChild(el('p', { class: 'muted' }, 'No text detected on the image.'));
+    return;
+  }
+  const type = EQUIPMENT_TYPES[eq.type];
+  const designKeys = type ? type.fields : [];
+
+  host.appendChild(el('h4', { class: 'section-head', style: 'margin-top:0;' }, 'Detected text (' + snippets.length + ')'));
+  host.appendChild(el('p', { class: 'muted', style: 'font-size:0.8rem;' },
+    'Pick a design field for each snippet to write to. Skip the ones that are not relevant. Numeric fields parse the first number from the snippet; text fields take the whole string.'));
+
+  const list = el('div', { class: 'ocr-snippets' });
+  snippets.forEach((text, idx) => {
+    const row = el('div', { class: 'ocr-snippet' });
+    row.appendChild(el('span', { class: 'mono ocr-text' }, text));
+    /* Build a select of plausible design-field targets. */
+    const opts = [{ value: '', label: '(skip)' }].concat(
+      designKeys.map(f => ({ value: f.key, label: f.label + (f.unit ? ' (' + f.unit + ')' : '') }))
+    );
+    const fieldType = 'select';
+    const sel = el('select', { class: 'ocr-select', id: 'ocr-sel-' + idx });
+    opts.forEach(o => {
+      const opt = el('option', { value: o.value }, o.label);
+      sel.appendChild(opt);
+    });
+    row.appendChild(sel);
+    const btn = el('button', { class: 'btn btn-xs', type: 'button' }, 'Apply');
+    btn.addEventListener('click', () => {
+      const key = sel.value;
+      if (!key) { toast('Pick a field first', 'err'); return; }
+      const field = designKeys.find(f => f.key === key);
+      if (!field) return;
+      let value = text;
+      if ((field.type || 'number') === 'number') {
+        /* Parse the first number from the snippet. */
+        const m = text.match(/-?\d+(\.\d+)?/);
+        if (!m) { toast('No number found in "' + text + '"', 'err'); return; }
+        value = m[0];
+      }
+      eq.design = eq.design || {};
+      eq.design[key] = value;
+      saveState();
+      toast(field.label + ' set to ' + value);
+      row.classList.add('ocr-applied');
+      btn.textContent = 'Applied';
+      btn.disabled = true;
+    });
+    row.appendChild(btn);
+    list.appendChild(row);
+  });
+  host.appendChild(list);
+}
+
 function openPhotoModal(eq, t) {
   /* If t is provided, attach to test; else attach to equipment. */
   const target = t || eq;
@@ -4708,15 +6578,49 @@ function openPhotoModal(eq, t) {
     'Photos are stored locally in IndexedDB. They are not included in JSON export.'));
 
   body.appendChild(el('h4', { class: 'section-head' }, 'Add a photo'));
+  /* Two file inputs: one for the standard picker (library or camera at
+     the user's choice), one with capture="environment" that biases
+     mobile devices toward the rear camera. The "Take photo" button
+     triggers the camera input invisibly. */
   const fileInput = el('input', { type: 'file', accept: 'image/*' });
+  const cameraInput = el('input', { type: 'file', accept: 'image/*', capture: 'environment',
+    style: 'position:absolute;left:-9999px;width:1px;height:1px;opacity:0;' });
   body.appendChild(fileInput);
+  body.appendChild(cameraInput);
+  /* Track which input holds the currently-selected file. */
+  let chosenInput = fileInput;
+  fileInput.addEventListener('change',   () => { if (fileInput.files && fileInput.files[0])   chosenInput = fileInput;   });
+  cameraInput.addEventListener('change', () => { if (cameraInput.files && cameraInput.files[0]) chosenInput = cameraInput; });
+
   const captionField = makeField({
     id: 'photo-cap', label: 'Caption', value: '',
     onInput: () => {}
   });
   body.appendChild(captionField.wrap);
+  const buttonRow = el('div', { class: 'row gap-sm mt-sm' });
   const addBtn = el('button', { class: 'btn btn-sm', type: 'button' }, '+ Add');
-  body.appendChild(addBtn);
+  buttonRow.appendChild(addBtn);
+  /* Take photo: triggers the camera-biased input. On a mobile browser
+     this opens the camera directly; on desktop it usually opens the
+     standard file picker as a graceful fallback. */
+  const cameraBtn = el('button', { class: 'btn btn-sm btn-ghost', type: 'button',
+    title: 'Open camera (mobile) or file picker (desktop)' }, 'Take photo');
+  cameraBtn.addEventListener('click', () => cameraInput.click());
+  buttonRow.appendChild(cameraBtn);
+  /* Scan nameplate: try the browser TextDetector API on the selected file
+     and present detected text snippets for assignment to design fields. */
+  const scanBtn = el('button', { class: 'btn btn-sm btn-ghost', type: 'button',
+    title: 'Run OCR on the selected image (uses the browser TextDetector API if available)' }, 'Scan nameplate');
+  buttonRow.appendChild(scanBtn);
+  body.appendChild(buttonRow);
+  const ocrHost = el('div', { class: 'ocr-host mt-md' });
+  body.appendChild(ocrHost);
+
+  scanBtn.addEventListener('click', () => {
+    const f = chosenInput.files && chosenInput.files[0];
+    if (!f) { toast('Select an image file or take a photo first', 'err'); return; }
+    runNameplateOcr(eq, f, ocrHost);
+  });
 
   body.appendChild(el('h4', { class: 'section-head' }, 'Existing photos'));
   const list = el('div', { class: 'photo-grid' });
@@ -4748,15 +6652,17 @@ function openPhotoModal(eq, t) {
   }
 
   addBtn.addEventListener('click', () => {
-    if (!fileInput.files || !fileInput.files[0]) {
-      toast('Select a file first', 'err');
+    const file = chosenInput.files && chosenInput.files[0];
+    if (!file) {
+      toast('Select a file or take a photo first', 'err');
       return;
     }
     const caption = captionField.input.value;
-    const file = fileInput.files[0];
     const promise = t ? attachPhotoToTest(eq, t, file, caption) : attachPhotoToEquipment(eq, file, caption);
     promise.then(() => {
       fileInput.value = '';
+      cameraInput.value = '';
+      chosenInput = fileInput;
       captionField.input.value = '';
       toast('Photo added', 'ok');
       drawList();
@@ -5046,7 +6952,7 @@ function renderReportTab() {
     host.appendChild(detail);
   }
 
-  /* Phase 2: air balance verification */
+  /* Phase 2: air balance verification (per AHU) */
   const abRows = airBalanceReport();
   const abAssigned = abRows.filter(r => r.terminalCount > 0);
   if (abAssigned.length > 0) {
@@ -5079,6 +6985,43 @@ function renderReportTab() {
     tbl.appendChild(tbody);
     ab.appendChild(tbl);
     host.appendChild(ab);
+  }
+
+  /* Phase 4: per-zone air balance roll-up. Only renders if at least one
+     zone has both an AHU and a terminal assigned to it. */
+  const zoneRows = airBalanceByZoneReport().filter(r => r.ahuCount > 0 && r.terminalCount > 0);
+  if (zoneRows.length > 0) {
+    const zb = el('div', { class: 'report-sheet' });
+    zb.appendChild(el('h3', null, 'Multi-AHU air balance roll-up by zone'));
+    zb.appendChild(el('p', { class: 'muted' }, 'For each zone, the sum of all AHU final-phase airflows is compared against the sum of all terminal final-phase airflows in the same zone. This handles multi-zone systems where multiple AHUs feed a common volume.'));
+    const tbl = el('table', { class: 'report-table' });
+    tbl.appendChild(el('thead', null, el('tr', null, [
+      el('th', null, 'Zone'),
+      el('th', { class: 'num' }, 'AHUs (reading)'),
+      el('th', { class: 'num' }, 'Design CFM'),
+      el('th', { class: 'num' }, 'AHU sum'),
+      el('th', { class: 'num' }, 'Terminals (reading)'),
+      el('th', { class: 'num' }, 'Terminal sum'),
+      el('th', { class: 'num' }, 'Imbalance')
+    ])));
+    const tbody = el('tbody');
+    zoneRows.forEach(r => {
+      const cls = r.imbalancePercent === null ? 'na'
+        : Math.abs(r.imbalancePercent) <= 10 ? 'pass' : 'fail';
+      tbody.appendChild(el('tr', null, [
+        el('td', { class: 'text' }, r.zone),
+        el('td', { class: 'num' }, r.ahusWithReadings + ' / ' + r.ahuCount),
+        el('td', { class: 'num' }, r.designAhuSum > 0 ? Math.round(r.designAhuSum).toLocaleString() : '-'),
+        el('td', { class: 'num' }, r.ahuSum > 0 ? Math.round(r.ahuSum).toLocaleString() : '-'),
+        el('td', { class: 'num' }, r.terminalsWithReadings + ' / ' + r.terminalCount),
+        el('td', { class: 'num' }, r.terminalSum > 0 ? Math.round(r.terminalSum).toLocaleString() : '-'),
+        el('td', { class: 'num result ' + cls },
+          r.imbalancePercent === null ? '-' : (r.imbalancePercent >= 0 ? '+' : '') + r.imbalancePercent.toFixed(1) + '%')
+      ]));
+    });
+    tbl.appendChild(tbody);
+    zb.appendChild(tbl);
+    host.appendChild(zb);
   }
 
   /* Punch list */
@@ -5292,7 +7235,7 @@ function showModal(opts) {
   modal.appendChild(modalBody);
   modal.appendChild(el('div', { class: 'modal-foot' }, [
     el('button', { class: 'btn', type: 'button', onclick: closeModal }, 'Cancel'),
-    el('button', { class: 'btn btn-primary', type: 'button', onclick: () => {
+    el('button', { class: 'btn btn-primary modal-primary', type: 'button', onclick: () => {
       const ok = opts.onPrimary ? opts.onPrimary() : true;
       if (ok === false) return;
     }}, opts.primaryLabel || 'Save')
@@ -5316,6 +7259,47 @@ function closeModal() {
 
 const TAB_PERSIST_KEY = 'pitot.activeTab';
 const VALID_TABS = ['project', 'equipment', 'punch', 'report'];
+
+/* -------------------- Theme system -------------------- */
+const THEME_PERSIST_KEY = 'pitot.theme';
+const THEMES = [
+  { value: 'default',    label: 'Brass & Graphite (default)' },
+  { value: 'inkwell',    label: 'Inkwell (high contrast)' },
+  { value: 'blueprint',  label: 'Blueprint (cyanotype)' },
+  { value: 'foundry',    label: 'Foundry (copper & ash)' },
+  { value: 'fieldnotes', label: 'Field Notes (kraft & ink)' },
+  { value: 'locomotive', label: 'Locomotive (B&O signal)' }
+];
+const VALID_THEMES = THEMES.map(t => t.value);
+
+function applyTheme(name) {
+  /* The default theme is the :root palette with no override. */
+  const safe = VALID_THEMES.indexOf(name) >= 0 ? name : 'default';
+  if (safe === 'default') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', safe);
+  }
+  try { localStorage.setItem(THEME_PERSIST_KEY, safe); } catch (e) { /* private mode */ }
+}
+
+function lastTheme() {
+  try {
+    const v = localStorage.getItem(THEME_PERSIST_KEY);
+    if (v && VALID_THEMES.indexOf(v) >= 0) return v;
+  } catch (e) { /* ignore */ }
+  return 'default';
+}
+
+function nextTheme() {
+  /* Cycles through the theme list for the header button. */
+  const cur = lastTheme();
+  const idx = VALID_THEMES.indexOf(cur);
+  const next = VALID_THEMES[(idx + 1) % VALID_THEMES.length];
+  applyTheme(next);
+  toast('Theme: ' + (THEMES.find(t => t.value === next) || { label: next }).label.replace(/\s*\(.*\)$/, ''));
+  return next;
+}
 
 function setActiveTab(name) {
   UI.activeTab = name;
@@ -5397,11 +7381,36 @@ function importJson(file) {
 }
 
 function wipeWorkbook() {
-  if (!confirm('Clear the entire workbook? This cannot be undone.')) return;
+  /* Two-stage confirm: a single confirm is too easy to dismiss
+     accidentally given the destructive scope. */
+  const equipCount = STATE.equipment.length;
+  if (equipCount === 0) {
+    if (!confirm('Clear the workbook? Project metadata will be reset.')) return;
+  } else {
+    if (!confirm('Clear the entire workbook? This will permanently delete ' + equipCount + ' equipment record(s) and all their tests. This cannot be undone.')) return;
+    /* Second prompt only when there's real data at stake. */
+    const typed = prompt('Type the word CLEAR to confirm (or Cancel to keep the workbook).');
+    if (typed === null) return;
+    if (typed.trim().toUpperCase() !== 'CLEAR') {
+      toast('Workbook clear cancelled', 'err');
+      return;
+    }
+  }
+  /* Collect all photo IDs across equipment and tests for cleanup. */
+  const photoIds = [];
+  STATE.equipment.forEach(eq => {
+    (eq.photos || []).forEach(p => photoIds.push(p.id));
+    (eq.tests || []).forEach(t => (t.photos || []).forEach(p => photoIds.push(p.id)));
+  });
   STATE = defaultState();
   saveState();
   setActiveTab(lastActiveTab());
   toast('Workbook cleared');
+  /* Best-effort photo cleanup; failures aren't surfaced because the
+     state is already gone. */
+  photoIds.forEach(id => {
+    deletePhoto(id).catch(() => { /* ignore */ });
+  });
 }
 
 /* -------------------- Self-test (logic) -------------------- */
@@ -5783,6 +7792,455 @@ function selfTest() {
       collisionFor('new', '  VAV-01  ') !== undefined);
   })();
 
+  /* v0.4.0 quick-win regressions */
+  (function() {
+    /* Schema migration v3 -> v4 */
+    const v3 = { schema: 'pitot/workbook@3', version: '0.3.3',
+      project: { name: 'P3', reportStyle: 'aabc', firmName: 'F', firmAddress: '', firmCertNumber: '', supervisorName: '', supervisorCertNumber: '', reportDate: '', reportRevision: '', projectArchitect: '', projectEngineer: '', scopeOfWork: '' },
+      equipment: [{ id: 'eq-x', tag: 'AHU-1', type: 'ahu',
+        design: { cfm: 1000 }, tests: [],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 },
+        photos: [], associatedAhu: ''
+      }], punchList: [] };
+    const m3to4 = migrate(JSON.parse(JSON.stringify(v3)));
+    ok('migrate v3 -> v4 schema bumps',
+      m3to4 && m3to4.schema === SCHEMA);
+    ok('migrate v3 -> v4 backfills equipment.zone',
+      m3to4 && typeof m3to4.equipment[0].zone === 'string');
+    /* Full chain v1 -> v4 */
+    const v1 = { schema: 'pitot/workbook@1', version: '0.1.0',
+      project: { name: 'Orig' },
+      equipment: [{ id: 'eq-old', tag: 'X', type: 'ahu',
+        design: { cfm: 1000 }, tests: [],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 }
+      }], punchList: [] };
+    const m1to4 = migrate(JSON.parse(JSON.stringify(v1)));
+    ok('migrate v1 -> v4 (full chain) schema bumps',
+      m1to4 && m1to4.schema === SCHEMA);
+    ok('migrate v1 -> v4 adds zone field',
+      m1to4 && m1to4.equipment[0].zone === '');
+    ok('migrate v1 -> v4 adds reporting fields',
+      m1to4 && m1to4.project.reportStyle === 'draft');
+
+    /* Theme system */
+    ok('THEMES list has at least 5 themes',
+      THEMES.length >= 5);
+    ok('THEMES includes default',
+      VALID_THEMES.indexOf('default') >= 0);
+    try { localStorage.removeItem(THEME_PERSIST_KEY); } catch (e) {}
+    ok('lastTheme falls back to default when nothing persisted',
+      lastTheme() === 'default');
+    try { localStorage.setItem(THEME_PERSIST_KEY, 'blueprint'); } catch (e) {}
+    ok('lastTheme returns persisted value',
+      lastTheme() === 'blueprint');
+    try { localStorage.setItem(THEME_PERSIST_KEY, 'mystery'); } catch (e) {}
+    ok('lastTheme rejects invalid theme name',
+      lastTheme() === 'default');
+    try { localStorage.removeItem(THEME_PERSIST_KEY); } catch (e) {}
+
+    /* Zone air balance roll-up */
+    const savedEq = STATE.equipment.slice();
+    STATE.equipment = [
+      { id: 'a1', tag: 'AHU-N1', type: 'ahu', zone: 'North',
+        design: { cfm: 5000 },
+        tests: [{ id: 'ta1', phase: 'final', readings: { cfm: 4900 } }],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 } },
+      { id: 'a2', tag: 'AHU-N2', type: 'ahu', zone: 'North',
+        design: { cfm: 3000 },
+        tests: [{ id: 'ta2', phase: 'final', readings: { cfm: 3050 } }],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 } },
+      { id: 't1', tag: 'T-1', type: 'terminal', zone: 'North', associatedAhu: 'a1',
+        design: { cfm: 500 },
+        tests: [{ id: 'tt1', phase: 'final', readings: { cfm: 510 } }],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 } },
+      { id: 't2', tag: 'T-2', type: 'terminal', zone: 'North', associatedAhu: 'a1',
+        design: { cfm: 500 },
+        tests: [{ id: 'tt2', phase: 'final', readings: { cfm: 495 } }],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 } },
+      { id: 'a3', tag: 'AHU-S1', type: 'ahu', zone: 'South',
+        design: { cfm: 4000 }, tests: [], tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 } }
+    ];
+    const zr = airBalanceByZoneReport();
+    ok('zone report has two zones',
+      zr.length === 2);
+    const north = zr.find(z => z.zone === 'North');
+    ok('North zone aggregates 2 AHUs',
+      north && north.ahuCount === 2 && north.ahusWithReadings === 2);
+    ok('North zone AHU sum is 7950',
+      north && Math.abs(north.ahuSum - 7950) < 0.001);
+    ok('North zone aggregates 2 terminals',
+      north && north.terminalCount === 2 && north.terminalsWithReadings === 2);
+    ok('North zone terminal sum is 1005',
+      north && Math.abs(north.terminalSum - 1005) < 0.001);
+    ok('North zone imbalance computed',
+      north && north.imbalancePercent !== null);
+    const south = zr.find(z => z.zone === 'South');
+    ok('South zone has 1 AHU and 0 terminals',
+      south && south.ahuCount === 1 && south.terminalCount === 0);
+    STATE.equipment = savedEq;
+  })();
+
+  /* v0.4.1: CSV import */
+  (function() {
+    /* Parser: basic comma-separated */
+    let p = parseCsv('Tag,CFM\nAHU-1,5000\nAHU-2,3000');
+    ok('CSV parse: 3 rows for 3 lines',
+      p.length === 3 && p[0].length === 2 && p[1][0] === 'AHU-1' && p[2][1] === '3000');
+    /* CRLF line endings */
+    p = parseCsv('a,b\r\n1,2\r\n3,4\r\n');
+    ok('CSV parse: CRLF handled',
+      p.length === 3 && p[2][0] === '3' && p[2][1] === '4');
+    /* Quoted field containing comma */
+    p = parseCsv('Tag,Location\nAHU-1,"Mech room, 1st floor"');
+    ok('CSV parse: quoted comma',
+      p.length === 2 && p[1][1] === 'Mech room, 1st floor');
+    /* Quoted field containing doubled-up quote */
+    p = parseCsv('a,b\n"she said ""hi""","ok"');
+    ok('CSV parse: escaped quotes',
+      p.length === 2 && p[1][0] === 'she said "hi"');
+    /* Tab-separated */
+    p = parseCsv('Tag\tCFM\nAHU-1\t5000');
+    ok('CSV parse: TSV auto-detected',
+      p.length === 2 && p[1][1] === '5000');
+    /* BOM stripped */
+    p = parseCsv('\uFEFFTag,CFM\nAHU-1,5000');
+    ok('CSV parse: BOM stripped',
+      p[0][0] === 'Tag');
+    /* Empty input */
+    ok('CSV parse: empty input returns empty array',
+      parseCsv('').length === 0);
+    /* Trailing blank lines dropped */
+    p = parseCsv('a,b\n1,2\n\n\n');
+    ok('CSV parse: trailing blank lines dropped',
+      p.length === 2);
+
+    /* Mapping suggester */
+    ok('Suggest mapping: Tag -> tag (AHU)',
+      suggestCsvMapping('Tag', 'ahu') === 'tag');
+    ok('Suggest mapping: Mark -> tag',
+      suggestCsvMapping('Mark', 'ahu') === 'tag');
+    ok('Suggest mapping: CFM -> cfm (AHU)',
+      suggestCsvMapping('CFM', 'ahu') === 'cfm');
+    ok('Suggest mapping: "Design CFM" -> cfm',
+      suggestCsvMapping('Design CFM', 'ahu') === 'cfm');
+    ok('Suggest mapping: "ESP (in.wg)" -> esp',
+      suggestCsvMapping('ESP (in.wg)', 'ahu') === 'esp');
+    ok('Suggest mapping: Mfr -> manufacturer',
+      suggestCsvMapping('Mfr', 'ahu') === 'manufacturer');
+    ok('Suggest mapping: VAV-specific cfmMin',
+      suggestCsvMapping('Min CFM', 'vav') === 'cfmMin');
+    ok('Suggest mapping: VAV-specific cfmMax',
+      suggestCsvMapping('Max CFM', 'vav') === 'cfmMax');
+    ok('Suggest mapping: cfmMin not suggested for AHU (not a valid field)',
+      suggestCsvMapping('Min CFM', 'ahu') !== 'cfmMin');
+    ok('Suggest mapping: Pump GPM -> gpm',
+      suggestCsvMapping('GPM', 'pump') === 'gpm');
+    ok('Suggest mapping: AHU column for terminals',
+      suggestCsvMapping('AHU', 'terminal') === 'associatedAhu');
+    ok('Suggest mapping: unknown column returns empty string',
+      suggestCsvMapping('Random Column XYZ', 'ahu') === '');
+
+    /* Target key sets */
+    const ahuKeys = csvTargetKeys('ahu');
+    ok('csvTargetKeys for AHU includes tag and cfm',
+      ahuKeys.indexOf('tag') >= 0 && ahuKeys.indexOf('cfm') >= 0);
+    ok('csvTargetKeys for AHU does NOT include cfmMin',
+      ahuKeys.indexOf('cfmMin') < 0);
+    ok('csvTargetKeys for terminal includes associatedAhu',
+      csvTargetKeys('terminal').indexOf('associatedAhu') >= 0);
+    ok('csvTargetKeys for AHU does NOT include associatedAhu',
+      csvTargetKeys('ahu').indexOf('associatedAhu') < 0);
+  })();
+
+  /* v0.4.2: asymmetric tolerance */
+  (function() {
+    /* Asymmetric air tolerance: +5% / -15% on design 1000 → [850, 1050] */
+    const tol = { airPercent: 10, airPercentHigh: 5, airPercentLow: 15, waterPercent: 10, tempDegF: 2 };
+    ok('Asymmetric air: 1050 just at upper bound passes',
+      passFailField(1000, 1050, 'air', tol) === 'pass');
+    ok('Asymmetric air: 1060 above upper bound fails',
+      passFailField(1000, 1060, 'air', tol) === 'fail');
+    ok('Asymmetric air: 850 just at lower bound passes',
+      passFailField(1000, 850, 'air', tol) === 'pass');
+    ok('Asymmetric air: 840 below lower bound fails',
+      passFailField(1000, 840, 'air', tol) === 'fail');
+    /* +0/-5% spec, common for some outside-air specs */
+    const tolZero = { airPercent: 10, airPercentHigh: 0, airPercentLow: 5 };
+    ok('Asymmetric +0/-5: at design passes',
+      passFailField(1000, 1000, 'air', tolZero) === 'pass');
+    ok('Asymmetric +0/-5: 1010 over fails (high band is 0)',
+      passFailField(1000, 1010, 'air', tolZero) === 'fail');
+    ok('Asymmetric +0/-5: 960 at low bound passes',
+      passFailField(1000, 950, 'air', tolZero) === 'pass');
+    /* Empty override falls back to symmetric */
+    const tolMixed = { airPercent: 10, airPercentHigh: 5, airPercentLow: '' };
+    ok('Empty low override uses symmetric 10%',
+      passFailField(1000, 901, 'air', tolMixed) === 'pass');
+    /* Asymmetric temperature: +3 / -1 degF */
+    const tolT = { airPercent: 10, waterPercent: 10, tempDegF: 2, tempDegFHigh: 3, tempDegFLow: 1 };
+    ok('Asymmetric temp: 58 at +3 upper passes (55 +3)',
+      passFailField(55, 58, 'temp', tolT) === 'pass');
+    ok('Asymmetric temp: 59 above upper fails',
+      passFailField(55, 59, 'temp', tolT) === 'fail');
+    ok('Asymmetric temp: 54 at -1 lower passes',
+      passFailField(55, 54, 'temp', tolT) === 'pass');
+    ok('Asymmetric temp: 53 below lower fails',
+      passFailField(55, 53, 'temp', tolT) === 'fail');
+    /* formatToleranceBand */
+    ok('Format symmetric: returns ±10%',
+      formatToleranceBand({ airPercent: 10 }, 'air') === '\u00B110%');
+    ok('Format asymmetric: +5%/-15%',
+      formatToleranceBand({ airPercent: 10, airPercentHigh: 5, airPercentLow: 15 }, 'air') === '+5% / -15%');
+    ok('Format with only high override',
+      formatToleranceBand({ airPercent: 10, airPercentHigh: 5 }, 'air') === '+5% / -10%');
+    ok('Format temp symmetric: ±2 degF',
+      formatToleranceBand({ tempDegF: 2 }, 'temp') === '\u00B12 degF');
+  })();
+
+  /* v0.4.2: psychrometric helpers */
+  (function() {
+    /* Saturation pressure at 70 degF should be around 0.363 psi. */
+    ok('Saturation pressure at 70 degF ~0.36 psi',
+      Math.abs(saturationPressurePsi(70) - 0.363) < 0.02);
+    ok('Saturation pressure at 32 degF ~0.088 psi (freezing)',
+      Math.abs(saturationPressurePsi(32) - 0.088) < 0.005);
+    /* Standard room: 75 DB, 62 WB. W around 0.0092 lb/lb, h around 28 BTU/lb. */
+    const w = humidityRatioFromWb(75, 62);
+    ok('Humidity ratio at 75/62 is plausible (0.008-0.010)',
+      w > 0.008 && w < 0.010);
+    const h = airEnthalpy(75, 62);
+    ok('Enthalpy at 75/62 is plausible (27-29 BTU/lb)',
+      h > 27 && h < 29);
+    /* Drier air: 75 DB, 55 WB. Lower h. */
+    const hDry = airEnthalpy(75, 55);
+    ok('Drier air has lower enthalpy',
+      hDry < h);
+    /* When wet-bulb == dry-bulb (saturated), W is high. */
+    const wSat = humidityRatioFromWb(70, 70);
+    ok('Saturated air at 70 has W in plausible range',
+      wSat > 0.014 && wSat < 0.017);
+    /* coilAirTotalBtuh */
+    /* 1000 CFM, 80/67 DB/WB entering, 55/54 DB/WB leaving (cooling coil) */
+    const total = coilAirTotalBtuh(1000, 80, 67, 55, 54);
+    ok('Coil air total returns positive BTU/h with valid inputs',
+      total !== null && total > 0);
+    ok('Coil air total null with missing wet-bulb',
+      coilAirTotalBtuh(1000, 80, '', 55, 54) === null);
+    /* coilHeatBalance with wet-bulb prefers airTotal */
+    const eqWet = { type: 'coil', design: { btuh: 35000 } };
+    const tWet  = { readings: { gpm: 7, ewt: 45, lwt: 55, cfm: 1000, eat: 80, eatWb: 67, lat: 55, latWb: 54 } };
+    const hbWet = coilHeatBalance(eqWet, tWet);
+    ok('Heat balance with wet-bulb computes airTotal',
+      hbWet && hbWet.airTotal !== null);
+    ok('Heat balance with wet-bulb compares against total',
+      hbWet && hbWet.comparedAs === 'total');
+    ok('Heat balance without wet-bulb compares against sensible',
+      (function() {
+        const t = { readings: { gpm: 7, ewt: 45, lwt: 55, cfm: 1000, eat: 80, lat: 55 } };
+        const hb = coilHeatBalance(eqWet, t);
+        return hb && hb.comparedAs === 'sensible' && hb.airTotal === null;
+      })());
+    /* Latent contribution > 0 for a dehumidifying coil */
+    if (hbWet.airSensible !== null && hbWet.airTotal !== null) {
+      ok('Latent contribution > 0 for dehumidifying coil',
+        hbWet.airTotal > hbWet.airSensible);
+    }
+  })();
+
+  /* v0.4.2: bulk-edit semantics (data-shape tests, no DOM) */
+  (function() {
+    /* Simulate the bulk-apply logic locally. */
+    function applyEdits(equipment, edits) {
+      equipment.forEach(eq => {
+        Object.keys(edits).forEach(k => {
+          const slot = edits[k];
+          if (!slot.apply) return;
+          if (k === 'associatedAhu') {
+            if (eq.type !== 'terminal') return;
+            eq.associatedAhu = slot.value;
+          } else if (['airPercent', 'waterPercent', 'tempDegF'].indexOf(k) >= 0) {
+            const num = parseFloat(slot.value);
+            if (isFinite(num)) eq.tolerance[k] = num;
+          } else if (['airPercentHigh', 'airPercentLow', 'waterPercentHigh', 'waterPercentLow', 'tempDegFHigh', 'tempDegFLow'].indexOf(k) >= 0) {
+            eq.tolerance[k] = slot.value;
+          } else {
+            eq[k] = slot.value;
+          }
+        });
+      });
+    }
+    const equipment = [
+      { id: 'a', tag: 'AHU-1', type: 'ahu', location: 'orig', tolerance: { airPercent: 10 }, design: {}, tests: [] },
+      { id: 'b', tag: 'T-1',   type: 'terminal', associatedAhu: 'a', tolerance: { airPercent: 10 }, design: {}, tests: [] }
+    ];
+    applyEdits(equipment, {
+      location: { apply: true, value: 'updated' },
+      airPercent: { apply: true, value: '5' },
+      associatedAhu: { apply: true, value: '' }
+    });
+    ok('Bulk-edit applies location to all',
+      equipment[0].location === 'updated' && equipment[1].location === 'updated');
+    ok('Bulk-edit applies tolerance to all',
+      equipment[0].tolerance.airPercent === 5 && equipment[1].tolerance.airPercent === 5);
+    ok('Bulk-edit associatedAhu skips non-terminals',
+      equipment[0].associatedAhu === undefined);
+    ok('Bulk-edit associatedAhu clears terminal association',
+      equipment[1].associatedAhu === '');
+    /* Unchecked apply should leave field alone */
+    const eq2 = [{ id: 'c', tag: 'T', type: 'terminal', model: 'orig-model', tolerance: { airPercent: 10 }, design: {}, tests: [] }];
+    applyEdits(eq2, { model: { apply: false, value: 'NEW' } });
+    ok('Bulk-edit leaves unchecked fields alone',
+      eq2[0].model === 'orig-model');
+  })();
+
+  /* v0.4.3: CSV export */
+  (function() {
+    /* csvEscape behavior */
+    ok('csvEscape: plain returns plain',
+      csvEscape('hello') === 'hello');
+    ok('csvEscape: comma triggers quoting',
+      csvEscape('a, b') === '"a, b"');
+    ok('csvEscape: embedded quote is doubled',
+      csvEscape('she said "hi"') === '"she said ""hi"""');
+    ok('csvEscape: newline triggers quoting',
+      csvEscape('line1\nline2') === '"line1\nline2"');
+    ok('csvEscape: empty becomes empty',
+      csvEscape('') === '');
+    ok('csvEscape: null becomes empty',
+      csvEscape(null) === '');
+
+    /* CSV header generation: AHU should NOT have Associated AHU column */
+    const savedEq = STATE.equipment.slice();
+    STATE.equipment = [
+      { id: 'a1', tag: 'AHU-1', type: 'ahu', location: 'Mech 101', serves: 'East',
+        manufacturer: 'Trane', model: 'M-Series', serial: '', zone: 'East',
+        design: { cfm: 5000, esp: 2.0 },
+        tests: [{ id: 't1', phase: 'final', readings: { cfm: 4950, esp: 1.95 } }],
+        tolerance: { airPercent: 10 }, status: 'balanced' }
+    ];
+    const ahuCsv = generateCsvForType('ahu', { includeReadings: true, includeStatus: true });
+    const ahuLines = ahuCsv.trim().split(/\r?\n/);
+    ok('AHU export: 2 lines (header + 1 record)',
+      ahuLines.length === 2);
+    ok('AHU header contains Tag',
+      ahuLines[0].indexOf('Tag') >= 0);
+    ok('AHU header does NOT contain Associated AHU',
+      ahuLines[0].indexOf('Associated AHU') < 0);
+    ok('AHU header includes "(final)" reading columns',
+      ahuLines[0].indexOf('(final)') >= 0);
+    ok('AHU header includes Status column',
+      ahuLines[0].indexOf('Status') >= 0);
+    ok('AHU row preserves tag value',
+      ahuLines[1].indexOf('AHU-1') >= 0);
+    ok('AHU row preserves design CFM',
+      ahuLines[1].indexOf('5000') >= 0);
+    ok('AHU row preserves final reading',
+      ahuLines[1].indexOf('4950') >= 0);
+
+    /* Status column can be omitted */
+    const noStatus = generateCsvForType('ahu', { includeReadings: true, includeStatus: false });
+    ok('AHU export with includeStatus=false omits Status header',
+      noStatus.split(/\r?\n/)[0].indexOf('Status') < 0);
+
+    /* Readings can be omitted */
+    const noReadings = generateCsvForType('ahu', { includeReadings: false, includeStatus: false });
+    ok('AHU export with includeReadings=false omits (final) columns',
+      noReadings.split(/\r?\n/)[0].indexOf('(final)') < 0);
+
+    /* Terminal export: SHOULD include Associated AHU column with the AHU tag */
+    STATE.equipment.push(
+      { id: 't1', tag: 'T-1', type: 'terminal', location: '101', serves: 'Room 101',
+        manufacturer: '', model: '', serial: '', zone: 'East',
+        design: { cfm: 500 }, tests: [],
+        tolerance: { airPercent: 10 }, status: 'pending',
+        associatedAhu: 'a1' }
+    );
+    const termCsv = generateCsvForType('terminal', { includeReadings: false, includeStatus: false });
+    const termLines = termCsv.trim().split(/\r?\n/);
+    ok('Terminal export header has Associated AHU column',
+      termLines[0].indexOf('Associated AHU') >= 0);
+    ok('Terminal row resolves associatedAhu id to AHU tag',
+      termLines[1].indexOf('AHU-1') >= 0);
+
+    /* Round-trip column labels: import suggester should recognize export headers */
+    const ahuHeaderCells = ahuLines[0].split(',').filter(h => h !== 'Status' && h.indexOf('(final)') < 0);
+    /* Tag header must map back to "tag" */
+    const tagCell = ahuHeaderCells.find(c => c === 'Tag');
+    ok('Round-trip: "Tag" header maps to tag',
+      tagCell && suggestCsvMapping(tagCell, 'ahu') === 'tag');
+
+    /* Pressure helper */
+    STATE.project = { altitudeFt: '' };
+    ok('projectBarometricPsi at sea level returns 14.696',
+      Math.abs(projectBarometricPsi() - 14.696) < 0.001);
+    STATE.project = { altitudeFt: 0 };
+    ok('projectBarometricPsi at altitude 0 returns 14.696',
+      Math.abs(projectBarometricPsi() - 14.696) < 0.001);
+    STATE.project = { altitudeFt: 5280 };
+    /* Denver, ~12.18 psi by ICAO formula */
+    const pDenver = projectBarometricPsi();
+    ok('projectBarometricPsi at 5280 ft is plausible (12.0-12.3 psi)',
+      pDenver > 12.0 && pDenver < 12.3);
+    STATE.project = { altitudeFt: 'not a number' };
+    ok('projectBarometricPsi guards against non-numeric',
+      projectBarometricPsi() === 14.696);
+
+    /* coilHeatBalance picks up project pressure */
+    STATE.project = { altitudeFt: 5280 };
+    const eqWet = { type: 'coil', design: { btuh: 35000 } };
+    const tWet  = { readings: { gpm: 7, ewt: 45, lwt: 55, cfm: 1000, eat: 80, eatWb: 67, lat: 55, latWb: 54 } };
+    const hbDenver = coilHeatBalance(eqWet, tWet);
+    ok('coilHeatBalance carries pAtmPsi from project',
+      hbDenver && Math.abs(hbDenver.pAtmPsi - pDenver) < 0.001);
+    /* Air enthalpy at altitude differs from sea level */
+    const hSeaLevel = airEnthalpy(75, 62, 14.696);
+    const hDenver   = airEnthalpy(75, 62, pDenver);
+    ok('Enthalpy at altitude differs from sea level',
+      Math.abs(hDenver - hSeaLevel) > 0.1);
+
+    STATE.equipment = savedEq;
+    STATE.project = { altitudeFt: '' };
+  })();
+
+  /* v0.5.0 maintenance/polish */
+  (function() {
+    /* defaultTolerance always returns full asymmetric shape */
+    const d = defaultTolerance();
+    ok('defaultTolerance: symmetric airPercent is 10',
+      d.airPercent === 10);
+    ok('defaultTolerance: symmetric waterPercent is 10',
+      d.waterPercent === 10);
+    ok('defaultTolerance: symmetric tempDegF is 2',
+      d.tempDegF === 2);
+    ok('defaultTolerance: asymmetric fields are blank by default',
+      d.airPercentHigh === '' && d.airPercentLow === '' &&
+      d.waterPercentHigh === '' && d.waterPercentLow === '' &&
+      d.tempDegFHigh === '' && d.tempDegFLow === '');
+    ok('defaultTolerance returns a fresh object each call',
+      defaultTolerance() !== defaultTolerance());
+    const a = defaultTolerance(); const b = defaultTolerance();
+    a.airPercent = 99;
+    ok('Mutating one defaultTolerance does not affect another',
+      b.airPercent === 10);
+
+    /* Migration uses defaultTolerance: legacy 3-field tolerance comes
+       forward with the full asymmetric shape. */
+    const legacy = { schema: 'pitot/workbook@1', version: '0.1.0',
+      project: { name: 'L' },
+      equipment: [{ id: 'eq-l', tag: 'L1', type: 'ahu',
+        design: { cfm: 1000 }, tests: [],
+        tolerance: { airPercent: 7, waterPercent: 8, tempDegF: 1.5 }
+      }], punchList: [] };
+    const mLegacy = migrate(JSON.parse(JSON.stringify(legacy)));
+    ok('Migration backfills asymmetric fields onto legacy tolerance',
+      mLegacy.equipment[0].tolerance.airPercentHigh === '' &&
+      mLegacy.equipment[0].tolerance.tempDegFLow === '');
+    ok('Migration preserves legacy tolerance symmetric values',
+      mLegacy.equipment[0].tolerance.airPercent === 7 &&
+      mLegacy.equipment[0].tolerance.waterPercent === 8 &&
+      mLegacy.equipment[0].tolerance.tempDegF === 1.5);
+  })();
+
   const failed = results.filter(r => !r.ok);
   if (failed.length > 0) {
     console.error('PITOT self-test failures:', failed);
@@ -5793,7 +8251,81 @@ function selfTest() {
 
 /* -------------------- Boot -------------------- */
 
+/* -------------------- PWA bootstrap -------------------- */
+/* PITOT is a single-file HTML application, so a sidecar service worker
+   file isn't an option without violating the no-build-step convention.
+   What we CAN do, that helps without breaking the contract:
+     - inline the manifest via data URL (already in <head>)
+     - apply the Apple/Android PWA meta tags (already in <head>)
+     - register a Blob-URL service worker on secure contexts where the
+       browser allows it, for offline cache of Google Fonts. This is
+       best-effort: some browsers restrict Blob-URL SW scope to the
+       blob: scheme and the registration will silently fail. That's
+       fine; PITOT works perfectly offline already from file:// or
+       any local host.
+   When PITOT is served from a real domain (HTTPS) the operator is free
+   to ship a proper sidecar sw.js separately; we don't get in the way. */
+
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  /* SW requires a secure context (HTTPS or localhost). file:// won't work. */
+  if (!window.isSecureContext) return;
+  /* Already registered? Don't reattempt. */
+  navigator.serviceWorker.getRegistration().then(reg => {
+    if (reg) return;
+    const swSource = `
+      const VERSION = '${VERSION}';
+      const CACHE = 'pitot-runtime-' + VERSION;
+      self.addEventListener('install',  e => self.skipWaiting());
+      self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+      self.addEventListener('fetch', event => {
+        const req = event.request;
+        if (req.method !== 'GET') return;
+        const url = new URL(req.url);
+        if (url.origin === 'https://fonts.googleapis.com' ||
+            url.origin === 'https://fonts.gstatic.com') {
+          event.respondWith(
+            caches.open(CACHE).then(cache =>
+              cache.match(req).then(hit => hit || fetch(req).then(resp => {
+                if (resp && resp.status === 200) cache.put(req, resp.clone());
+                return resp;
+              }).catch(() => hit))
+            )
+          );
+        }
+      });
+    `;
+    const blob = new Blob([swSource], { type: 'application/javascript' });
+    const url  = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url).catch(err => {
+      /* Expected on browsers that restrict Blob-URL SW scope. The app
+         still works fine; the SW would only have added font caching. */
+      console.info('PITOT: service worker unavailable in this context (' +
+        (err && err.message || 'unknown') + '). Offline still works for the page itself.');
+    });
+  }).catch(() => { /* getRegistration failed; ignore */ });
+}
+
 function init() {
+  /* Apply persisted theme before any rendering so the user never sees a
+     flash of the default palette. */
+  applyTheme(lastTheme());
+
+  /* Attempt PWA service worker registration (best-effort, secure
+     context only; the inline <head> script already applied the theme
+     and the manifest is on the link tag). */
+  registerServiceWorker();
+
+  /* Phase 5.0 polish: Escape closes the currently-open modal. We don't
+     intercept other keys to avoid surprising form interactions. */
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const root = document.getElementById('modal-root');
+    if (root && !root.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
   /* Tab nav */
   document.getElementById('tab-nav').addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-tab]');
@@ -5811,6 +8343,9 @@ function init() {
   /* Add buttons */
   document.getElementById('btn-add-eq').addEventListener('click', () => openEquipmentModal(null));
   document.getElementById('btn-bulk-add-eq').addEventListener('click', () => openBulkAddModal());
+  document.getElementById('btn-import-csv').addEventListener('click', () => openCsvImportModal());
+  document.getElementById('btn-export-csv').addEventListener('click', () => openCsvExportModal());
+  document.getElementById('btn-bulk-select').addEventListener('click', () => toggleBulkSelectMode());
   document.getElementById('btn-add-punch').addEventListener('click', () => openPunchModal(null));
   document.getElementById('btn-print').addEventListener('click', () => {
     /* Always print from the Report tab so the layout matches what the
@@ -5824,6 +8359,7 @@ function init() {
   /* Header controls */
   document.getElementById('btn-export').addEventListener('click', exportJson);
   document.getElementById('btn-wipe').addEventListener('click', wipeWorkbook);
+  document.getElementById('btn-theme').addEventListener('click', () => nextTheme());
   document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-file').click());
   document.getElementById('import-file').addEventListener('change', (e) => {
     const f = e.target.files && e.target.files[0];

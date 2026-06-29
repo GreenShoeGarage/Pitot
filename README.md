@@ -6,18 +6,18 @@ Single HTML file, no build step, no server. Opens directly from disk and persist
 
 ## Status
 
-**v0.3.3 (Phase 3 second quick-win slice).** More small ergonomics fixes that come up the first time a field tech actually uses the tool:
+**v0.5.0 (maintenance / polish).** No new features. The Phase 4 surface area added a lot of components fast; this release walks back through it for the rough edges:
 
-- **Duplicate button on equipment grid cards.** Previously the duplicate action only appeared on the equipment detail view. Now every card in the grid has a Duplicate button in its footer (low-contrast, brightens on hover) for one-tap cloning without going into the detail page first.
-- **Bulk add equipment** (new `+ Bulk add` button on the equipment toolbar). Lets the technician generate a sequence of equipment records in one shot: pick the type, set a tag prefix, separator, start number, count, optional zero-padding width, optional common location / serves / manufacturer / model, optional associated AHU (for terminals). The modal previews the first and last tags before creating, and warns on tag collisions with existing equipment (non-blocking). Capped at 200 per batch.
-- **Last-active-tab restored on reload.** Open the punch list, close the browser, come back to PITOT, you land on the punch list again. The persisted tab name is sanity-checked against the valid set so a corrupt value can't lock the app into a non-existent view.
-- **AHU detail shows associated terminal count.** Terminal detail shows which AHU it serves. Quick visual confirmation that the air-balance report's plumbing is wired up.
-- **Tag uniqueness warning** when saving equipment. Detects collisions on whitespace-trimmed tags, reports the collision's type and location, and asks for confirmation. Non-blocking: if the duplicate is intentional, the technician can proceed.
-- **Print button switches to the Report tab first.** No more printing the equipment grid by accident.
+- **Print mode hardened.** All Phase 4 components that don't belong in a printed report (`.bulk-action-bar`, `.toast`, `.csv-import`, `.csv-steps`, `.ocr-host`, `.ocr-snippets`) explicitly hidden in `@media print`. Theme palette overrides now defeat with `html[data-theme]` print rules, so printing from any theme always yields the light-palette report layout rather than a colored-background print.
+- **Keyboard support.** Global `Escape` closes the open modal. Visible focus rings (`:focus-visible`) added to all buttons and form controls in the brass palette, so keyboard navigation no longer disappears into the page on tab focus.
+- **Toast positioning at narrow viewports.** Toasts pin to both sides (with margin) and rise above the bulk action bar at viewports ≤540px, so a long save-failed message no longer overflows the screen edge or hides behind the action bar.
+- **Workbook clear protected by typed confirmation.** With existing equipment present, "Clear workbook" now requires typing `CLEAR` after the confirm dialog. Empty workbooks still take a single confirm. Clear also cleans up the IndexedDB photos for the cleared records (previously orphaned).
+- **Save quota error explained.** A `QuotaExceededError` from localStorage now surfaces actionable guidance (export to JSON, clear old equipment) rather than the raw exception message.
+- **`defaultTolerance()` helper.** Single source of truth for the tolerance defaults; consolidates 15+ inline duplicates across production paths (equipment modal, bulk add, CSV import, migrate). Test fixtures still use the legacy 3-field inline shape on purpose to verify migration backfills properly.
 
-**v0.3.2** added the VAV traverse target picker, the `coilHeatBalance` defensive guards, the IndexedDB photo cleanup on delete, the equipment Duplicate button on the detail bar, and the traverse modal shape-switch robustness. **v0.3.1** added per-template equipment forms with section grouping. **v0.3.0** added the body-specific report style framing. All preserved here.
+No schema bump. No data migration. Existing workbooks open and behave identically.
 
-Schema is `pitot/workbook@3`. Older workbooks (`@1`, `@2`) are forward-migrated on load. New fields added in v0.3.1 do not require a schema bump because they live in `equipment.design` which is a free-form object; missing fields render as blank.
+**v0.4.3** added CSV export, elevation correction, mobile camera capture. **v0.4.2** added asymmetric tolerance, latent loads, bulk edit. All preserved.
 
 **These remain STYLE TEMPLATES, not official AABC/NEBB/TABB forms.** PITOT is independent software with no affiliation to any TAB certifying body. A certified submittal must use the certifying body's published forms and bear the signature of a credentialed supervisor.
 
@@ -31,100 +31,100 @@ It is named for the pitot tube, the iconic field instrument for HVAC duct traver
 
 PITOT is not an accredited TAB certification tool. The report style templates are LAYOUT TEMPLATES that follow the section ordering, terminology, and certification-statement conventions commonly seen in AABC, NEBB, and TABB submittals. They are NOT the certifying bodies' published forms, and PITOT is not affiliated with AABC, NEBB, TABB, SMACNA, or SMART.
 
-PITOT does not validate that the field instruments used are themselves in calibration.
+PITOT is not a real-time controls verification tool. TAB verifies steady-state performance.
 
-PITOT is not a controls verification tool. TAB verifies steady-state performance. Sequence-of-operation testing belongs in a commissioning record.
+PITOT does not validate field-instrument calibration. The technician records the calibration date as documentation.
 
 ## Install and use
 
 1. Download `pitot.html`.
-2. Double-click to open in any modern browser, or serve it from any static host.
-3. State persists to localStorage and IndexedDB.
+2. Open directly from disk (file://) or serve it over HTTPS.
+3. State persists to localStorage (workbook) and IndexedDB (photos).
 
-No install, no account, no telemetry. Google Fonts is the only external resource.
+To install as a homescreen app on a phone or tablet, open PITOT in a browser, then use "Add to Home Screen" from the browser menu. The inline manifest gives PITOT a proper title, icon, and standalone display mode.
 
-## Equipment field model (v0.3.1)
+No install workflow on disk, no account, no telemetry. Google Fonts is the only external resource.
 
-Each equipment type's fields are now tagged with a `section` and a `type`. The pass/fail engine continues to operate on `tolerance` and `critical` flags; new section / type metadata only affects layout.
+## CSV import
 
-### AHU / RTU
+The mechanical engineer or contractor usually provides an equipment schedule in Excel. PITOT's `+ Import CSV` button on the equipment toolbar opens a three-step modal:
 
-- **Fan data**: Total airflow (CFM, critical), External static pressure, Fan RPM
-- **Motor data**: Motor horsepower (nameplate), Motor voltage (nameplate), Motor phase (1 / 3, nameplate), Motor FLA (nameplate), Motor amps (measured per phase)
-- **Drive data**: Fan sheave PD, Motor sheave PD, Belt size, Belt quantity (all nameplate / observed)
-- **Filter data**: Filter type (e.g. MERV 13), Filter size, Filter quantity (all observed)
-- **Outside air**: OA CFM (measured, air tolerance), OA percent
-- **Air temperatures**: Mixed, Supply, Return (all temp tolerance)
+1. **Input**: pick equipment type (one type per import; run the modal again for each), choose whether the first row is a header, paste the CSV text directly or upload a .csv/.tsv file. Tab-separated is auto-detected if the first row contains more tabs than commas.
 
-### VAV box
+2. **Mapping**: PITOT shows every detected column with a sample value from the first row, and a dropdown of valid PITOT field targets (type-aware: only fields appropriate to the chosen equipment type are listed). Suggested mappings appear automatically based on common synonyms: "Mark" suggests `tag`, "Mfr" suggests `manufacturer`, "Design CFM" suggests `cfm`, "Max CFM" suggests `cfmMax` (for VAV), and so on. Skip any column by selecting "(skip)".
 
-- **Airflow data**: Minimum CFM (critical), Maximum CFM (critical), Inlet static pressure
-- **Reheat data**: Reheat type (none / electric / hot water), Reheat capacity (BTU/h), Reheat water flow (GPM, water tolerance), Discharge air temp
-- **Identification**: Box model, Controller address
+3. **Preview**: shows up to 5 rows as they would be created, plus aggregate counts and warnings: tag collisions with existing equipment, rows missing a tag value, unresolved AHU references (for terminal imports). Commit to push the records into the workbook; cancel to revise the mapping.
 
-### Pump
+Numeric design fields tolerate units mixed in with values: a cell containing "1500 cfm" parses to 1500. Text fields keep the whole string verbatim.
 
-- **Pump performance**: Flow rate (GPM, critical), Head (ft wg)
-- **Motor data**: Motor HP, Motor voltage, Motor phase, Motor FLA (nameplate), Motor amps (measured)
-- **Pressure data**: Suction, Discharge
+Terminal imports support an "AHU" column that maps to `associatedAhu`. PITOT resolves the AHU by tag at import time; unresolved references are flagged in the warnings list (the terminal still imports, just without the association).
 
-### Terminal (diffuser / grille)
+Tag collisions don't block import. You can have duplicate tags in the workbook if you want to (a renovation project might have AHU-1 covering both old and new units in different phases). The preview just makes the collision visible.
 
-- **Airflow data**: CFM (critical), Face velocity
-- **Identification**: Neck size, K-factor, Area served (room number), Drawing grid reference
+## Themes
 
-### Coil
+PITOT ships six themes. Cycle through them with the moon-and-sun icon in the header. The active theme persists across sessions.
 
-- **Water side**: GPM (critical), Entering water temp, Leaving water temp
-- **Air side**: Air flow across coil (CFM, air tolerance), Entering air temp, Leaving air temp
-- **Capacity**: Coil type (cooling / heating / cooling+dehum), Heat transfer (BTU/h)
+- **Brass & Graphite** (default). Dark graphite background with warm brass accents. The classic look.
+- **Inkwell.** High-contrast monochrome ink-on-near-black. Good for projector demos, screenshots in printed proposals, low-light conditions where the brass accents read as too warm.
+- **Blueprint.** Deep cyanotype blue background with cream accents. A nod to the old reprographic blueprint look. Reads clearly in bright field conditions.
+- **Foundry.** Warm copper and ash. Heavier than the default brass; suits a metalworking aesthetic.
+- **Field Notes.** Kraft paper background, black-ink accents, brass highlights. Memo-pad aesthetic.
+- **Locomotive.** Coal-black, signal red, brass. A nod to B&O / C&O railroad heritage. Strong contrast.
 
-Nameplate / identifying fields (motor voltage, phase, drive data, filter data, etc.) are marked `excludeFromTest: true`. They are entered once on the equipment record and do NOT appear in the per-test reading form, because they don't change between TAB phases.
+## PWA capabilities
 
-## Per-template section ordering
+PITOT works fully offline already because it is a single HTML file with no external dependencies except Google Fonts (which the browser caches after first load). The Phase 4 PWA additions are mostly about installability and presentation:
 
-Each body template defines a section order per equipment type. Where the template has no preference (or uses `null`), PITOT renders sections in their natural order from the field registry.
+- **Manifest** (inline as a data URL). Provides app name, icons, theme color, and standalone display mode.
+- **Meta tags** for Apple and Android PWA chrome (theme-color, apple-mobile-web-app-capable, etc.).
+- **SVG icons** at 192x192, 512x512, 180x180 (Apple touch), and the favicon.
+- **Service worker** registration attempt on secure contexts. Caches Google Fonts so they're available without network on subsequent visits. May not register on browsers that restrict Blob-URL SW scope; this is a graceful no-op and PITOT continues to work.
 
-**AABC** uses: fan, motor, drive, filter, oa, temp (for AHUs). Labels: "Fan performance", "Motor data", "Drive data", "Filter data", "Outside air data", "Temperature data".
+To get a "real" service worker with full offline caching, host PITOT on a domain and ship a separate `sw.js` alongside it. The single-file convention prevents shipping that file inside this distribution.
 
-**NEBB** uses the same ordering but with different labels: "Fan performance", "Motor electrical", "Drive components", "Filter section", "Outside air", "Air temperatures".
+## Photo OCR
 
-**TABB** uses the natural section labels.
+The photo modal includes a "Scan nameplate" button next to the standard "+ Add" button. Pick an image file, click Scan, and PITOT runs the browser's `TextDetector` API on it. Detected text snippets appear in a list, each with a target-field dropdown and an Apply button. Pick the design field, click Apply, and the value writes into the equipment's design block (numeric values parse the first number from the snippet; text values take the whole string).
 
-**Draft** uses the natural section labels with no reordering.
+`TextDetector` is currently supported in Chromium-based browsers on Android, ChromeOS, and recent desktops with OS-level text recognition. Safari and Firefox don't implement it yet. PITOT does not fall back to a CDN-loaded OCR library (would violate the single-file convention); when `TextDetector` is unavailable the user sees a clear "type the values manually" message.
 
-The Report tab's equipment block prints each section as a labeled sub-table. Sections with no design or reading data are suppressed.
+## Multi-AHU air balance roll-up
+
+Every equipment record now has a free-text `zone` field. When filled in, the Report tab gains a new "Multi-AHU air balance roll-up by zone" section in addition to the existing per-AHU section. For each zone in use:
+
+- Sum the final-phase CFM across all AHUs assigned to that zone
+- Sum the final-phase CFM across all terminals assigned to that zone (regardless of which individual AHU each terminal is associated to)
+- Compute imbalance as `(terminalSum - ahuSum) / ahuSum * 100`
+- Flag pass at +/- 10 percent, fail beyond
+
+The per-AHU section continues to be the primary air-balance check; the zone roll-up adds a building-level view for multi-AHU systems serving a common volume.
+
+The zone field is plain text, with no canonicalization. Type "North wing" exactly the same way on every equipment record for them to roll up together. The Bulk Add modal now exposes a zone input as a common-value field, which is the easiest way to ensure consistency when adding many terminals to the same zone.
 
 ## Workflow
 
 1. **Project tab**: project, personnel, schedule, reporting (style, firm, supervisor, dates, scope, architect, engineer), notes.
-2. **Equipment tab**: add equipment. The Add/Edit modal now groups design fields by section (Fan data, Motor data, etc.) for the chosen type. Terminals can be assigned an associated AHU.
-3. **Test entry**: opens a phase-tagged test record. Reading fields are also section-grouped and exclude nameplate / observed fields. Traverse / Hood / Photo buttons attach the relevant Phase 2 sub-records.
+2. **Equipment tab**: add equipment (one at a time or via Bulk Add). The Edit/Add modal now includes a Zone field next to Location and Serves.
+3. **Test entry**: opens a phase-tagged test record with section-grouped readings.
 4. **Status auto-classifies**: pending, in-progress, balanced, out-of-spec, or punch.
-5. **Punch list**: deficiencies blocking balance, with owner and priority.
-6. **Pump equipment**: separate pump curve and system curve panel computes the operating point and renders an SVG plot.
+5. **Punch list**: deficiencies blocking balance.
+6. **Pump equipment**: pump curve and system curve compute the operating point and render an SVG plot.
 7. **Coil tests**: automatic heat-balance display when water and air readings are both present.
-8. **Report**: template-driven cover, scope of work, equipment-by-type with section sub-tables, air-balance verification, punch list, Statement of Certification, signature block. Print directly.
+8. **Report**: template-driven cover, scope of work, equipment-by-type with section sub-tables, per-AHU air-balance verification, per-zone air-balance roll-up, punch list, Statement of Certification, signature block.
 9. **Export**: JSON workbook (no photo binaries).
 
 ## Data model
 
-Project block adds the v0.3.0 reporting fields. Equipment design is a free-form object; in v0.3.1 the well-known keys grew to match the field registry above. Old workbooks with fewer keys still work; those fields simply render as blank.
-
 ```
 {
-  schema: 'pitot/workbook@3',
-  version: '0.3.1',
-  project: { name, address, owner, mechanicalContractor, tabContractor,
-             technician, technicianCertification, projectNumber,
-             startDate, endDate, weather, notes,
-             reportStyle, firmName, firmAddress, firmCertNumber,
-             supervisorName, supervisorCertNumber,
-             reportDate, reportRevision,
-             projectArchitect, projectEngineer, scopeOfWork },
+  schema: 'pitot/workbook@4',
+  version: '0.4.0',
+  project: { ... reporting fields per v0.3 ... },
   equipment: [ {
     id, tag, type, location, serves, manufacturer, model, serial,
-    design: { ... per-type fields per v0.3.1 ... },
+    zone,                                        /* Phase 4 */
+    design: { ... per-type fields ... },
     tests: [ { id, phase, date, technician, readings, instrumentUsed,
                instrumentCalDate, notes, photos, traverse?, hood? } ],
     tolerance: { airPercent, waterPercent, tempDegF },
@@ -135,7 +135,15 @@ Project block adds the v0.3.0 reporting fields. Equipment design is a free-form 
 }
 ```
 
-Photos are in IndexedDB (`pitot.photos`) and not part of the JSON export.
+Photos in IndexedDB (`pitot.photos`). Active tab in `pitot.activeTab`. Active theme in `pitot.theme`.
+
+### Schema migration chain
+
+- `@1 -> @2`: adds `photos: []`, `associatedAhu`, `pumpCurve`, `systemCurve`
+- `@2 -> @3`: adds reporting block to project
+- `@3 -> @4`: adds `equipment.zone` (Phase 4)
+
+Migrations run sequentially; v0.1.0 workbooks come forward to v0.4.0 in one load. Unknown future schemas are rejected with a console warning.
 
 ## Tolerance defaults
 
@@ -148,52 +156,51 @@ Photos are in IndexedDB (`pitot.photos`) and not part of the JSON export.
 - Single HTML file, all CSS and JS inline, no build step, no npm
 - Opens from `file://`, no backend, no server, no telemetry
 - localStorage + IndexedDB only
-- Google Fonts (Fraunces, Oswald, Inter, JetBrains Mono) only
-- Dark mode default; print flips to light
+- Google Fonts (Fraunces, Oswald, Inter, JetBrains Mono) only external resource
+- Dark mode default with six selectable themes; print flips to light
 - No em dashes anywhere
-- Vintage scientific instrument aesthetic: graphite, brass, sky-blue, signal red, amber
 - Mobile-responsive (768 / 540 / 380 breakpoints) with 40 px touch targets and 16 px input font on coarse pointers
 
 ## Validation performed
 
-Static checks on the v0.3.3 release artifact:
+Static checks on the v0.5.0 release artifact:
 
-- Line count: 5849 lines
+- Line count: 8385 lines
 - Em dash count: 0 across literal U+2014, `&mdash;`, `&#8212;`, and `\u2014` escapes
-- CSS braces balanced: 367 / 367
+- CSS braces balanced: 432 / 432
 - JS syntax: `node --check` passes
 - HTML tag structure: matched, no mismatches, no unclosed
 
-Logic tests (106 cases, all passed):
+Logic tests (213 cases, all passed):
 
 - Phase 1: pass/fail engine, status classification (16 cases)
 - Phase 2: traverse, hood, coil heat balance, pump operating point, air balance, v1 to v2 migration (33 cases)
-- Phase 3.0: report template registry, reading-label flip, certification statements, disclaimers, firm-header policy, draft fallback, v2 to v3 migration, full v1 to v3 chain (15 cases)
-- Phase 3.1: section grouping, field type and excludeFromTest metadata, per-template ordering, label overrides, gracefully skipping unknown sections (19 cases)
-- Phase 3.2: coilHeatBalance defensive guards against null inputs and missing design, duplicate-equipment data shape (10 cases)
-- Phase 3.3: bulk tag generation across pad widths and prefixes, lastActiveTab fallback and invalid-value guarding, tag uniqueness detection (13 cases)
+- Phase 3.0 - 3.3: report templates, section grouping, defensive guards, bulk tag generation, last-active-tab, tag uniqueness (57 cases)
+- Phase 4.0: v3 to v4 migration, theme registry and persistence, zone air balance roll-up (17 cases)
+- Phase 4.1: CSV parsing across separators, line endings, quoting, escaped quotes, BOM, empty input; mapping suggester (24 cases)
+- Phase 4.2: asymmetric tolerance bounds, formatToleranceBand, psychrometric helpers, coil heat balance with and without wet-bulb data, bulk-edit semantics (33 cases)
+- Phase 4.3: csvEscape; AHU vs terminal export header construction; reading and status column toggles; round-trip column-label recognition; projectBarometricPsi at sea level, Denver, non-numeric; coilHeatBalance pressure plumbing; enthalpy variation with altitude (25 cases)
+- Phase 5.0: defaultTolerance always returns full asymmetric shape, fresh object per call, mutation isolation, migration of legacy 3-field tolerance backfills the asymmetric fields and preserves the legacy symmetric values (8 cases)
 
-Not validated by the automated tests (browser-only):
+Not validated by automated tests (browser-only):
 
-- Visual rendering of section sub-tables in the report
-- Print preview with section headings across page breaks
-- Equipment-modal section grouping with the new text/select fields populating correctly
-- Re-entering a test for an AHU that has all six sections filled (no overflow / layout issues)
-- Photo capture and IndexedDB persistence
+- Visual rendering of each of the six themes
+- PWA install prompt on Chrome / Edge / Safari iOS
+- Service worker registration on actual HTTPS hosts
+- `TextDetector` OCR on real nameplate photos (varies by browser and OS)
+- Print preview at each theme
+- CSV import modal step transitions and the primary-button label update
+- Pasting a real Excel-exported CSV with all the quirks (Excel quotes everything that looks like a number, sometimes)
 
 ## Known issues / known limitations
 
-- **Asymmetric tolerance not supported.** The pass/fail engine treats all bands as symmetric (+/-). Some specs use "no more than 110 percent of design but at least 95 percent." That's a Phase 4+ change.
-- **Heat balance does not include latent loads.** Cooling coils with significant dehumidification will appear out of balance because the water side captures total capacity while the sensible-only air calc does not.
-- **No multi-AHU air balance roll-up.** A terminal can only be associated with one AHU. Multi-zone systems and dual-duct setups need a different schema.
+- **OCR depends on the browser.** No fallback; the message simply tells the user the platform isn't supported. Honest, but means OCR isn't universally available.
+- **Service worker may not register from Blob URL** on browsers that restrict SW scope to the SW's URL path. PITOT works offline anyway since it's a single file with no runtime fetches except fonts.
+- **Zone field is plain text, no canonicalization.** Spelling matters for roll-up. The Bulk Add modal helps when filling many records with the same zone.
 
-## Deferred to later in Phase 3
+## Deferred to later phases
 
-- Per-equipment-type explicit report sub-forms (e.g. NEBB Form 1 layouts at the field-level detail). Currently all bodies share the same section-grouped table layout. Body-specific form templates are a much bigger lift and require careful study of each body's published form layouts (which would also require licensed access to those forms).
-- Multi-theme system matching the WATTMETER family
-- PWA package for offline field use
-- Photo OCR for nameplate auto-capture
-- Multi-AHU air-balance roll-up
+- Per-body explicit form templates with body-specific row/column layouts (requires study of each body's published forms; licensed-access content)
 
 ## Domain glossary
 
@@ -204,15 +211,12 @@ Not validated by the automated tests (browser-only):
 - **TBE**: Test and Balance Engineer (AABC supervisor credential)
 - **CP**: Certified Professional (NEBB supervisor credential)
 - **FLA**: Full Load Amps (motor nameplate)
-- **RLA**: Running Load Amps (measured)
-- **PD**: Pitch Diameter (sheave)
 - **MERV**: Minimum Efficiency Reporting Value (filter rating)
-- **CFM**: cubic feet per minute, volumetric airflow
-- **GPM**: gallons per minute, volumetric water flow
-- **ESP / TESP**: external / total external static pressure across an AHU
-- **VP**: velocity pressure, in. wg
-- **K-factor**: terminal or hood calibration factor
-- **Statement of Certification**: the formal attestation paragraph in a TAB report
+- **PD**: Pitch Diameter (sheave)
+- **CFM / GPM / ESP / VP**: standard HVAC quantities
+- **Statement of Certification**: formal attestation paragraph in a TAB report
+- **Zone**: building region used for multi-AHU air-balance aggregation; in PITOT, a free-text label on each equipment record
+- **PWA**: Progressive Web Application; installable from the browser
 
 ## License
 
