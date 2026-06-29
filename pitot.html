@@ -1,0 +1,4631 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PITOT</title>
+<meta name="description" content="A TAB workbook for the field.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   PITOT, Field Instrument 050
+   M.B. Parks, Green Shoe Garage, Cumberland, Maryland
+   GPL-3.0
+   ===================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+input, textarea, select { font: inherit; color: inherit; }
+input[type=number] { -moz-appearance: textfield; }
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+:root {
+  /* Dark theme, graphite + brass */
+  --bg:           #1f2026;
+  --bg-deep:      #16171c;
+  --bg-elev:      #2a2b32;
+  --bg-panel:     #25262c;
+  --bg-input:     #1a1b21;
+  --border:       #3a3b42;
+  --border-soft:  #2f3036;
+  --border-strong:#4a4b52;
+  --text:         #d8d6d0;
+  --text-dim:     #a09e98;
+  --text-faint:   #6b6962;
+  --brass:        #b8945a;
+  --brass-light:  #d4b070;
+  --brass-dark:   #8c6c38;
+  --brass-soft:   rgba(184,148,90,0.12);
+  --balanced:     #5e8aa8;
+  --balanced-soft:rgba(94,138,168,0.14);
+  --out-of-spec:  #c44e4e;
+  --out-soft:     rgba(196,78,78,0.13);
+  --pending:      #a09e98;
+  --pending-soft: rgba(160,158,152,0.12);
+  --in-progress:  #d4a04a;
+  --progress-soft:rgba(212,160,74,0.13);
+  --punch:        #a85e9c;
+  --punch-soft:   rgba(168,94,156,0.13);
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-label:   'Oswald', 'Arial Narrow', sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Consolas', monospace;
+
+  --r-sm: 3px;
+  --r-md: 5px;
+  --r-lg: 8px;
+
+  --shadow-card: 0 2px 6px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+  --shadow-elev: 0 8px 24px rgba(0,0,0,0.55), 0 3px 8px rgba(0,0,0,0.35);
+}
+
+html { background: var(--bg-deep); }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at top, rgba(184,148,90,0.04), transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(94,138,168,0.03), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ====================== APP LAYOUT ====================== */
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+}
+
+.app-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem 0 0.75rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(to bottom, var(--bg) 78%, rgba(31,32,38,0));
+  backdrop-filter: blur(6px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  color: var(--brass);
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.4));
+}
+.brand-text { display: flex; flex-direction: column; gap: 1px; }
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.75rem;
+  letter-spacing: 0.04em;
+  color: var(--brass-light);
+  line-height: 1;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+}
+.brand-meta {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--text-faint);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 0.25rem;
+  justify-self: center;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-deep);
+  padding: 3px;
+  flex-wrap: wrap;
+}
+.tab-nav button {
+  font-family: var(--font-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.9rem;
+  color: var(--text-dim);
+  border-radius: var(--r-sm);
+  transition: color 0.15s, background 0.15s;
+}
+.tab-nav button:hover { color: var(--brass-light); }
+.tab-nav button.active {
+  background: var(--brass-soft);
+  color: var(--brass-light);
+  box-shadow: inset 0 0 0 1px var(--brass-dark);
+}
+.tab-nav .tab-count {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0 0.35rem;
+  border-radius: 10px;
+  background: var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  min-width: 1.1rem;
+  text-align: center;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn-icon {
+  width: 34px; height: 34px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-icon:hover { color: var(--brass-light); border-color: var(--brass-dark); }
+.save-indicator {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding-left: 0.5rem;
+  min-width: 4.5rem;
+}
+.save-indicator.saving { color: var(--in-progress); }
+.save-indicator.saved { color: var(--balanced); }
+
+/* ====================== VIEW SECTIONS ====================== */
+
+main > section { display: none; }
+main > section.active { display: block; }
+
+.view-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.view-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.5rem;
+  color: var(--text);
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+.view-subtitle {
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+/* ====================== PANELS ====================== */
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+.panel-bezel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 0;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.panel-bezel::before {
+  content: "";
+  display: block;
+  height: 4px;
+  background: linear-gradient(to bottom,
+    var(--brass-light) 0%, var(--brass) 50%, var(--brass-dark) 100%);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.panel-bezel-body { padding: 1.25rem; }
+
+.panel-title {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brass-light);
+  margin: 0 0 0.85rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.panel-title-meta {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  text-transform: none;
+  margin-left: auto;
+}
+
+/* ====================== FORMS ====================== */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+}
+.form-grid.wide { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.form-grid.full > .full { grid-column: 1 / -1; }
+
+.field { display: flex; flex-direction: column; gap: 0.3rem; }
+.field-label {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+.field-label .unit {
+  font-family: var(--font-mono);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+  margin-left: 0.3rem;
+  font-weight: 400;
+}
+.field-label .critical {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--brass);
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  box-shadow: 0 0 4px var(--brass);
+}
+
+input[type=text], input[type=date], input[type=number], input[type=email],
+textarea, select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.5rem 0.65rem;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+input[type=date] { color-scheme: dark; }
+textarea { resize: vertical; min-height: 4rem; font-family: var(--font-body); }
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--brass);
+  box-shadow: 0 0 0 2px var(--brass-soft);
+}
+.field-mono input, input.mono { font-family: var(--font-mono); font-weight: 500; letter-spacing: 0.04em; }
+.field-tag input { font-family: var(--font-mono); font-weight: 600; font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase; }
+
+select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-dim) 50%),
+    linear-gradient(135deg, var(--text-dim) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.75rem;
+}
+
+.checkbox-row { display: flex; align-items: center; gap: 0.45rem; }
+.checkbox-row input[type=checkbox] { width: auto; }
+
+.field-help {
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* ====================== BUTTONS ====================== */
+
+.btn {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.55rem 1rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--text);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+.btn:hover { color: var(--brass-light); border-color: var(--brass-dark); }
+.btn-primary {
+  background: linear-gradient(to bottom, var(--brass) 0%, var(--brass-dark) 100%);
+  color: var(--bg-deep);
+  border-color: var(--brass-dark);
+  font-weight: 600;
+}
+.btn-primary:hover {
+  color: var(--bg-deep);
+  background: linear-gradient(to bottom, var(--brass-light) 0%, var(--brass) 100%);
+}
+.btn-danger { border-color: rgba(196,78,78,0.5); color: var(--out-of-spec); }
+.btn-danger:hover { background: var(--out-soft); color: var(--out-of-spec); border-color: var(--out-of-spec); }
+.btn-ghost { border-color: transparent; background: transparent; color: var(--text-dim); }
+.btn-ghost:hover { color: var(--brass-light); background: var(--brass-soft); }
+.btn-sm { padding: 0.35rem 0.7rem; font-size: 0.72rem; }
+.btn-xs { padding: 0.25rem 0.55rem; font-size: 0.68rem; letter-spacing: 0.08em; }
+
+.btn-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* ====================== STATUS PILL ====================== */
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.status-pill::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+.status-pending     { background: var(--pending-soft);  color: var(--pending);     border-color: var(--pending); }
+.status-pending::before     { background: var(--pending); }
+.status-in-progress { background: var(--progress-soft); color: var(--in-progress); border-color: var(--in-progress); }
+.status-in-progress::before { background: var(--in-progress); box-shadow: 0 0 4px var(--in-progress); }
+.status-balanced    { background: var(--balanced-soft); color: var(--balanced);    border-color: var(--balanced); }
+.status-balanced::before    { background: var(--balanced); box-shadow: 0 0 4px var(--balanced); }
+.status-out-of-spec { background: var(--out-soft);      color: var(--out-of-spec); border-color: var(--out-of-spec); }
+.status-out-of-spec::before { background: var(--out-of-spec); box-shadow: 0 0 4px var(--out-of-spec); }
+.status-punch       { background: var(--punch-soft);    color: var(--punch);       border-color: var(--punch); }
+.status-punch::before       { background: var(--punch); box-shadow: 0 0 4px var(--punch); }
+
+.priority-low      { color: var(--text-dim); }
+.priority-medium   { color: var(--in-progress); }
+.priority-high     { color: var(--out-of-spec); font-weight: 600; }
+.priority-critical { color: var(--out-of-spec); font-weight: 700; text-transform: uppercase; }
+
+/* ====================== EQUIPMENT LIST ====================== */
+
+.eq-toolbar {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.eq-toolbar input[type=text], .eq-toolbar select { max-width: 220px; }
+.eq-toolbar .spacer { flex: 1; }
+
+.eq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.85rem;
+}
+
+.eq-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.eq-card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  background: var(--border);
+}
+.eq-card[data-status="pending"]::before     { background: var(--pending); }
+.eq-card[data-status="in-progress"]::before { background: var(--in-progress); }
+.eq-card[data-status="balanced"]::before    { background: var(--balanced); }
+.eq-card[data-status="out-of-spec"]::before { background: var(--out-of-spec); }
+.eq-card[data-status="punch"]::before       { background: var(--punch); }
+.eq-card:hover { border-color: var(--brass-dark); transform: translateY(-1px); }
+
+.eq-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.eq-tag {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--brass-light);
+  letter-spacing: 0.04em;
+}
+.eq-type {
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}
+.eq-meta {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.eq-meta .lbl {
+  font-family: var(--font-label);
+  font-size: 0.66rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-right: 0.3rem;
+}
+.eq-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 0.55rem;
+  margin-top: 0.3rem;
+}
+.eq-tests-count {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-faint);
+}
+.eq-tests-count strong { color: var(--text); font-weight: 600; }
+
+/* ====================== EMPTY STATE ====================== */
+
+.empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-deep);
+  color: var(--text-dim);
+}
+.empty .empty-icon {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--brass-dark);
+  margin-bottom: 0.5rem;
+}
+.empty h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  margin: 0 0 0.4rem;
+  color: var(--text);
+}
+.empty p { margin: 0 0 0.85rem; }
+
+/* ====================== EQUIPMENT DETAIL ====================== */
+
+.detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-dim);
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--r-sm);
+  margin-bottom: 1rem;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.detail-back:hover { color: var(--brass-light); border-color: var(--border); }
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brass);
+  border-radius: var(--r-md);
+}
+.detail-head-tag {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.detail-head .eq-tag { font-size: 1.5rem; }
+
+.kv-table {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.45rem 1.25rem;
+  font-size: 0.88rem;
+}
+.kv-table dt {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  align-self: center;
+}
+.kv-table dd { margin: 0; color: var(--text); font-family: var(--font-mono); font-size: 0.92rem; }
+.kv-table dd.text { font-family: var(--font-body); }
+
+/* Reading rows */
+.read-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  font-family: var(--font-mono);
+}
+.read-table th, .read-table td {
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-soft);
+}
+.read-table th {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  border-bottom-color: var(--border);
+}
+.read-table td.label { font-family: var(--font-body); color: var(--text-dim); }
+.read-table td.num { text-align: right; }
+.read-table td.unit { color: var(--text-faint); font-size: 0.78rem; }
+.read-table td.result { text-align: center; }
+.read-table .pass {
+  color: var(--balanced);
+  font-weight: 600;
+}
+.read-table .fail {
+  color: var(--out-of-spec);
+  font-weight: 600;
+}
+.read-table .na { color: var(--text-faint); font-weight: 400; }
+
+/* Test list entries */
+.test-list { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.5rem; }
+.test-entry {
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.test-entry-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--bg-elev);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+.test-entry.open .test-entry-head { border-bottom-color: var(--border); }
+.test-phase-pill {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 10px;
+  background: var(--border);
+  color: var(--text);
+}
+.test-phase-pill.phase-initial  { background: rgba(160,158,152,0.18); color: var(--text-dim); }
+.test-phase-pill.phase-adjusted { background: rgba(212,160,74,0.18); color: var(--in-progress); }
+.test-phase-pill.phase-final    { background: var(--brass-soft); color: var(--brass-light); border: 1px solid var(--brass-dark); }
+.test-date {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+.test-actions { display: flex; gap: 0.4rem; }
+.test-entry-body {
+  display: none;
+  padding: 0.85rem 0.9rem;
+}
+.test-entry.open .test-entry-body { display: block; }
+
+/* Dashboard counts */
+.dash {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.dash-tile {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 0.85rem 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.dash-tile .num {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--brass-light);
+}
+.dash-tile .lbl {
+  font-family: var(--font-label);
+  font-size: 0.68rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.dash-tile[data-tone="balanced"] .num    { color: var(--balanced); }
+.dash-tile[data-tone="out-of-spec"] .num { color: var(--out-of-spec); }
+.dash-tile[data-tone="punch"] .num       { color: var(--punch); }
+.dash-tile[data-tone="in-progress"] .num { color: var(--in-progress); }
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 6rem 1fr 3rem;
+  gap: 0.55rem;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+.bar-row .lbl { font-family: var(--font-label); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--text-dim); text-transform: uppercase; }
+.bar-row .bar {
+  height: 10px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+}
+.bar-row .bar span { display: block; height: 100%; }
+.bar-row .num { text-align: right; font-family: var(--font-mono); color: var(--text); }
+.bar .seg-pending     { background: var(--pending); }
+.bar .seg-in-progress { background: var(--in-progress); }
+.bar .seg-balanced    { background: var(--balanced); }
+.bar .seg-out-of-spec { background: var(--out-of-spec); }
+.bar .seg-punch       { background: var(--punch); }
+
+/* ====================== PUNCH LIST ====================== */
+
+.punch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.punch-table th, .punch-table td {
+  padding: 0.6rem 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+.punch-table th {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  border-bottom-color: var(--border);
+  background: var(--bg-elev);
+}
+.punch-table tr.resolved td { color: var(--text-faint); }
+.punch-table tr.resolved td.issue { text-decoration: line-through; }
+
+/* ====================== MODAL ====================== */
+
+.modal-root.hidden { display: none; }
+.modal-root {
+  position: fixed; inset: 0;
+  background: rgba(10,11,15,0.7);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+  backdrop-filter: blur(3px);
+}
+.modal {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-elev);
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 3rem);
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+.modal-head::before {
+  content: "";
+  position: absolute;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.15rem;
+  color: var(--text);
+  margin: 0;
+}
+.modal-body {
+  padding: 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+}
+.modal-foot {
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  background: var(--bg-elev);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+}
+.modal-close {
+  width: 28px; height: 28px;
+  color: var(--text-dim);
+  font-size: 1.2rem;
+  line-height: 1;
+  border-radius: var(--r-sm);
+}
+.modal-close:hover { color: var(--out-of-spec); }
+
+.section-head {
+  font-family: var(--font-label);
+  font-size: 0.74rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brass);
+  margin: 1rem 0 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.section-head:first-child { margin-top: 0; }
+
+.phase-radio {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+.phase-radio label {
+  flex: 1;
+  min-width: 80px;
+  text-align: center;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-input);
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  color: var(--text-dim);
+  transition: all 0.15s;
+}
+.phase-radio input { display: none; }
+.phase-radio label:hover { color: var(--brass-light); }
+.phase-radio input:checked + span { color: var(--brass-light); }
+.phase-radio label:has(input:checked) {
+  border-color: var(--brass);
+  background: var(--brass-soft);
+  color: var(--brass-light);
+}
+
+/* ====================== TOAST ====================== */
+
+.toast-host {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 200;
+  pointer-events: none;
+}
+.toast {
+  background: var(--bg-elev);
+  border: 1px solid var(--brass-dark);
+  border-left: 3px solid var(--brass);
+  border-radius: var(--r-md);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-elev);
+  color: var(--text);
+  min-width: 180px;
+  max-width: 360px;
+  animation: toast-in 0.2s ease-out;
+  pointer-events: auto;
+}
+.toast.err { border-left-color: var(--out-of-spec); border-color: rgba(196,78,78,0.5); }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ====================== REPORT VIEW ====================== */
+
+.report-actions {
+  display: flex;
+  gap: 0.55rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.report-sheet {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 2rem 2.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+.report-sheet h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.6rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: 0.02em;
+  color: var(--brass-light);
+}
+.report-sheet h3 {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brass);
+  margin: 1.25rem 0 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.report-sheet h3:first-child { margin-top: 0; }
+
+.report-cover {
+  text-align: center;
+  padding: 3.5rem 2rem;
+}
+.report-cover .label {
+  font-family: var(--font-label);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--brass);
+  margin-bottom: 0.5rem;
+}
+.report-cover h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2.4rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+.report-cover .project {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--brass-light);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.report-cover .address {
+  color: var(--text-dim);
+  margin-bottom: 2rem;
+}
+.report-cover-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+  max-width: 480px;
+  margin: 2rem auto 0;
+  text-align: left;
+  font-size: 0.9rem;
+}
+.report-cover-meta dt {
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+  margin-bottom: 0.1rem;
+}
+.report-cover-meta dd {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.report-eq-block { margin-bottom: 1.5rem; padding-top: 0.5rem; }
+.report-eq-block:not(:last-child) { border-bottom: 1px solid var(--border-soft); padding-bottom: 1rem; }
+.report-eq-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.report-eq-head .tag {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--brass-light);
+  letter-spacing: 0.06em;
+}
+.report-eq-head .type {
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+
+.signature-block {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.signature {
+  border-top: 1px solid var(--text);
+  padding-top: 0.4rem;
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+/* ====================== RESPONSIVE ====================== */
+
+@media (max-width: 768px) {
+  #app { padding: 0 1rem 4rem; }
+  .app-header { grid-template-columns: 1fr auto; row-gap: 0.5rem; padding-top: 1rem; }
+  .tab-nav {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .save-indicator { display: none; }
+  .eq-grid { grid-template-columns: 1fr; }
+  .report-sheet { padding: 1.25rem; }
+  .report-cover { padding: 2rem 1rem; }
+  .report-cover h1 { font-size: 1.75rem; }
+  .report-cover-meta { grid-template-columns: 1fr; }
+  .signature-block { grid-template-columns: 1fr; }
+  .modal { max-height: calc(100vh - 1.5rem); }
+  .modal-root { padding: 0.75rem; }
+}
+
+@media (max-width: 540px) {
+  body { font-size: 13px; }
+  .brand-name { font-size: 1.4rem; }
+  .brand-icon { width: 30px; height: 30px; }
+  .tab-nav button { padding: 0.4rem 0.7rem; font-size: 0.76rem; }
+  .view-title { font-size: 1.25rem; }
+  .panel-bezel-body, .panel { padding: 1rem; }
+  .dash { grid-template-columns: repeat(2, 1fr); }
+  .dash-tile .num { font-size: 1.5rem; }
+  .punch-table th:nth-child(3), .punch-table td:nth-child(3) { display: none; }
+}
+
+@media (max-width: 380px) {
+  .dash { grid-template-columns: 1fr 1fr; }
+  .eq-toolbar input[type=text], .eq-toolbar select { max-width: none; width: 100%; }
+}
+
+/* ====================== PRINT ====================== */
+
+@media print {
+  :root {
+    --bg:           #ffffff;
+    --bg-deep:      #ffffff;
+    --bg-elev:      #f6f4ef;
+    --bg-panel:     #ffffff;
+    --bg-input:     #ffffff;
+    --border:       #888;
+    --border-soft:  #c4c4c4;
+    --border-strong:#666;
+    --text:         #1a1a1a;
+    --text-dim:     #3d3d3d;
+    --text-faint:   #6a6a6a;
+    --brass:        #6b4d20;
+    --brass-light:  #4a3415;
+    --brass-dark:   #3a2810;
+    --brass-soft:   #f1ead9;
+    --balanced:     #1a5680;
+    --balanced-soft:#e8f0f6;
+    --out-of-spec:  #8b1a1a;
+    --out-soft:     #f6e7e7;
+    --pending:      #4d4d4d;
+    --pending-soft: #ededed;
+    --in-progress:  #6a4d18;
+    --progress-soft:#f3ecdc;
+    --punch:        #6b2a5c;
+    --punch-soft:   #f1e6ee;
+  }
+  html, body { background: white; color: black; }
+  body { background-image: none; }
+  #app { max-width: none; padding: 0; }
+  .app-header, .tab-nav, .header-controls, .btn, .btn-icon, .modal-root,
+  .detail-back, .view-header > .btn-bar, .eq-toolbar, .report-actions,
+  .test-actions, button { display: none !important; }
+
+  main > section { display: none !important; }
+  main > section#view-report { display: block !important; }
+
+  .report-sheet {
+    background: white;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    page-break-after: always;
+  }
+  .report-sheet:last-child { page-break-after: auto; }
+  .report-cover { padding: 4rem 1rem 2rem; }
+  .panel-bezel::before { display: none; }
+
+  .read-table { font-size: 10pt; }
+  .read-table th, .read-table td { padding: 0.25rem 0.45rem; }
+  .punch-table { font-size: 10pt; }
+  .punch-table th { background: #eee; }
+  @page { margin: 0.6in; size: letter; }
+}
+
+/* Utility */
+.hidden { display: none !important; }
+.row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.between { justify-content: space-between; }
+.gap-sm { gap: 0.4rem; }
+.gap-lg { gap: 1rem; }
+.muted { color: var(--text-faint); }
+.dim { color: var(--text-dim); }
+.mono { font-family: var(--font-mono); }
+.center { text-align: center; }
+.mt-sm { margin-top: 0.5rem; }
+.mt-md { margin-top: 1rem; }
+.mt-lg { margin-top: 1.5rem; }
+.mb-sm { margin-bottom: 0.5rem; }
+.mb-md { margin-bottom: 1rem; }
+
+/* -------------------- Phase 2 styles -------------------- */
+
+/* Sub-panel: a nested panel used inside test entries for traverse, hood,
+   heat balance, and photo summaries. Keeps the brass/graphite palette
+   consistent but quieter than the parent test-entry. */
+.sub-panel {
+  border: 1px solid var(--border-soft);
+  background: var(--bg-deep);
+  border-radius: var(--r-md);
+  padding: 0.75rem 1rem;
+}
+.sub-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 0.4rem;
+}
+.sub-panel-title {
+  font-family: var(--font-label);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brass);
+  flex: 1;
+}
+.modal-help {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  border-left: 2px solid var(--brass-dark);
+  padding-left: 0.75rem;
+  margin: 0 0 1rem 0;
+}
+
+/* Traverse grid */
+.traverse-grid-host {
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+.traverse-grid {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  min-width: 100%;
+}
+.traverse-grid th,
+.traverse-grid td {
+  border: 1px solid var(--border-soft);
+  padding: 0.25rem 0.4rem;
+  text-align: center;
+}
+.traverse-grid th {
+  background: var(--bg-elev);
+  color: var(--brass-light);
+  font-family: var(--font-label);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.traverse-grid td input.traverse-cell {
+  width: 5.5rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: var(--r-sm);
+  text-align: right;
+}
+.traverse-grid td input.traverse-cell:focus {
+  outline: none;
+  border-color: var(--brass);
+  box-shadow: 0 0 0 1px var(--brass-soft);
+}
+.traverse-result {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--brass-dark);
+  border-radius: var(--r-md);
+}
+
+/* Hood and pump shared bits */
+.hood-readings { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hood-readings .field-wrap { min-width: 8rem; flex: 1; }
+.hood-result,
+.pump-result {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--brass-dark);
+  border-radius: var(--r-md);
+}
+
+/* Pump curve point table */
+.pump-points-table {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  width: 100%;
+}
+.pump-points-table th,
+.pump-points-table td {
+  border: 1px solid var(--border-soft);
+  padding: 0.3rem 0.4rem;
+}
+.pump-points-table th {
+  background: var(--bg-elev);
+  color: var(--brass-light);
+  font-family: var(--font-label);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  text-align: left;
+}
+.pump-points-table td input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: var(--r-sm);
+}
+.pump-points-table td input:focus {
+  outline: none;
+  border-color: var(--brass);
+}
+
+/* Pump plot SVG */
+.pump-plot-host { margin-top: 1rem; }
+.pump-plot {
+  width: 100%;
+  height: auto;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.pump-plot .plot-bg     { fill: var(--bg-input); }
+.pump-plot .plot-grid   { stroke: var(--border-soft); stroke-width: 0.5; }
+.pump-plot .plot-tick   { fill: var(--text-dim); font-family: var(--font-mono); font-size: 10px; }
+.pump-plot .plot-axis-label { fill: var(--text); font-family: var(--font-label); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; }
+.pump-plot .plot-pump   { fill: none; stroke: var(--brass); stroke-width: 2; }
+.pump-plot .plot-pump-dot { fill: var(--brass); }
+.pump-plot .plot-system { fill: none; stroke: var(--balanced); stroke-width: 2; stroke-dasharray: 4 3; }
+.pump-plot .plot-op-point { fill: var(--in-progress); stroke: var(--bg-deep); stroke-width: 2; }
+.pump-plot .plot-op-label { fill: var(--in-progress); font-family: var(--font-mono); font-size: 11px; }
+.pump-plot .plot-design { fill: var(--punch); }
+
+/* Photo strip / grid */
+.photo-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+.photo-strip-item {
+  margin: 0;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.photo-strip-item figcaption {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-align: center;
+}
+.photo-thumb {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-input);
+  display: block;
+}
+.photo-thumb.missing {
+  background: var(--bg-deep);
+  border-style: dashed;
+}
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+.photo-card {
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: center;
+}
+.photo-card .photo-thumb {
+  width: 100%;
+  height: 140px;
+}
+.photo-caption {
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--text);
+}
+.photo-meta {
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+/* Bigger touch targets for mobile/tablet field work */
+@media (pointer: coarse), (max-width: 768px) {
+  .btn { min-height: 40px; padding-left: 0.9rem; padding-right: 0.9rem; }
+  .btn-xs { min-height: 36px; }
+  input[type='number'],
+  input[type='text'],
+  input[type='date'],
+  select,
+  textarea {
+    min-height: 40px;
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+  .traverse-grid td input.traverse-cell {
+    min-height: 38px;
+    font-size: 16px;
+    width: 4.5rem;
+  }
+  .photo-strip-item,
+  .photo-thumb {
+    width: 96px;
+    height: 96px;
+  }
+}
+
+/* Print: traverse / hood / photos stay readable; pump plot prints; photos do not. */
+@media print {
+  .sub-panel { background: #fff; border-color: #888; }
+  .sub-panel-title { color: #000; }
+  .traverse-grid th, .traverse-grid td { border-color: #888; color: #000; }
+  .traverse-grid th { background: #eee; }
+  .traverse-result, .hood-result, .pump-result {
+    background: #fff; border-color: #888; color: #000;
+  }
+  .pump-plot { background: #fff; border-color: #888; }
+  .pump-plot .plot-bg { fill: #fff; }
+  .pump-plot .plot-grid { stroke: #ccc; }
+  .pump-plot .plot-tick, .pump-plot .plot-axis-label { fill: #000; }
+  .pump-plot .plot-pump { stroke: #000; }
+  .pump-plot .plot-pump-dot { fill: #000; }
+  .pump-plot .plot-system { stroke: #555; }
+  .pump-plot .plot-op-point { fill: #000; stroke: #fff; }
+  .pump-plot .plot-op-label { fill: #000; }
+  /* Photos are intentionally omitted from print; the visit binder carries them. */
+  .photo-strip, .photo-grid { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header class="app-header">
+    <div class="brand">
+      <svg class="brand-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 32 L46 32" />
+        <path d="M46 32 L46 56" />
+        <path d="M44 56 L48 56" />
+        <circle cx="6" cy="32" r="2.5" fill="currentColor" stroke="none" />
+        <circle cx="22" cy="32" r="1.2" fill="currentColor" stroke="none" />
+        <circle cx="30" cy="32" r="1.2" fill="currentColor" stroke="none" />
+        <circle cx="38" cy="32" r="1.2" fill="currentColor" stroke="none" />
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">PITOT</span>
+        <span class="brand-meta">FI-050 &middot; v0.2.0</span>
+      </div>
+    </div>
+    <nav class="tab-nav" id="tab-nav" role="tablist">
+      <button data-tab="project"   class="active" type="button">Project</button>
+      <button data-tab="equipment" type="button">Equipment <span class="tab-count" id="count-equipment">0</span></button>
+      <button data-tab="punch"     type="button">Punch <span class="tab-count" id="count-punch">0</span></button>
+      <button data-tab="report"    type="button">Report</button>
+    </nav>
+    <div class="header-controls">
+      <button class="btn-icon" id="btn-export" title="Export workbook as JSON" type="button">&#x2913;</button>
+      <button class="btn-icon" id="btn-import" title="Import workbook from JSON" type="button">&#x2912;</button>
+      <button class="btn-icon" id="btn-wipe"   title="Clear workbook" type="button">&times;</button>
+      <span class="save-indicator saved" id="save-indicator">Saved</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- PROJECT VIEW -->
+    <section id="view-project" class="active">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">Project</h2>
+          <div class="view-subtitle">Cover page and balance scope</div>
+        </div>
+      </div>
+
+      <div class="panel-bezel">
+        <div class="panel-bezel-body">
+          <h3 class="panel-title">Identification <span class="panel-title-meta">Saved automatically</span></h3>
+          <div class="form-grid wide" id="form-project-id"></div>
+        </div>
+      </div>
+
+      <div class="panel-bezel">
+        <div class="panel-bezel-body">
+          <h3 class="panel-title">Personnel</h3>
+          <div class="form-grid wide" id="form-project-personnel"></div>
+        </div>
+      </div>
+
+      <div class="panel-bezel">
+        <div class="panel-bezel-body">
+          <h3 class="panel-title">Schedule and conditions</h3>
+          <div class="form-grid wide" id="form-project-schedule"></div>
+        </div>
+      </div>
+
+      <div class="panel-bezel">
+        <div class="panel-bezel-body">
+          <h3 class="panel-title">Notes</h3>
+          <div class="form-grid full">
+            <div class="field full">
+              <textarea id="project-notes" rows="4" placeholder="Site conditions, scope exclusions, general remarks"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EQUIPMENT VIEW -->
+    <section id="view-equipment">
+      <div id="equipment-list-view">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Equipment</h2>
+            <div class="view-subtitle">Drawing tags, design values, and field tests</div>
+          </div>
+          <div class="btn-bar">
+            <button class="btn btn-primary" id="btn-add-eq" type="button">+ Add equipment</button>
+          </div>
+        </div>
+
+        <div class="dash" id="dashboard"></div>
+
+        <div class="eq-toolbar">
+          <input type="text" id="eq-search" placeholder="Search by tag, location, or notes" autocomplete="off">
+          <select id="eq-filter-type">
+            <option value="">All types</option>
+          </select>
+          <select id="eq-filter-status">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In progress</option>
+            <option value="balanced">Balanced</option>
+            <option value="out-of-spec">Out of spec</option>
+            <option value="punch">Punch</option>
+          </select>
+          <span class="spacer"></span>
+          <span class="muted mono" id="eq-list-count"></span>
+        </div>
+
+        <div id="equipment-grid"></div>
+      </div>
+
+      <div id="equipment-detail-view" class="hidden"></div>
+    </section>
+
+    <!-- PUNCH VIEW -->
+    <section id="view-punch">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">Punch list</h2>
+          <div class="view-subtitle">Issues blocking balance, with owner and disposition</div>
+        </div>
+        <div class="btn-bar">
+          <button class="btn btn-primary" id="btn-add-punch" type="button">+ Add punch item</button>
+        </div>
+      </div>
+
+      <div id="punch-list"></div>
+    </section>
+
+    <!-- REPORT VIEW -->
+    <section id="view-report">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">Report preview</h2>
+          <div class="view-subtitle">Use your browser's print dialog to produce a PDF or paper copy</div>
+        </div>
+        <div class="btn-bar">
+          <button class="btn btn-primary" id="btn-print" type="button">Print report</button>
+        </div>
+      </div>
+
+      <div id="report-output"></div>
+    </section>
+
+  </main>
+</div>
+
+<div id="modal-root" class="modal-root hidden" aria-hidden="true"></div>
+<div class="toast-host" id="toast-host"></div>
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+
+<script>
+'use strict';
+
+/* =====================================================================
+   PITOT, Field Instrument 050, v0.2.0
+   Testing, Adjusting, and Balancing workbook
+   M.B. Parks, Green Shoe Garage, GPL-3.0
+   ===================================================================== */
+
+const SCHEMA  = 'pitot/workbook@2';
+const VERSION = '0.2.0';
+const STORAGE_KEY = 'pitot.workbook';
+const PHOTO_DB_NAME = 'pitot.photos';
+const PHOTO_DB_VERSION = 1;
+const PHOTO_STORE = 'photos';
+
+/* -------------------- Equipment type registry -------------------- */
+/* Each type declares its design and reading fields together with the
+   tolerance bucket the pass/fail engine should use. Critical fields are
+   the ones that gate the balanced/out-of-spec status classification. */
+
+const EQUIPMENT_TYPES = {
+  ahu: {
+    label: 'Air Handler / RTU',
+    short: 'AHU',
+    fields: [
+      { key: 'cfm',            label: 'Total airflow',           unit: 'CFM',     tolerance: 'air',   critical: true  },
+      { key: 'esp',            label: 'External static pressure',unit: 'in. wg',  tolerance: 'air',   critical: false },
+      { key: 'motorHp',        label: 'Motor horsepower',        unit: 'hp',      tolerance: null,    critical: false },
+      { key: 'motorAmps',      label: 'Motor amps (FLA)',        unit: 'A',       tolerance: null,    critical: false },
+      { key: 'fanRpm',         label: 'Fan RPM',                 unit: 'rpm',     tolerance: null,    critical: false },
+      { key: 'mixedAirTemp',   label: 'Mixed air temp',          unit: 'degF',    tolerance: 'temp',  critical: false },
+      { key: 'supplyAirTemp',  label: 'Supply air temp',         unit: 'degF',    tolerance: 'temp',  critical: false },
+      { key: 'returnAirTemp',  label: 'Return air temp',         unit: 'degF',    tolerance: 'temp',  critical: false }
+    ]
+  },
+  vav: {
+    label: 'VAV Box',
+    short: 'VAV',
+    fields: [
+      { key: 'cfmMin',         label: 'Minimum airflow',         unit: 'CFM',     tolerance: 'air',   critical: true  },
+      { key: 'cfmMax',         label: 'Maximum airflow',         unit: 'CFM',     tolerance: 'air',   critical: true  },
+      { key: 'reheatBtuh',     label: 'Reheat capacity',         unit: 'BTU/h',   tolerance: null,    critical: false },
+      { key: 'supplyAirTemp',  label: 'Discharge air temp',      unit: 'degF',    tolerance: 'temp',  critical: false },
+      { key: 'inletStatic',    label: 'Inlet static pressure',   unit: 'in. wg',  tolerance: null,    critical: false }
+    ]
+  },
+  pump: {
+    label: 'Pump',
+    short: 'P',
+    fields: [
+      { key: 'gpm',            label: 'Flow rate',               unit: 'GPM',     tolerance: 'water', critical: true  },
+      { key: 'headFt',         label: 'Head',                    unit: 'ft wg',   tolerance: 'water', critical: false },
+      { key: 'motorHp',        label: 'Motor horsepower',        unit: 'hp',      tolerance: null,    critical: false },
+      { key: 'motorAmps',      label: 'Motor amps (FLA)',        unit: 'A',       tolerance: null,    critical: false },
+      { key: 'suctionPsi',     label: 'Suction pressure',        unit: 'psi',     tolerance: null,    critical: false },
+      { key: 'dischargePsi',   label: 'Discharge pressure',      unit: 'psi',     tolerance: null,    critical: false }
+    ]
+  },
+  terminal: {
+    label: 'Terminal (Diffuser / Grille)',
+    short: 'T',
+    fields: [
+      { key: 'cfm',            label: 'Airflow',                 unit: 'CFM',     tolerance: 'air',   critical: true  },
+      { key: 'neckSize',       label: 'Neck size',               unit: 'in',      tolerance: null,    critical: false },
+      { key: 'faceVelocity',   label: 'Face velocity',           unit: 'FPM',     tolerance: 'air',   critical: false },
+      { key: 'kFactor',        label: 'K-factor',                unit: '',        tolerance: null,    critical: false }
+    ]
+  },
+  coil: {
+    label: 'Coil',
+    short: 'C',
+    fields: [
+      { key: 'gpm',            label: 'Water flow',              unit: 'GPM',     tolerance: 'water', critical: true  },
+      { key: 'ewt',            label: 'Entering water temp',     unit: 'degF',    tolerance: 'temp',  critical: false },
+      { key: 'lwt',            label: 'Leaving water temp',      unit: 'degF',    tolerance: 'temp',  critical: false },
+      { key: 'eat',            label: 'Entering air temp',       unit: 'degF',    tolerance: 'temp',  critical: false },
+      { key: 'lat',            label: 'Leaving air temp',        unit: 'degF',    tolerance: 'temp',  critical: false },
+      { key: 'btuh',           label: 'Heat transfer',           unit: 'BTU/h',   tolerance: null,    critical: false }
+    ]
+  }
+};
+
+const PHASES = ['initial', 'adjusted', 'final'];
+const PHASE_LABELS = { initial: 'Initial', adjusted: 'Adjusted', final: 'Final' };
+
+const PUNCH_OWNERS = [
+  { value: 'mech-contractor', label: 'Mechanical contractor' },
+  { value: 'electrical',      label: 'Electrical contractor' },
+  { value: 'controls',        label: 'Controls contractor'   },
+  { value: 'design',          label: 'Design engineer'       },
+  { value: 'owner',           label: 'Owner / facilities'    },
+  { value: 'other',           label: 'Other'                 }
+];
+const PUNCH_PRIORITIES = ['low', 'medium', 'high', 'critical'];
+const PUNCH_STATUSES   = ['open', 'in-progress', 'resolved', 'deferred'];
+
+const STATUS_LABELS = {
+  'pending':     'Pending',
+  'in-progress': 'In progress',
+  'balanced':    'Balanced',
+  'out-of-spec': 'Out of spec',
+  'punch':       'Punch'
+};
+
+/* -------------------- State -------------------- */
+
+function defaultProject() {
+  return {
+    name: '',
+    address: '',
+    owner: '',
+    mechanicalContractor: '',
+    tabContractor: '',
+    technician: '',
+    technicianCertification: '',
+    projectNumber: '',
+    startDate: '',
+    endDate: '',
+    weather: '',
+    notes: ''
+  };
+}
+
+function defaultState() {
+  return {
+    schema: SCHEMA,
+    version: VERSION,
+    project: defaultProject(),
+    equipment: [],
+    punchList: []
+  };
+}
+
+let STATE = loadState() || defaultState();
+
+let UI = {
+  activeTab: 'project',
+  selectedEquipmentId: null,
+  filterType: '',
+  filterStatus: '',
+  searchTerm: '',
+  saveTimer: null,
+  expandedTests: new Set()
+};
+
+function shortId() { return Math.random().toString(36).slice(2, 8); }
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return migrate(parsed);
+  } catch (err) {
+    console.error('Failed to load workbook:', err);
+    return null;
+  }
+}
+
+function migrate(data) {
+  if (!data || typeof data !== 'object') return null;
+  /* Forward-migrate older schemas in place. */
+  if (data.schema === 'pitot/workbook@1') {
+    data.schema = SCHEMA;
+    /* No structural rewrites required; Phase 2 fields are optional adds
+       that downstream code treats as absent when not present. */
+  }
+  if (data.schema !== SCHEMA) {
+    /* Unknown future schemas are rejected. */
+    return null;
+  }
+  data.project   = Object.assign(defaultProject(), data.project || {});
+  data.equipment = Array.isArray(data.equipment) ? data.equipment : [];
+  data.punchList = Array.isArray(data.punchList) ? data.punchList : [];
+  for (const eq of data.equipment) {
+    eq.tolerance = Object.assign({ airPercent: 10, waterPercent: 10, tempDegF: 2 }, eq.tolerance || {});
+    eq.design    = eq.design || {};
+    eq.tests     = Array.isArray(eq.tests) ? eq.tests : [];
+    eq.notes     = eq.notes || '';
+    /* Phase 2 fields */
+    eq.photos        = Array.isArray(eq.photos) ? eq.photos : [];
+    eq.associatedAhu = eq.associatedAhu || '';
+    if (eq.type === 'pump') {
+      eq.pumpCurve   = Array.isArray(eq.pumpCurve) ? eq.pumpCurve : [];
+      eq.systemCurve = eq.systemCurve || { staticHead: '', designFlow: '', designHead: '' };
+    }
+    for (const t of eq.tests) {
+      t.readings = t.readings || {};
+      t.photos   = Array.isArray(t.photos) ? t.photos : [];
+      /* t.traverse and t.hood are optional structured sub-records. */
+    }
+  }
+  return data;
+}
+
+function saveState() {
+  setSaveIndicator('saving');
+  if (UI.saveTimer) clearTimeout(UI.saveTimer);
+  UI.saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+      setSaveIndicator('saved');
+    } catch (err) {
+      console.error('Save failed:', err);
+      toast('Save failed: ' + err.message, 'err');
+      setSaveIndicator('saved');
+    }
+  }, 200);
+}
+
+function setSaveIndicator(state) {
+  const el = document.getElementById('save-indicator');
+  if (!el) return;
+  el.classList.remove('saving', 'saved');
+  if (state === 'saving') { el.classList.add('saving'); el.textContent = 'Saving...'; }
+  else                    { el.classList.add('saved');  el.textContent = 'Saved';     }
+}
+
+/* -------------------- Pass/fail and status -------------------- */
+
+function passFailField(designVal, readingVal, tolType, tolerance) {
+  if (designVal === undefined || designVal === null || designVal === '') return null;
+  if (readingVal === undefined || readingVal === null || readingVal === '') return null;
+  if (!tolType) return null;
+  const design  = parseFloat(designVal);
+  const reading = parseFloat(readingVal);
+  if (!isFinite(design) || !isFinite(reading)) return null;
+
+  if (tolType === 'temp') {
+    const band = Math.abs(tolerance.tempDegF);
+    return Math.abs(reading - design) <= band ? 'pass' : 'fail';
+  }
+  const percent = (tolType === 'air' ? tolerance.airPercent : tolerance.waterPercent);
+  const band = Math.abs(design * percent / 100);
+  return Math.abs(reading - design) <= band ? 'pass' : 'fail';
+}
+
+function classifyStatus(eq) {
+  if (eq.status === 'punch') return 'punch';
+  const tests = eq.tests || [];
+  if (tests.length === 0) return 'pending';
+
+  const finalTest = tests.find(t => t.phase === 'final');
+  if (!finalTest) return 'in-progress';
+
+  const type = EQUIPMENT_TYPES[eq.type];
+  if (!type) return 'in-progress';
+
+  const critical = type.fields.filter(f => f.critical && f.tolerance);
+  const fieldsToCheck = critical.length > 0
+    ? critical
+    : type.fields.filter(f => f.tolerance);
+
+  if (fieldsToCheck.length === 0) return 'balanced';
+
+  const hasAll = fieldsToCheck.every(f => {
+    const v = finalTest.readings ? finalTest.readings[f.key] : '';
+    return v !== undefined && v !== null && v !== '';
+  });
+  if (!hasAll) return 'in-progress';
+
+  const allPass = fieldsToCheck.every(f =>
+    passFailField(eq.design[f.key], finalTest.readings[f.key], f.tolerance, eq.tolerance) === 'pass'
+  );
+  return allPass ? 'balanced' : 'out-of-spec';
+}
+
+/* -------------------- Phase 2 compute helpers -------------------- */
+/* All formulas here are the standard ASHRAE / AABC / NEBB ones used in
+   field TAB practice. They are correct for typical commercial HVAC at
+   sea-level standard conditions. Where altitude or non-standard density
+   matters, the duct traverse module accepts an optional temperature and
+   pressure correction. */
+
+/* Standard air density coefficient: V_fpm = 4005 * sqrt(VP_inH2O).
+   This assumes standard air at 0.075 lb/ft3, 70 degF, 29.92 inHg. */
+const STANDARD_AIR_DENSITY = 0.075;
+const FPM_VP_COEFFICIENT   = 4005;
+
+function airDensity(tempF, pressureInHg) {
+  /* Ideal-gas density correction relative to standard air.
+     rho = rho_std * (P / P_std) * (T_std_R / T_R) */
+  if (tempF === undefined || tempF === null || tempF === '' ||
+      pressureInHg === undefined || pressureInHg === null || pressureInHg === '') {
+    return STANDARD_AIR_DENSITY;
+  }
+  const T_R     = parseFloat(tempF) + 459.67;
+  const T_std_R = 70 + 459.67;
+  const P       = parseFloat(pressureInHg);
+  const P_std   = 29.92;
+  if (!isFinite(T_R) || !isFinite(P) || T_R <= 0 || P <= 0) return STANDARD_AIR_DENSITY;
+  return STANDARD_AIR_DENSITY * (P / P_std) * (T_std_R / T_R);
+}
+
+function vpToVelocity(vp, density) {
+  /* V_fpm = 1096.7 * sqrt(VP / rho) is the density-corrected form.
+     At standard density 0.075, 1096.7 / sqrt(0.075) = 4004.45, hence the
+     familiar 4005 coefficient. */
+  if (vp === undefined || vp === null || vp === '' || vp <= 0) return 0;
+  const rho = density || STANDARD_AIR_DENSITY;
+  const v   = parseFloat(vp);
+  if (!isFinite(v) || v <= 0) return 0;
+  return 1096.7 * Math.sqrt(v / rho);
+}
+
+/* Standard traverse-point positions. All return arrays of normalized
+   positions in [0, 1] across the duct dimension. */
+
+function equalAreaPositions(n) {
+  /* Center-of-area for n equal divisions: [(2i-1) / (2n)] for i=1..n. */
+  const out = [];
+  for (let i = 1; i <= n; i++) out.push((2 * i - 1) / (2 * n));
+  return out;
+}
+
+function logTchebycheffRectangular(n) {
+  /* Standard log-Tchebycheff fractions for rectangular ducts.
+     Tables per ASHRAE. We provide the most common counts (5, 6, 7). */
+  const table = {
+    5: [0.074, 0.288, 0.500, 0.712, 0.926],
+    6: [0.061, 0.235, 0.437, 0.563, 0.765, 0.939],
+    7: [0.053, 0.203, 0.366, 0.500, 0.634, 0.797, 0.947]
+  };
+  return table[n] || equalAreaPositions(n);
+}
+
+function logTchebycheffRound(pointsPerDiameter) {
+  /* Standard log-Tchebycheff radial positions for round ducts, given as
+     fractions of the duct diameter from one wall to the other along a
+     single traverse line. ASHRAE specifies these as 0.026, 0.082, 0.146,
+     0.226, 0.342, 0.658, 0.774, 0.854, 0.918, 0.974 for 10-point. */
+  const table = {
+    6:  [0.032, 0.135, 0.321, 0.679, 0.865, 0.968],
+    8:  [0.021, 0.117, 0.184, 0.345, 0.655, 0.816, 0.883, 0.979],
+    10: [0.026, 0.082, 0.146, 0.226, 0.342, 0.658, 0.774, 0.854, 0.918, 0.974]
+  };
+  return table[pointsPerDiameter] || table[10];
+}
+
+function ductArea(shape, dim1, dim2) {
+  /* dim1, dim2 in inches. Returns area in square feet. */
+  const d1 = parseFloat(dim1);
+  if (!isFinite(d1) || d1 <= 0) return 0;
+  if (shape === 'round') return Math.PI * (d1 / 2) * (d1 / 2) / 144;
+  const d2 = parseFloat(dim2);
+  if (!isFinite(d2) || d2 <= 0) return 0;
+  return (d1 * d2) / 144;
+}
+
+function traverseCFM(velocities, areaSqFt) {
+  /* Standard practice: arithmetic mean of point velocities, then
+     CFM = V_avg * A. */
+  const valid = velocities.filter(v => isFinite(v) && v > 0);
+  if (valid.length === 0 || !(areaSqFt > 0)) return { vAvg: 0, cfm: 0, n: 0 };
+  const vAvg = valid.reduce((s, v) => s + v, 0) / valid.length;
+  return { vAvg: vAvg, cfm: vAvg * areaSqFt, n: valid.length };
+}
+
+/* Hood reading helper. The hood reads a raw CFM; a K-factor and an
+   optional back-pressure compensation factor can be applied. Multiple
+   readings (technician moves the hood around the diffuser) are averaged. */
+
+function hoodCFM(readings, kFactor, bpComp) {
+  const valid = (readings || []).map(r => parseFloat(r)).filter(v => isFinite(v) && v > 0);
+  if (valid.length === 0) return { avgRaw: 0, corrected: 0, n: 0 };
+  const avg = valid.reduce((s, v) => s + v, 0) / valid.length;
+  const k   = parseFloat(kFactor);
+  const bp  = parseFloat(bpComp);
+  const kAdj  = isFinite(k)  && k  > 0 ? k  : 1;
+  const bpAdj = isFinite(bp) && bp > 0 ? bp : 1;
+  return { avgRaw: avg, corrected: avg * kAdj * bpAdj, n: valid.length };
+}
+
+/* Coil heat balance. Water side: BTU/h = GPM * 500 * dT.
+   Air sensible:   BTU/h = CFM * 1.08 * dT. */
+
+function coilWaterBtuh(gpm, ewt, lwt) {
+  const g  = parseFloat(gpm);
+  const dT = Math.abs(parseFloat(lwt) - parseFloat(ewt));
+  if (!isFinite(g) || !isFinite(dT) || g <= 0 || dT <= 0) return null;
+  return g * 500 * dT;
+}
+
+function coilAirSensibleBtuh(cfm, eat, lat) {
+  const c  = parseFloat(cfm);
+  const dT = Math.abs(parseFloat(lat) - parseFloat(eat));
+  if (!isFinite(c) || !isFinite(dT) || c <= 0 || dT <= 0) return null;
+  return c * 1.08 * dT;
+}
+
+function coilHeatBalance(eq, test) {
+  /* Cross-checks the water-side and air-side BTU/h from a coil's
+     readings. Returns null if either side is incomputable. */
+  if (!test || !test.readings) return null;
+  const r = test.readings;
+  /* Air-side flow can come from a separate AHU/test; here we use what
+     was entered on the coil test itself. */
+  const water = coilWaterBtuh(r.gpm, r.ewt, r.lwt);
+  const air   = coilAirSensibleBtuh(r.cfm, r.eat, r.lat);
+  const out = {
+    water:        water,
+    airSensible:  air,
+    design:       parseFloat(eq.design.btuh) || null
+  };
+  if (water !== null && air !== null) {
+    out.ratio = water / air;
+    out.balanceErrorPercent = Math.abs(water - air) / Math.max(water, air) * 100;
+  }
+  return out;
+}
+
+/* Pump operating point. Given a pump curve (array of {flow, head} points
+   sorted by flow ascending) and a system curve (H = staticHead + k*Q^2,
+   with k inferred from design flow and design head), find the intersection
+   by linear interpolation across pump-curve segments. */
+
+function fitSystemK(staticHead, designFlow, designHead) {
+  const s  = parseFloat(staticHead);
+  const Q  = parseFloat(designFlow);
+  const H  = parseFloat(designHead);
+  if (!isFinite(s) || !isFinite(Q) || !isFinite(H) || Q <= 0) return null;
+  const dyn = H - s;
+  if (dyn <= 0) return null;
+  return dyn / (Q * Q);
+}
+
+function systemHeadAt(flow, staticHead, k) {
+  return parseFloat(staticHead) + k * flow * flow;
+}
+
+function pumpOperatingPoint(pumpCurve, staticHead, designFlow, designHead) {
+  const sh = parseFloat(staticHead);
+  const k  = fitSystemK(staticHead, designFlow, designHead);
+  if (k === null || !isFinite(sh)) return null;
+  const points = (pumpCurve || [])
+    .map(p => ({ flow: parseFloat(p.flow), head: parseFloat(p.head) }))
+    .filter(p => isFinite(p.flow) && isFinite(p.head))
+    .sort((a, b) => a.flow - b.flow);
+  if (points.length < 2) return null;
+  /* Walk segments; for each, find sign change of (pumpHead - systemHead). */
+  for (let i = 0; i < points.length - 1; i++) {
+    const a = points[i], b = points[i+1];
+    const sa = sh + k * a.flow * a.flow;
+    const sb = sh + k * b.flow * b.flow;
+    const da = a.head - sa;
+    const db = b.head - sb;
+    if (da === 0) return { flow: a.flow, head: a.head, k: k };
+    if (db === 0) return { flow: b.flow, head: b.head, k: k };
+    if (da * db < 0) {
+      /* Linear interpolation on flow. Could iterate but linear is the
+         field-practice default. */
+      const tFrac = da / (da - db);
+      const flow  = a.flow + tFrac * (b.flow - a.flow);
+      const head  = sh + k * flow * flow;
+      return { flow: flow, head: head, k: k };
+    }
+  }
+  return null;
+}
+
+/* Air balance verification. For every AHU, sum the final-phase CFM of
+   its associated terminals and compare to the AHU's final-phase total
+   CFM. Returns an array of report rows. */
+
+function airBalanceReport() {
+  const ahus = STATE.equipment.filter(e => e.type === 'ahu');
+  return ahus.map(ahu => {
+    const finalAhu = (ahu.tests || []).find(t => t.phase === 'final');
+    const ahuCfm   = finalAhu && finalAhu.readings && finalAhu.readings.cfm !== ''
+      ? parseFloat(finalAhu.readings.cfm) : null;
+    const terminals = STATE.equipment.filter(e => e.type === 'terminal' && e.associatedAhu === ahu.id);
+    let sum = 0;
+    let withReadings = 0;
+    terminals.forEach(t => {
+      const final = (t.tests || []).find(x => x.phase === 'final');
+      const v = final && final.readings && final.readings.cfm !== ''
+        ? parseFloat(final.readings.cfm) : null;
+      if (v !== null && isFinite(v)) { sum += v; withReadings++; }
+    });
+    const designAhu = parseFloat(ahu.design.cfm);
+    let pct = null;
+    if (ahuCfm !== null && isFinite(ahuCfm) && ahuCfm > 0 && terminals.length > 0) {
+      pct = (sum - ahuCfm) / ahuCfm * 100;
+    }
+    return {
+      ahuId: ahu.id, ahuTag: ahu.tag, ahuCfm: ahuCfm,
+      designCfm: isFinite(designAhu) ? designAhu : null,
+      terminalCount: terminals.length,
+      terminalsWithReadings: withReadings,
+      terminalSum: sum,
+      imbalancePercent: pct
+    };
+  });
+}
+
+
+
+function el(tag, attrs, children) {
+  const node = document.createElement(tag);
+  if (attrs) {
+    for (const k in attrs) {
+      const v = attrs[k];
+      if (v === null || v === undefined || v === false) continue;
+      if (k === 'class') node.className = v;
+      else if (k === 'dataset') Object.assign(node.dataset, v);
+      else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
+      else if (k === 'html') node.innerHTML = v;
+      else if (v === true) node.setAttribute(k, '');
+      else node.setAttribute(k, v);
+    }
+  }
+  if (children !== undefined && children !== null) {
+    appendChildren(node, children);
+  }
+  return node;
+}
+function appendChildren(node, children) {
+  if (Array.isArray(children)) children.forEach(c => appendChildren(node, c));
+  else if (children instanceof Node) node.appendChild(children);
+  else if (children !== null && children !== undefined && children !== false) node.appendChild(document.createTextNode(String(children)));
+}
+function $(sel, root) { return (root || document).querySelector(sel); }
+function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+function fmtNum(v, digits) {
+  if (v === undefined || v === null || v === '') return '';
+  const n = parseFloat(v);
+  if (!isFinite(n)) return String(v);
+  if (digits !== undefined) return n.toFixed(digits);
+  return String(n);
+}
+function fmtDate(s) { return s || ''; }
+
+function toast(msg, kind) {
+  const host = document.getElementById('toast-host');
+  if (!host) return;
+  const t = el('div', { class: 'toast ' + (kind || '') }, msg);
+  host.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.25s'; }, 2200);
+  setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 2600);
+}
+
+/* -------------------- Form rendering helpers -------------------- */
+
+function makeField(opts) {
+  const wrap = el('div', { class: 'field' + (opts.tag ? ' field-tag' : '') });
+  const labelText = [opts.label];
+  if (opts.unit) labelText.push(el('span', { class: 'unit' }, opts.unit));
+  if (opts.critical) labelText.push(el('span', { class: 'critical', title: 'Critical field' }));
+  wrap.appendChild(el('label', { class: 'field-label', for: opts.id || '' }, labelText));
+
+  let input;
+  if (opts.type === 'textarea') {
+    input = el('textarea', { id: opts.id, rows: opts.rows || 3, placeholder: opts.placeholder || '' });
+  } else if (opts.type === 'select') {
+    input = el('select', { id: opts.id });
+    (opts.options || []).forEach(o => {
+      const optEl = el('option', { value: o.value }, o.label);
+      if (opts.value === o.value) optEl.selected = true;
+      input.appendChild(optEl);
+    });
+    if (opts.value !== undefined) input.value = opts.value;
+  } else {
+    input = el('input', {
+      type: opts.type || 'text',
+      id: opts.id,
+      placeholder: opts.placeholder || '',
+      autocomplete: 'off'
+    });
+    if (opts.value !== undefined && opts.value !== null) input.value = opts.value;
+    if (opts.step) input.setAttribute('step', opts.step);
+    if (opts.mono) input.classList.add('mono');
+  }
+  if (opts.onInput) input.addEventListener('input', opts.onInput);
+  if (opts.onChange) input.addEventListener('change', opts.onChange);
+  wrap.appendChild(input);
+  if (opts.help) wrap.appendChild(el('div', { class: 'field-help' }, opts.help));
+  return { wrap: wrap, input: input };
+}
+
+/* -------------------- Project view -------------------- */
+
+const PROJECT_FIELDS = {
+  identification: [
+    { key: 'name',          label: 'Project name',       placeholder: 'Hagerstown Branch Library', full: true },
+    { key: 'projectNumber', label: 'Project number',     placeholder: '2026-014', mono: true },
+    { key: 'address',       label: 'Site address',       placeholder: '100 S Potomac St, Hagerstown MD', full: true },
+    { key: 'owner',         label: 'Owner',              placeholder: 'Washington County Free Library' }
+  ],
+  personnel: [
+    { key: 'mechanicalContractor',   label: 'Mechanical contractor',      placeholder: 'Mechanical contractor name' },
+    { key: 'tabContractor',          label: 'TAB contractor',             placeholder: 'TAB contractor name' },
+    { key: 'technician',             label: 'TAB technician',             placeholder: 'Technician of record' },
+    { key: 'technicianCertification',label: 'Certification',              placeholder: 'AABC TBE #12345', mono: true }
+  ],
+  schedule: [
+    { key: 'startDate', label: 'Start date', type: 'date' },
+    { key: 'endDate',   label: 'End date',   type: 'date' },
+    { key: 'weather',   label: 'Outdoor conditions', placeholder: '82 degF, 58 percent RH, partly cloudy', full: true }
+  ]
+};
+
+function renderProjectView() {
+  const idHost   = document.getElementById('form-project-id');
+  const psnHost  = document.getElementById('form-project-personnel');
+  const schHost  = document.getElementById('form-project-schedule');
+  const notesEl  = document.getElementById('project-notes');
+  if (!idHost) return;
+
+  function mount(host, defs) {
+    clear(host);
+    defs.forEach(def => {
+      const id = 'pj-' + def.key;
+      const f = makeField({
+        id: id,
+        label: def.label,
+        type: def.type || 'text',
+        placeholder: def.placeholder || '',
+        mono: def.mono,
+        value: STATE.project[def.key] || '',
+        onInput: (e) => {
+          STATE.project[def.key] = e.target.value;
+          saveState();
+        }
+      });
+      if (def.full) f.wrap.classList.add('full');
+      host.appendChild(f.wrap);
+    });
+  }
+
+  mount(idHost, PROJECT_FIELDS.identification);
+  mount(psnHost, PROJECT_FIELDS.personnel);
+  mount(schHost, PROJECT_FIELDS.schedule);
+
+  notesEl.value = STATE.project.notes || '';
+  notesEl.oninput = (e) => { STATE.project.notes = e.target.value; saveState(); };
+}
+
+/* -------------------- Dashboard -------------------- */
+
+function computeStats() {
+  const total = STATE.equipment.length;
+  const byStatus = { pending: 0, 'in-progress': 0, balanced: 0, 'out-of-spec': 0, punch: 0 };
+  const byType = {};
+  for (const t of Object.keys(EQUIPMENT_TYPES)) byType[t] = { total: 0, balanced: 0 };
+  for (const eq of STATE.equipment) {
+    const s = classifyStatus(eq);
+    byStatus[s] = (byStatus[s] || 0) + 1;
+    if (byType[eq.type]) {
+      byType[eq.type].total += 1;
+      if (s === 'balanced') byType[eq.type].balanced += 1;
+    }
+  }
+  const punchOpen = STATE.punchList.filter(p => p.status === 'open' || p.status === 'in-progress').length;
+  return { total: total, byStatus: byStatus, byType: byType, punchOpen: punchOpen };
+}
+
+function renderDashboard() {
+  const host = document.getElementById('dashboard');
+  if (!host) return;
+  const stats = computeStats();
+  clear(host);
+
+  const tiles = [
+    { num: stats.total,                          lbl: 'Total equipment',                  tone: ''            },
+    { num: stats.byStatus['balanced'],           lbl: 'Balanced',                         tone: 'balanced'    },
+    { num: stats.byStatus['in-progress'],        lbl: 'In progress',                      tone: 'in-progress' },
+    { num: stats.byStatus['out-of-spec'],        lbl: 'Out of spec',                      tone: 'out-of-spec' },
+    { num: stats.byStatus['pending'],            lbl: 'Pending',                          tone: ''            },
+    { num: stats.punchOpen,                      lbl: 'Punch open',                       tone: 'punch'       }
+  ];
+  tiles.forEach(t => {
+    host.appendChild(el('div', { class: 'dash-tile', dataset: { tone: t.tone } }, [
+      el('span', { class: 'num' }, String(t.num || 0)),
+      el('span', { class: 'lbl' }, t.lbl)
+    ]));
+  });
+}
+
+/* -------------------- Equipment list -------------------- */
+
+function renderEquipmentTab() {
+  populateTypeFilter();
+  renderDashboard();
+  renderEquipmentGrid();
+  updateTabCounts();
+}
+
+function populateTypeFilter() {
+  const sel = document.getElementById('eq-filter-type');
+  if (!sel || sel.dataset.populated === '1') return;
+  for (const [k, def] of Object.entries(EQUIPMENT_TYPES)) {
+    sel.appendChild(el('option', { value: k }, def.label));
+  }
+  sel.dataset.populated = '1';
+}
+
+function visibleEquipment() {
+  const term = UI.searchTerm.trim().toLowerCase();
+  return STATE.equipment.filter(eq => {
+    if (UI.filterType && eq.type !== UI.filterType) return false;
+    if (UI.filterStatus && classifyStatus(eq) !== UI.filterStatus) return false;
+    if (term) {
+      const blob = [eq.tag, eq.location, eq.serves, eq.notes, eq.manufacturer, eq.model].join(' ').toLowerCase();
+      if (!blob.includes(term)) return false;
+    }
+    return true;
+  });
+}
+
+function renderEquipmentGrid() {
+  const host = document.getElementById('equipment-grid');
+  const count = document.getElementById('eq-list-count');
+  if (!host) return;
+  clear(host);
+
+  const visible = visibleEquipment();
+  count.textContent = visible.length + ' of ' + STATE.equipment.length;
+
+  if (STATE.equipment.length === 0) {
+    host.appendChild(el('div', { class: 'empty' }, [
+      el('span', { class: 'empty-icon' }, '\u2295'),
+      el('h3', null, 'No equipment yet'),
+      el('p', null, 'Add air handlers, VAV boxes, pumps, terminals, and coils from the mechanical drawings.'),
+      el('button', { class: 'btn btn-primary', type: 'button', onclick: () => openEquipmentModal(null) }, '+ Add equipment')
+    ]));
+    return;
+  }
+
+  if (visible.length === 0) {
+    host.appendChild(el('div', { class: 'empty' }, [
+      el('h3', null, 'No matches'),
+      el('p', null, 'Adjust the filters or clear the search.')
+    ]));
+    return;
+  }
+
+  const grid = el('div', { class: 'eq-grid' });
+  visible.forEach(eq => grid.appendChild(eqCard(eq)));
+  host.appendChild(grid);
+}
+
+function eqCard(eq) {
+  const status = classifyStatus(eq);
+  const type = EQUIPMENT_TYPES[eq.type];
+  const finalTest = (eq.tests || []).find(t => t.phase === 'final');
+  const testCount = (eq.tests || []).length;
+  const critical = type ? type.fields.find(f => f.critical) : null;
+  const designVal = (critical && eq.design[critical.key]) || '';
+  const finalVal = (critical && finalTest && finalTest.readings && finalTest.readings[critical.key]) || '';
+
+  return el('div', {
+    class: 'eq-card',
+    dataset: { status: status },
+    onclick: () => openEquipmentDetail(eq.id)
+  }, [
+    el('div', { class: 'eq-card-head' }, [
+      el('div', null, [
+        el('div', { class: 'eq-tag' }, eq.tag || '(no tag)'),
+        el('div', { class: 'eq-type' }, type ? type.label : eq.type)
+      ]),
+      el('span', { class: 'status-pill status-' + status }, STATUS_LABELS[status] || status)
+    ]),
+    el('div', { class: 'eq-meta' }, [
+      eq.location ? el('div', null, [el('span', { class: 'lbl' }, 'Loc'), eq.location]) : null,
+      eq.serves   ? el('div', null, [el('span', { class: 'lbl' }, 'Serves'), eq.serves]) : null,
+      critical ? el('div', null, [
+        el('span', { class: 'lbl' }, critical.short || critical.label.split(' ')[0]),
+        el('span', { class: 'mono' }, [
+          designVal ? fmtNum(designVal) : '--',
+          ' ',
+          el('span', { class: 'muted' }, critical.unit),
+          finalVal ? [' \u2192 ', el('span', { class: 'mono' }, fmtNum(finalVal)), ' ', el('span', { class: 'muted' }, critical.unit)] : ''
+        ])
+      ]) : null
+    ]),
+    el('div', { class: 'eq-card-foot' }, [
+      el('span', { class: 'eq-tests-count' }, [
+        el('strong', null, String(testCount)),
+        ' test' + (testCount === 1 ? '' : 's')
+      ]),
+      el('span', { class: 'eq-type mono' }, eq.manufacturer || '')
+    ])
+  ]);
+}
+
+/* -------------------- Equipment detail -------------------- */
+
+function openEquipmentDetail(eqId) {
+  UI.selectedEquipmentId = eqId;
+  document.getElementById('equipment-list-view').classList.add('hidden');
+  document.getElementById('equipment-detail-view').classList.remove('hidden');
+  renderEquipmentDetail();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeEquipmentDetail() {
+  UI.selectedEquipmentId = null;
+  document.getElementById('equipment-list-view').classList.remove('hidden');
+  document.getElementById('equipment-detail-view').classList.add('hidden');
+  UI.expandedTests.clear();
+  renderEquipmentTab();
+}
+
+function renderEquipmentDetail() {
+  const host = document.getElementById('equipment-detail-view');
+  const eq = STATE.equipment.find(e => e.id === UI.selectedEquipmentId);
+  if (!eq) { closeEquipmentDetail(); return; }
+  const type = EQUIPMENT_TYPES[eq.type];
+  const status = classifyStatus(eq);
+  clear(host);
+
+  host.appendChild(el('button', { class: 'detail-back', type: 'button', onclick: closeEquipmentDetail }, '\u2190 Back to equipment'));
+
+  host.appendChild(el('div', { class: 'detail-head' }, [
+    el('div', { class: 'detail-head-tag' }, [
+      el('span', { class: 'eq-tag' }, eq.tag || '(no tag)'),
+      el('span', { class: 'eq-type' }, type ? type.label : eq.type),
+      el('span', { class: 'status-pill status-' + status }, STATUS_LABELS[status] || status)
+    ]),
+    el('div', { class: 'btn-bar' }, [
+      el('button', { class: 'btn btn-sm', type: 'button', onclick: () => openEquipmentModal(eq) }, 'Edit'),
+      el('button', { class: 'btn btn-sm', type: 'button', onclick: () => togglePunchFlag(eq) },
+                  eq.status === 'punch' ? 'Clear punch flag' : 'Flag as punch'),
+      el('button', { class: 'btn btn-sm btn-danger', type: 'button', onclick: () => deleteEquipment(eq) }, 'Delete')
+    ])
+  ]));
+
+  /* Identification panel */
+  const idDl = el('dl', { class: 'kv-table' });
+  const idRows = [
+    ['Location',     eq.location],
+    ['Serves',       eq.serves],
+    ['Manufacturer', eq.manufacturer],
+    ['Model',        eq.model],
+    ['Serial',       eq.serial]
+  ];
+  idRows.forEach(([k, v]) => {
+    if (!v) return;
+    idDl.appendChild(el('dt', null, k));
+    idDl.appendChild(el('dd', { class: 'text' }, v));
+  });
+  if (!idDl.firstChild) idDl.appendChild(el('dd', { class: 'text muted' }, 'No identification entered.'));
+
+  host.appendChild(el('div', { class: 'panel-bezel' }, [
+    el('div', { class: 'panel-bezel-body' }, [
+      el('h3', { class: 'panel-title' }, 'Identification'),
+      idDl
+    ])
+  ]));
+
+  /* Design and tolerance panel */
+  const designBody = el('table', { class: 'read-table' });
+  const thead = el('tr', null, [
+    el('th', null, 'Field'),
+    el('th', { class: 'num' }, 'Design value'),
+    el('th', null, 'Unit'),
+    el('th', null, 'Tolerance')
+  ]);
+  designBody.appendChild(el('thead', null, thead));
+  const designTbody = el('tbody');
+  if (type) {
+    type.fields.forEach(f => {
+      const dv = eq.design[f.key];
+      let tolDesc = '';
+      if (f.tolerance === 'air')   tolDesc = '\u00B1' + eq.tolerance.airPercent + '%';
+      if (f.tolerance === 'water') tolDesc = '\u00B1' + eq.tolerance.waterPercent + '%';
+      if (f.tolerance === 'temp')  tolDesc = '\u00B1' + eq.tolerance.tempDegF + ' degF';
+      if (!f.tolerance) tolDesc = 'not toleranced';
+      designTbody.appendChild(el('tr', null, [
+        el('td', { class: 'label' }, [f.label, f.critical ? el('span', { class: 'critical', style: 'display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--brass);margin-left:6px;vertical-align:middle;' }) : null]),
+        el('td', { class: 'num' }, dv !== undefined && dv !== '' ? fmtNum(dv) : el('span', { class: 'muted' }, '-')),
+        el('td', { class: 'unit' }, f.unit || ''),
+        el('td', { class: 'muted' }, tolDesc)
+      ]));
+    });
+  }
+  designBody.appendChild(designTbody);
+
+  host.appendChild(el('div', { class: 'panel-bezel' }, [
+    el('div', { class: 'panel-bezel-body' }, [
+      el('h3', { class: 'panel-title' }, [
+        'Design and tolerance',
+        el('span', { class: 'panel-title-meta' },
+          'air \u00B1' + eq.tolerance.airPercent + '%, water \u00B1' + eq.tolerance.waterPercent + '%, temp \u00B1' + eq.tolerance.tempDegF + ' degF')
+      ]),
+      designBody
+    ])
+  ]));
+
+  /* Tests panel */
+  const testsPanel = el('div', { class: 'panel-bezel-body' }, [
+    el('h3', { class: 'panel-title' }, [
+      'Tests',
+      el('span', { class: 'panel-title-meta' }, (eq.tests || []).length + ' recorded')
+    ])
+  ]);
+
+  /* Phase buttons */
+  testsPanel.appendChild(el('div', { class: 'btn-bar' }, PHASES.map(phase => {
+    const has = (eq.tests || []).some(t => t.phase === phase);
+    return el('button', {
+      class: 'btn btn-sm ' + (phase === 'final' && !has ? 'btn-primary' : ''),
+      type: 'button',
+      onclick: () => openTestModal(eq, null, phase)
+    }, '+ ' + PHASE_LABELS[phase]);
+  })));
+
+  /* Existing tests, newest first */
+  const sortedTests = (eq.tests || []).slice().sort((a, b) => {
+    const da = a.date || '';
+    const db = b.date || '';
+    if (da !== db) return db.localeCompare(da);
+    return PHASES.indexOf(b.phase) - PHASES.indexOf(a.phase);
+  });
+
+  if (sortedTests.length === 0) {
+    testsPanel.appendChild(el('div', { class: 'empty mt-md' }, [
+      el('p', null, 'No tests recorded. Use the buttons above to log initial, adjusted, and final readings.')
+    ]));
+  } else {
+    const list = el('div', { class: 'test-list' });
+    sortedTests.forEach(t => list.appendChild(testEntry(eq, t)));
+    testsPanel.appendChild(list);
+  }
+
+  host.appendChild(el('div', { class: 'panel-bezel' }, testsPanel));
+
+  /* Phase 2: pump curve panel (pumps only) */
+  if (eq.type === 'pump') {
+    const pumpPanel = el('div', { class: 'panel-bezel-body' });
+    pumpPanel.appendChild(el('div', { class: 'row gap-sm', style: 'justify-content:space-between;align-items:baseline;' }, [
+      el('h3', { class: 'panel-title' }, 'Pump operating point'),
+      el('button', { class: 'btn btn-sm', type: 'button', onclick: () => openPumpCurveModal(eq) },
+        (eq.pumpCurve && eq.pumpCurve.length >= 2) ? 'Edit pump curve' : '+ Set up pump curve')
+    ]));
+    if (eq.pumpCurve && eq.pumpCurve.length >= 2 && eq.systemCurve) {
+      const op = pumpOperatingPoint(eq.pumpCurve, eq.systemCurve.staticHead, eq.systemCurve.designFlow, eq.systemCurve.designHead);
+      const dl = el('dl', { class: 'kv-table' });
+      dl.appendChild(el('dt', null, 'Pump curve points'));
+      dl.appendChild(el('dd', { class: 'mono' }, eq.pumpCurve.length));
+      dl.appendChild(el('dt', null, 'System static head'));
+      dl.appendChild(el('dd', { class: 'mono' }, (eq.systemCurve.staticHead || '-') + ' ft'));
+      dl.appendChild(el('dt', null, 'Design point'));
+      dl.appendChild(el('dd', { class: 'mono' }, (eq.systemCurve.designFlow || '-') + ' GPM at ' + (eq.systemCurve.designHead || '-') + ' ft'));
+      if (op) {
+        dl.appendChild(el('dt', null, 'Computed operating point'));
+        dl.appendChild(el('dd', { class: 'mono' }, op.flow.toFixed(0) + ' GPM at ' + op.head.toFixed(1) + ' ft'));
+      }
+      pumpPanel.appendChild(dl);
+      pumpPanel.appendChild(buildPumpPlot(eq.pumpCurve, eq.systemCurve, op));
+    } else {
+      pumpPanel.appendChild(el('p', { class: 'muted' }, 'No pump curve yet. Enter manufacturer curve points and the system static head and design point to compute the operating point.'));
+    }
+    host.appendChild(el('div', { class: 'panel-bezel' }, pumpPanel));
+  }
+
+  /* Phase 2: equipment-level photos */
+  const photoPanel = el('div', { class: 'panel-bezel-body' });
+  photoPanel.appendChild(el('div', { class: 'row gap-sm', style: 'justify-content:space-between;align-items:baseline;' }, [
+    el('h3', { class: 'panel-title' }, 'Equipment photos' + ((eq.photos && eq.photos.length) ? ' (' + eq.photos.length + ')' : '')),
+    el('button', { class: 'btn btn-sm', type: 'button', onclick: () => openPhotoModal(eq, null) }, 'Manage')
+  ]));
+  if (eq.photos && eq.photos.length > 0) {
+    const strip = el('div', { class: 'photo-strip' });
+    eq.photos.forEach(ph => {
+      const fig = el('figure', { class: 'photo-strip-item' });
+      fig.appendChild(thumbnailFor(ph));
+      if (ph.caption) fig.appendChild(el('figcaption', null, ph.caption));
+      strip.appendChild(fig);
+    });
+    photoPanel.appendChild(strip);
+  } else {
+    photoPanel.appendChild(el('p', { class: 'muted' }, 'No photos attached. Nameplates, panel access, damper positions, anything you need to remember from the visit.'));
+  }
+  host.appendChild(el('div', { class: 'panel-bezel' }, photoPanel));
+
+  /* Notes */
+  if (eq.notes) {
+    host.appendChild(el('div', { class: 'panel-bezel' }, [
+      el('div', { class: 'panel-bezel-body' }, [
+        el('h3', { class: 'panel-title' }, 'Notes'),
+        el('div', { class: 'dim', style: 'white-space:pre-wrap;' }, eq.notes)
+      ])
+    ]));
+  }
+}
+
+function testEntry(eq, t) {
+  const type = EQUIPMENT_TYPES[eq.type];
+  const open = UI.expandedTests.has(t.id);
+  const wrap = el('div', { class: 'test-entry' + (open ? ' open' : '') });
+
+  const head = el('div', { class: 'test-entry-head' }, [
+    el('div', { class: 'row gap-sm' }, [
+      el('span', { class: 'test-phase-pill phase-' + t.phase }, PHASE_LABELS[t.phase]),
+      el('span', { class: 'test-date' }, t.date || '(no date)'),
+      t.technician ? el('span', { class: 'muted' }, '\u00B7 ' + t.technician) : null
+    ]),
+    el('div', { class: 'test-actions' }, [
+      eq.type === 'ahu' || eq.type === 'vav'
+        ? el('button', { class: 'btn btn-xs', type: 'button', onclick: (e) => { e.stopPropagation(); openTraverseModal(eq, t); } }, t.traverse ? 'Traverse \u2713' : 'Traverse')
+        : null,
+      eq.type === 'terminal'
+        ? el('button', { class: 'btn btn-xs', type: 'button', onclick: (e) => { e.stopPropagation(); openHoodModal(eq, t); } }, t.hood ? 'Hood \u2713' : 'Hood')
+        : null,
+      el('button', { class: 'btn btn-xs', type: 'button', onclick: (e) => { e.stopPropagation(); openPhotoModal(eq, t); } },
+        (t.photos && t.photos.length) ? ('Photos (' + t.photos.length + ')') : 'Photos'),
+      el('button', { class: 'btn btn-xs', type: 'button', onclick: (e) => { e.stopPropagation(); openTestModal(eq, t, null); } }, 'Edit'),
+      el('button', { class: 'btn btn-xs btn-danger', type: 'button', onclick: (e) => { e.stopPropagation(); deleteTest(eq, t); } }, 'Delete')
+    ])
+  ]);
+  head.addEventListener('click', () => {
+    if (UI.expandedTests.has(t.id)) UI.expandedTests.delete(t.id);
+    else UI.expandedTests.add(t.id);
+    renderEquipmentDetail();
+  });
+  wrap.appendChild(head);
+
+  const body = el('div', { class: 'test-entry-body' });
+
+  if (type) {
+    const tbl = el('table', { class: 'read-table' });
+    tbl.appendChild(el('thead', null, el('tr', null, [
+      el('th', null, 'Field'),
+      el('th', { class: 'num' }, 'Design'),
+      el('th', { class: 'num' }, 'Reading'),
+      el('th', null, 'Unit'),
+      el('th', { class: 'result' }, 'Result')
+    ])));
+    const tbody = el('tbody');
+    type.fields.forEach(f => {
+      const dv = eq.design[f.key];
+      const rv = t.readings ? t.readings[f.key] : '';
+      const pf = passFailField(dv, rv, f.tolerance, eq.tolerance);
+      const resultCell = pf === 'pass'
+        ? el('td', { class: 'result pass' }, 'PASS')
+        : pf === 'fail'
+          ? el('td', { class: 'result fail' }, 'FAIL')
+          : el('td', { class: 'result na' }, '-');
+      tbody.appendChild(el('tr', null, [
+        el('td', { class: 'label' }, f.label),
+        el('td', { class: 'num' }, dv !== undefined && dv !== '' ? fmtNum(dv) : el('span', { class: 'muted' }, '-')),
+        el('td', { class: 'num' }, rv !== undefined && rv !== '' ? fmtNum(rv) : el('span', { class: 'muted' }, '-')),
+        el('td', { class: 'unit' }, f.unit || ''),
+        resultCell
+      ]));
+    });
+    tbl.appendChild(tbody);
+    body.appendChild(tbl);
+  }
+
+  /* Phase 2: traverse summary */
+  if (t.traverse) {
+    const tv = t.traverse;
+    const panel = el('div', { class: 'sub-panel mt-md' });
+    panel.appendChild(el('div', { class: 'sub-panel-head' }, [
+      el('span', { class: 'sub-panel-title' }, 'Duct traverse'),
+      el('button', { class: 'btn btn-xs btn-ghost', type: 'button',
+        onclick: (e) => { e.stopPropagation(); openTraverseModal(eq, t); } }, 'Edit'),
+      el('button', { class: 'btn btn-xs btn-danger btn-ghost', type: 'button',
+        onclick: (e) => { e.stopPropagation(); deleteTraverse(eq, t); } }, 'Remove')
+    ]));
+    const dl = el('dl', { class: 'kv-table' });
+    dl.appendChild(el('dt', null, 'Shape'));
+    dl.appendChild(el('dd', null, tv.shape + ' (' + (tv.method === 'log-tcheby' ? 'log-Tchebycheff' : 'equal-area') + ')'));
+    if (tv.shape === 'rectangular') {
+      dl.appendChild(el('dt', null, 'Dimensions'));
+      dl.appendChild(el('dd', { class: 'mono' }, (tv.width || '-') + ' x ' + (tv.height || '-') + ' in'));
+    } else {
+      dl.appendChild(el('dt', null, 'Diameter'));
+      dl.appendChild(el('dd', { class: 'mono' }, (tv.diameter || '-') + ' in'));
+    }
+    if (tv.computedArea)     { dl.appendChild(el('dt', null, 'Area'));      dl.appendChild(el('dd', { class: 'mono' }, tv.computedArea.toFixed(3) + ' ft^2')); }
+    if (tv.computedDensity)  { dl.appendChild(el('dt', null, 'Density'));   dl.appendChild(el('dd', { class: 'mono' }, tv.computedDensity.toFixed(4) + ' lb/ft^3')); }
+    if (tv.computedVelocity) { dl.appendChild(el('dt', null, 'Mean velocity')); dl.appendChild(el('dd', { class: 'mono' }, tv.computedVelocity.toFixed(0) + ' fpm')); }
+    if (tv.computedCfm)      { dl.appendChild(el('dt', null, 'Total CFM')); dl.appendChild(el('dd', { class: 'mono' }, tv.computedCfm.toFixed(0) + ' CFM')); }
+    panel.appendChild(dl);
+    body.appendChild(panel);
+  }
+
+  /* Phase 2: hood summary */
+  if (t.hood) {
+    const h = t.hood;
+    const panel = el('div', { class: 'sub-panel mt-md' });
+    panel.appendChild(el('div', { class: 'sub-panel-head' }, [
+      el('span', { class: 'sub-panel-title' }, 'Hood reading'),
+      el('button', { class: 'btn btn-xs btn-ghost', type: 'button',
+        onclick: (e) => { e.stopPropagation(); openHoodModal(eq, t); } }, 'Edit'),
+      el('button', { class: 'btn btn-xs btn-danger btn-ghost', type: 'button',
+        onclick: (e) => { e.stopPropagation(); deleteHood(eq, t); } }, 'Remove')
+    ]));
+    const dl = el('dl', { class: 'kv-table' });
+    dl.appendChild(el('dt', null, 'Positions'));
+    dl.appendChild(el('dd', { class: 'mono' }, (h.readings || []).filter(r => r !== '').length + ' readings'));
+    dl.appendChild(el('dt', null, 'K-factor'));
+    dl.appendChild(el('dd', { class: 'mono' }, h.kFactor || '1.00'));
+    if (h.bpComp && h.bpComp !== '1' && h.bpComp !== '1.00') {
+      dl.appendChild(el('dt', null, 'BP comp.'));
+      dl.appendChild(el('dd', { class: 'mono' }, h.bpComp));
+    }
+    if (h.computedRawAvg) { dl.appendChild(el('dt', null, 'Raw average'));    dl.appendChild(el('dd', { class: 'mono' }, h.computedRawAvg.toFixed(0) + ' CFM')); }
+    if (h.computedCfm)    { dl.appendChild(el('dt', null, 'Corrected CFM')); dl.appendChild(el('dd', { class: 'mono' }, h.computedCfm.toFixed(0) + ' CFM')); }
+    panel.appendChild(dl);
+    body.appendChild(panel);
+  }
+
+  /* Phase 2: coil heat balance */
+  if (eq.type === 'coil') {
+    const hb = coilHeatBalance(eq, t);
+    if (hb && (hb.water !== null || hb.airSensible !== null)) {
+      const panel = el('div', { class: 'sub-panel mt-md' });
+      panel.appendChild(el('div', { class: 'sub-panel-head' }, [
+        el('span', { class: 'sub-panel-title' }, 'Heat balance')
+      ]));
+      const dl = el('dl', { class: 'kv-table' });
+      if (hb.water !== null) {
+        dl.appendChild(el('dt', null, 'Water-side'));
+        dl.appendChild(el('dd', { class: 'mono' }, Math.round(hb.water).toLocaleString() + ' BTU/h'));
+      }
+      if (hb.airSensible !== null) {
+        dl.appendChild(el('dt', null, 'Air sensible'));
+        dl.appendChild(el('dd', { class: 'mono' }, Math.round(hb.airSensible).toLocaleString() + ' BTU/h'));
+      }
+      if (hb.design !== null) {
+        dl.appendChild(el('dt', null, 'Design'));
+        dl.appendChild(el('dd', { class: 'mono' }, Math.round(hb.design).toLocaleString() + ' BTU/h'));
+      }
+      if (hb.balanceErrorPercent !== undefined) {
+        const off = hb.balanceErrorPercent;
+        const cls = off <= 10 ? 'pass' : 'fail';
+        dl.appendChild(el('dt', null, 'Imbalance'));
+        dl.appendChild(el('dd', { class: 'mono result ' + cls }, off.toFixed(1) + '%'));
+      }
+      panel.appendChild(dl);
+      panel.appendChild(el('p', { class: 'muted mt-sm', style: 'font-size:12px;' },
+        'Water-side: GPM x 500 x dT. Air sensible: CFM x 1.08 x dT. Latent loads are not included.'));
+      body.appendChild(panel);
+    }
+  }
+
+  /* Phase 2: photo thumbnails */
+  if (t.photos && t.photos.length > 0) {
+    const panel = el('div', { class: 'sub-panel mt-md' });
+    panel.appendChild(el('div', { class: 'sub-panel-head' }, [
+      el('span', { class: 'sub-panel-title' }, 'Photos (' + t.photos.length + ')'),
+      el('button', { class: 'btn btn-xs btn-ghost', type: 'button',
+        onclick: (e) => { e.stopPropagation(); openPhotoModal(eq, t); } }, 'Manage')
+    ]));
+    const strip = el('div', { class: 'photo-strip' });
+    t.photos.forEach(ph => {
+      const fig = el('figure', { class: 'photo-strip-item' });
+      fig.appendChild(thumbnailFor(ph));
+      if (ph.caption) fig.appendChild(el('figcaption', null, ph.caption));
+      strip.appendChild(fig);
+    });
+    panel.appendChild(strip);
+    body.appendChild(panel);
+  }
+
+  const meta = el('dl', { class: 'kv-table mt-md' });
+  if (t.instrumentUsed) {
+    meta.appendChild(el('dt', null, 'Instrument'));
+    meta.appendChild(el('dd', { class: 'text' }, t.instrumentUsed));
+  }
+  if (t.instrumentCalDate) {
+    meta.appendChild(el('dt', null, 'Cal. date'));
+    meta.appendChild(el('dd', null, t.instrumentCalDate));
+  }
+  if (t.notes) {
+    meta.appendChild(el('dt', null, 'Notes'));
+    meta.appendChild(el('dd', { class: 'text', style: 'white-space:pre-wrap;' }, t.notes));
+  }
+  if (meta.firstChild) body.appendChild(meta);
+
+  wrap.appendChild(body);
+  return wrap;
+}
+
+/* -------------------- Equipment modal -------------------- */
+
+function openEquipmentModal(existing) {
+  const isNew = !existing;
+  const eq = existing ? JSON.parse(JSON.stringify(existing)) : {
+    id: 'eq-' + shortId(),
+    tag: '',
+    type: 'ahu',
+    location: '',
+    serves: '',
+    manufacturer: '',
+    model: '',
+    serial: '',
+    design: {},
+    tests: [],
+    tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 },
+    status: 'pending',
+    notes: '',
+    photos: [],
+    associatedAhu: ''
+  };
+
+  const body = el('div');
+
+  /* Type and tag */
+  body.appendChild(el('h4', { class: 'section-head' }, 'Identification'));
+
+  const typeOpts = Object.entries(EQUIPMENT_TYPES).map(([k, def]) => ({ value: k, label: def.label }));
+  const typeField = makeField({
+    id: 'eq-type', label: 'Equipment type', type: 'select', value: eq.type,
+    options: typeOpts,
+    onChange: (e) => { eq.type = e.target.value; rebuildDesignFields(); }
+  });
+  if (!isNew) typeField.input.disabled = true;
+  if (!isNew) typeField.wrap.querySelector('.field-label').appendChild(el('span', { class: 'field-help' }, ''));
+
+  const idGrid = el('div', { class: 'form-grid wide' });
+  const tagField = makeField({
+    id: 'eq-tag', label: 'Equipment tag', placeholder: 'AHU-1', value: eq.tag,
+    mono: true, onInput: (e) => { eq.tag = e.target.value.toUpperCase(); e.target.value = eq.tag; }
+  });
+  tagField.wrap.classList.add('field-tag');
+  idGrid.appendChild(tagField.wrap);
+  idGrid.appendChild(typeField.wrap);
+  idGrid.appendChild(makeField({ id: 'eq-loc', label: 'Location', placeholder: 'Mech room 102', value: eq.location, onInput: (e) => eq.location = e.target.value }).wrap);
+  idGrid.appendChild(makeField({ id: 'eq-srv', label: 'Serves', placeholder: 'East wing offices', value: eq.serves, onInput: (e) => eq.serves = e.target.value }).wrap);
+  idGrid.appendChild(makeField({ id: 'eq-mfr', label: 'Manufacturer', value: eq.manufacturer, onInput: (e) => eq.manufacturer = e.target.value }).wrap);
+  idGrid.appendChild(makeField({ id: 'eq-mdl', label: 'Model', mono: true, value: eq.model, onInput: (e) => eq.model = e.target.value }).wrap);
+  idGrid.appendChild(makeField({ id: 'eq-ser', label: 'Serial', mono: true, value: eq.serial, onInput: (e) => eq.serial = e.target.value }).wrap);
+  body.appendChild(idGrid);
+
+  /* Design fields */
+  body.appendChild(el('h4', { class: 'section-head' }, 'Design values'));
+  const designHost = el('div', { class: 'form-grid wide' });
+  body.appendChild(designHost);
+
+  /* Phase 2: associated AHU (terminals only) */
+  const ahuHost = el('div', { class: 'form-grid wide' });
+  body.appendChild(ahuHost);
+
+  function rebuildAhuField() {
+    clear(ahuHost);
+    if (eq.type !== 'terminal') return;
+    const ahuOptions = [{ value: '', label: '(unassigned)' }].concat(
+      STATE.equipment.filter(e => e.type === 'ahu').map(a => ({ value: a.id, label: a.tag + ' - ' + (a.location || 'AHU') }))
+    );
+    ahuHost.appendChild(makeField({
+      id: 'eq-ahu', label: 'Associated AHU', type: 'select',
+      options: ahuOptions, value: eq.associatedAhu || '',
+      help: 'Used by the air-balance report to compare summed terminal CFM against AHU total',
+      onChange: (e) => { eq.associatedAhu = e.target.value; }
+    }).wrap);
+  }
+  rebuildAhuField();
+
+  function rebuildDesignFields() {
+    clear(designHost);
+    const type = EQUIPMENT_TYPES[eq.type];
+    if (!type) return;
+    type.fields.forEach(f => {
+      const id = 'eq-design-' + f.key;
+      const fld = makeField({
+        id: id, label: f.label, unit: f.unit, critical: f.critical, type: 'number', step: 'any',
+        value: eq.design[f.key] !== undefined ? eq.design[f.key] : '',
+        onInput: (e) => {
+          eq.design[f.key] = e.target.value === '' ? '' : e.target.value;
+        }
+      });
+      designHost.appendChild(fld.wrap);
+    });
+    rebuildAhuField();
+  }
+  rebuildDesignFields();
+
+  /* Tolerance */
+  body.appendChild(el('h4', { class: 'section-head' }, 'Tolerance band'));
+  const tolGrid = el('div', { class: 'form-grid wide' });
+  tolGrid.appendChild(makeField({
+    id: 'eq-tol-air', label: 'Air tolerance', unit: '%', type: 'number', step: '0.5',
+    value: eq.tolerance.airPercent, onInput: (e) => eq.tolerance.airPercent = parseFloat(e.target.value) || 0,
+    help: 'AABC/NEBB default is ±10%'
+  }).wrap);
+  tolGrid.appendChild(makeField({
+    id: 'eq-tol-water', label: 'Water tolerance', unit: '%', type: 'number', step: '0.5',
+    value: eq.tolerance.waterPercent, onInput: (e) => eq.tolerance.waterPercent = parseFloat(e.target.value) || 0,
+    help: 'Hydronic balance default is ±10%'
+  }).wrap);
+  tolGrid.appendChild(makeField({
+    id: 'eq-tol-temp', label: 'Temperature tolerance', unit: 'degF', type: 'number', step: '0.5',
+    value: eq.tolerance.tempDegF, onInput: (e) => eq.tolerance.tempDegF = parseFloat(e.target.value) || 0,
+    help: 'Absolute, not percentage'
+  }).wrap);
+  body.appendChild(tolGrid);
+
+  /* Notes */
+  body.appendChild(el('h4', { class: 'section-head' }, 'Notes'));
+  const notesField = makeField({
+    id: 'eq-notes', label: 'Notes', type: 'textarea', rows: 3, value: eq.notes,
+    onInput: (e) => eq.notes = e.target.value
+  });
+  notesField.wrap.classList.add('full');
+  body.appendChild(notesField.wrap);
+
+  showModal({
+    title: isNew ? 'Add equipment' : 'Edit ' + (existing.tag || 'equipment'),
+    body: body,
+    primaryLabel: isNew ? 'Add' : 'Save',
+    onPrimary: () => {
+      if (!eq.tag) { toast('Tag is required', 'err'); return false; }
+      if (isNew) {
+        STATE.equipment.push(eq);
+        UI.selectedEquipmentId = eq.id;
+      } else {
+        const idx = STATE.equipment.findIndex(e => e.id === existing.id);
+        if (idx >= 0) STATE.equipment[idx] = eq;
+      }
+      saveState();
+      closeModal();
+      if (UI.activeTab === 'equipment') {
+        if (UI.selectedEquipmentId && document.getElementById('equipment-detail-view') && !document.getElementById('equipment-detail-view').classList.contains('hidden')) {
+          renderEquipmentDetail();
+        } else {
+          renderEquipmentTab();
+        }
+      }
+      updateTabCounts();
+      return true;
+    }
+  });
+}
+
+function deleteEquipment(eq) {
+  if (!confirm('Delete ' + (eq.tag || 'this equipment') + ' and all its tests? This cannot be undone.')) return;
+  STATE.equipment = STATE.equipment.filter(e => e.id !== eq.id);
+  STATE.punchList = STATE.punchList.filter(p => p.equipmentId !== eq.id);
+  saveState();
+  closeEquipmentDetail();
+}
+
+function togglePunchFlag(eq) {
+  if (eq.status === 'punch') eq.status = 'pending';
+  else eq.status = 'punch';
+  saveState();
+  renderEquipmentDetail();
+}
+
+/* -------------------- Test modal -------------------- */
+
+function openTestModal(eq, existing, phase) {
+  const isNew = !existing;
+  const t = existing ? JSON.parse(JSON.stringify(existing)) : {
+    id: 'test-' + shortId(),
+    date: new Date().toISOString().slice(0, 10),
+    technician: STATE.project.technician || '',
+    phase: phase || 'initial',
+    readings: {},
+    instrumentUsed: '',
+    instrumentCalDate: '',
+    notes: '',
+    photos: []
+  };
+
+  const type = EQUIPMENT_TYPES[eq.type];
+  const body = el('div');
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Phase'));
+  const phaseHost = el('div', { class: 'phase-radio' });
+  PHASES.forEach(p => {
+    const lbl = el('label', null);
+    const input = el('input', { type: 'radio', name: 'test-phase', value: p });
+    if (t.phase === p) input.checked = true;
+    input.addEventListener('change', () => { t.phase = p; });
+    lbl.appendChild(input);
+    lbl.appendChild(el('span', null, PHASE_LABELS[p]));
+    phaseHost.appendChild(lbl);
+  });
+  body.appendChild(phaseHost);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Test metadata'));
+  const metaGrid = el('div', { class: 'form-grid wide' });
+  metaGrid.appendChild(makeField({
+    id: 'tst-date', label: 'Date', type: 'date', value: t.date,
+    onInput: (e) => t.date = e.target.value
+  }).wrap);
+  metaGrid.appendChild(makeField({
+    id: 'tst-tech', label: 'Technician', value: t.technician,
+    onInput: (e) => t.technician = e.target.value
+  }).wrap);
+  metaGrid.appendChild(makeField({
+    id: 'tst-inst', label: 'Instrument used', placeholder: 'Pitot tube, flow hood, hot wire', value: t.instrumentUsed,
+    onInput: (e) => t.instrumentUsed = e.target.value
+  }).wrap);
+  metaGrid.appendChild(makeField({
+    id: 'tst-cal', label: 'Instrument cal. date', type: 'date', value: t.instrumentCalDate,
+    onInput: (e) => t.instrumentCalDate = e.target.value
+  }).wrap);
+  body.appendChild(metaGrid);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Readings'));
+  const readGrid = el('div', { class: 'form-grid wide' });
+  if (type) {
+    type.fields.forEach(f => {
+      const design = eq.design[f.key];
+      const fld = makeField({
+        id: 'tst-read-' + f.key,
+        label: f.label,
+        unit: f.unit,
+        critical: f.critical,
+        type: 'number',
+        step: 'any',
+        value: t.readings[f.key] !== undefined ? t.readings[f.key] : '',
+        help: design !== undefined && design !== '' ? 'Design: ' + design + (f.unit ? ' ' + f.unit : '') : 'No design value entered',
+        onInput: (e) => {
+          t.readings[f.key] = e.target.value === '' ? '' : e.target.value;
+        }
+      });
+      readGrid.appendChild(fld.wrap);
+    });
+  }
+  body.appendChild(readGrid);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Notes'));
+  const notesField = makeField({
+    id: 'tst-notes', label: 'Notes', type: 'textarea', rows: 3, value: t.notes,
+    onInput: (e) => t.notes = e.target.value
+  });
+  notesField.wrap.classList.add('full');
+  body.appendChild(notesField.wrap);
+
+  showModal({
+    title: (isNew ? 'New ' : 'Edit ') + PHASE_LABELS[t.phase].toLowerCase() + ' test, ' + (eq.tag || ''),
+    body: body,
+    primaryLabel: isNew ? 'Add test' : 'Save',
+    onPrimary: () => {
+      if (!t.date) { toast('Date is required', 'err'); return false; }
+      if (isNew) {
+        eq.tests = eq.tests || [];
+        eq.tests.push(t);
+        UI.expandedTests.add(t.id);
+      } else {
+        const idx = eq.tests.findIndex(x => x.id === existing.id);
+        if (idx >= 0) eq.tests[idx] = t;
+      }
+      saveState();
+      closeModal();
+      renderEquipmentDetail();
+      return true;
+    }
+  });
+}
+
+function deleteTest(eq, t) {
+  if (!confirm('Delete this ' + PHASE_LABELS[t.phase].toLowerCase() + ' test?')) return;
+  eq.tests = eq.tests.filter(x => x.id !== t.id);
+  UI.expandedTests.delete(t.id);
+  saveState();
+  renderEquipmentDetail();
+}
+
+/* -------------------- Duct traverse modal -------------------- */
+/* The traverse calculator captures a grid of velocity-pressure readings,
+   converts each to a velocity using the standard ASHRAE coefficient with
+   optional density correction, averages them, and computes total CFM
+   from the duct area. The result attaches to the parent test as
+   t.traverse. The Reading field for the equipment's primary airflow is
+   auto-populated from this value on save. */
+
+function openTraverseModal(eq, t) {
+  /* Default state for the modal. Pulled from any existing traverse on t. */
+  const tr = t.traverse ? JSON.parse(JSON.stringify(t.traverse)) : {
+    shape: 'rectangular',
+    width: '',
+    height: '',
+    diameter: '',
+    method: 'log-tcheby',
+    pointsPerLine: 5,
+    traverseLines: 5,
+    diametersForRound: 2,
+    pointsPerDiameter: 10,
+    tempF: '',
+    pressureInHg: '',
+    /* grid is a 2D array of VP strings. For rectangular: rows x cols.
+       For round: diameters x pointsPerDiameter. */
+    grid: []
+  };
+
+  const body = el('div');
+
+  body.appendChild(el('p', { class: 'modal-help' },
+    'Capture velocity pressure (in. wg) at each grid point. The calculator converts to velocity and totals CFM. The result writes back to the test as the airflow reading.'));
+
+  /* Shape selector */
+  body.appendChild(el('h4', { class: 'section-head' }, 'Duct'));
+  const shapeWrap = el('div', { class: 'form-grid wide' });
+  shapeWrap.appendChild(makeField({
+    id: 'tr-shape', label: 'Shape', type: 'select',
+    options: [{ value:'rectangular', label:'Rectangular' }, { value:'round', label:'Round' }],
+    value: tr.shape, onInput: (e) => { tr.shape = e.target.value; rebuildGrid(); }
+  }).wrap);
+  shapeWrap.appendChild(makeField({
+    id: 'tr-method', label: 'Method', type: 'select',
+    options: [
+      { value: 'log-tcheby', label: 'Log-Tchebycheff' },
+      { value: 'equal-area', label: 'Equal-area' }
+    ],
+    value: tr.method, onInput: (e) => { tr.method = e.target.value; rebuildGrid(); }
+  }).wrap);
+  body.appendChild(shapeWrap);
+
+  const dimsHost = el('div', { class: 'form-grid wide' });
+  body.appendChild(dimsHost);
+
+  /* Optional density correction */
+  body.appendChild(el('h4', { class: 'section-head' }, 'Density correction (optional)'));
+  const dens = el('div', { class: 'form-grid wide' });
+  dens.appendChild(makeField({
+    id: 'tr-temp', label: 'Air temperature', unit: 'degF', type: 'number', step: 'any', value: tr.tempF,
+    onInput: (e) => { tr.tempF = e.target.value; refreshComputed(); }
+  }).wrap);
+  dens.appendChild(makeField({
+    id: 'tr-pres', label: 'Barometric pressure', unit: 'in. Hg', type: 'number', step: 'any', value: tr.pressureInHg,
+    help: 'Standard is 29.92 in. Hg',
+    onInput: (e) => { tr.pressureInHg = e.target.value; refreshComputed(); }
+  }).wrap);
+  body.appendChild(dens);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Velocity pressure grid'));
+  const gridHost = el('div', { class: 'traverse-grid-host' });
+  body.appendChild(gridHost);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Result'));
+  const resultHost = el('div', { class: 'traverse-result' });
+  body.appendChild(resultHost);
+
+  function rebuildDims() {
+    clear(dimsHost);
+    if (tr.shape === 'rectangular') {
+      dimsHost.appendChild(makeField({
+        id: 'tr-w', label: 'Width', unit: 'in', type: 'number', step: 'any', value: tr.width,
+        onInput: (e) => { tr.width = e.target.value; refreshComputed(); }
+      }).wrap);
+      dimsHost.appendChild(makeField({
+        id: 'tr-h', label: 'Height', unit: 'in', type: 'number', step: 'any', value: tr.height,
+        onInput: (e) => { tr.height = e.target.value; refreshComputed(); }
+      }).wrap);
+      dimsHost.appendChild(makeField({
+        id: 'tr-pts', label: 'Points per traverse line', type: 'select',
+        options: [{ value:5, label:'5' }, { value:6, label:'6' }, { value:7, label:'7' }],
+        value: tr.pointsPerLine,
+        onInput: (e) => { tr.pointsPerLine = parseInt(e.target.value, 10); rebuildGrid(); }
+      }).wrap);
+      dimsHost.appendChild(makeField({
+        id: 'tr-lines', label: 'Traverse lines', type: 'select',
+        options: [{ value:5, label:'5' }, { value:6, label:'6' }, { value:7, label:'7' }],
+        value: tr.traverseLines,
+        onInput: (e) => { tr.traverseLines = parseInt(e.target.value, 10); rebuildGrid(); }
+      }).wrap);
+    } else {
+      dimsHost.appendChild(makeField({
+        id: 'tr-d', label: 'Diameter', unit: 'in', type: 'number', step: 'any', value: tr.diameter,
+        onInput: (e) => { tr.diameter = e.target.value; refreshComputed(); }
+      }).wrap);
+      dimsHost.appendChild(makeField({
+        id: 'tr-diams', label: 'Number of diameters', type: 'select',
+        options: [{ value:2, label:'2 (perpendicular)' }, { value:3, label:'3 (60 deg apart)' }],
+        value: tr.diametersForRound,
+        onInput: (e) => { tr.diametersForRound = parseInt(e.target.value, 10); rebuildGrid(); }
+      }).wrap);
+      dimsHost.appendChild(makeField({
+        id: 'tr-ppd', label: 'Points per diameter', type: 'select',
+        options: [{ value:6, label:'6' }, { value:8, label:'8' }, { value:10, label:'10' }],
+        value: tr.pointsPerDiameter,
+        onInput: (e) => { tr.pointsPerDiameter = parseInt(e.target.value, 10); rebuildGrid(); }
+      }).wrap);
+    }
+  }
+
+  function gridShape() {
+    if (tr.shape === 'rectangular') {
+      return { rows: tr.traverseLines, cols: tr.pointsPerLine };
+    } else {
+      return { rows: tr.diametersForRound, cols: tr.pointsPerDiameter };
+    }
+  }
+
+  function rebuildGrid() {
+    rebuildDims();
+    const s = gridShape();
+    /* Preserve existing values when shape changes. */
+    const old = tr.grid;
+    tr.grid = [];
+    for (let r = 0; r < s.rows; r++) {
+      const row = [];
+      for (let c = 0; c < s.cols; c++) {
+        const prev = (old[r] && old[r][c] !== undefined) ? old[r][c] : '';
+        row.push(prev);
+      }
+      tr.grid.push(row);
+    }
+    drawGrid();
+    refreshComputed();
+  }
+
+  function positionLabel(idx, count) {
+    let fracs;
+    if (tr.method === 'log-tcheby') {
+      if (tr.shape === 'rectangular') fracs = logTchebycheffRectangular(count);
+      else fracs = logTchebycheffRound(count);
+    } else {
+      fracs = equalAreaPositions(count);
+    }
+    return (fracs[idx] * 100).toFixed(1) + '%';
+  }
+
+  function drawGrid() {
+    clear(gridHost);
+    const s = gridShape();
+    const tbl = el('table', { class: 'traverse-grid' });
+    const head = el('thead');
+    const hr = el('tr');
+    hr.appendChild(el('th', null, tr.shape === 'rectangular' ? 'Line' : 'Diameter'));
+    for (let c = 0; c < s.cols; c++) {
+      hr.appendChild(el('th', null, 'P' + (c+1) + ' (' + positionLabel(c, s.cols) + ')'));
+    }
+    head.appendChild(hr);
+    tbl.appendChild(head);
+    const tbody = el('tbody');
+    for (let r = 0; r < s.rows; r++) {
+      const row = el('tr');
+      row.appendChild(el('th', null, (tr.shape === 'rectangular' ? 'L' : 'D') + (r+1)));
+      for (let c = 0; c < s.cols; c++) {
+        const td = el('td');
+        const inp = el('input', {
+          type: 'number', step: 'any', class: 'traverse-cell',
+          value: tr.grid[r][c]
+        });
+        inp.addEventListener('input', (e) => {
+          tr.grid[r][c] = e.target.value;
+          refreshComputed();
+        });
+        td.appendChild(inp);
+        row.appendChild(td);
+      }
+      tbody.appendChild(row);
+    }
+    tbl.appendChild(tbody);
+    gridHost.appendChild(tbl);
+  }
+
+  function computeResult() {
+    const area = ductArea(tr.shape, tr.shape === 'rectangular' ? tr.width : tr.diameter, tr.height);
+    const density = airDensity(tr.tempF, tr.pressureInHg);
+    const velocities = [];
+    for (const row of tr.grid) {
+      for (const cell of row) {
+        const vp = parseFloat(cell);
+        if (isFinite(vp) && vp > 0) velocities.push(vpToVelocity(vp, density));
+      }
+    }
+    const r = traverseCFM(velocities, area);
+    r.area    = area;
+    r.density = density;
+    r.points  = velocities.length;
+    r.expectedPoints = (tr.grid[0] ? tr.grid[0].length : 0) * tr.grid.length;
+    return r;
+  }
+
+  function refreshComputed() {
+    const r = computeResult();
+    clear(resultHost);
+    const rows = [
+      ['Duct area',       r.area.toFixed(3) + ' ft^2'],
+      ['Air density',     r.density.toFixed(4) + ' lb/ft^3'],
+      ['Points entered',  r.points + ' / ' + r.expectedPoints],
+      ['Mean velocity',   r.n > 0 ? r.vAvg.toFixed(0) + ' fpm' : '-'],
+      ['Total airflow',   r.n > 0 ? r.cfm.toFixed(0) + ' CFM' : '-']
+    ];
+    const dl = el('dl', { class: 'kv-table' });
+    rows.forEach(([k, v]) => {
+      dl.appendChild(el('dt', null, k));
+      dl.appendChild(el('dd', { class: 'mono' }, v));
+    });
+    resultHost.appendChild(dl);
+  }
+
+  rebuildGrid();
+
+  showModal({
+    title: 'Duct traverse, ' + (eq.tag || 'AHU') + ', ' + PHASE_LABELS[t.phase].toLowerCase(),
+    body: body,
+    primaryLabel: 'Save and apply to test',
+    secondaryLabel: 'Cancel',
+    onPrimary: () => {
+      const r = computeResult();
+      if (r.n === 0) {
+        toast('Enter at least one velocity-pressure reading', 'err');
+        return false;
+      }
+      if (!(r.area > 0)) {
+        toast('Enter duct dimensions', 'err');
+        return false;
+      }
+      tr.computedCfm        = r.cfm;
+      tr.computedVelocity   = r.vAvg;
+      tr.computedArea       = r.area;
+      tr.computedDensity    = r.density;
+      tr.computedPointCount = r.n;
+      t.traverse = tr;
+      /* Auto-apply to the equipment's primary airflow reading. */
+      t.readings = t.readings || {};
+      t.readings.cfm = String(Math.round(r.cfm));
+      saveState();
+      closeModal();
+      renderEquipmentDetail();
+      return true;
+    }
+  });
+}
+
+function deleteTraverse(eq, t) {
+  if (!confirm('Delete the duct traverse on this test? The applied airflow reading will remain unless you edit it.')) return;
+  delete t.traverse;
+  saveState();
+  renderEquipmentDetail();
+}
+
+/* -------------------- Hood reading modal -------------------- */
+
+function openHoodModal(eq, t) {
+  const h = t.hood ? JSON.parse(JSON.stringify(t.hood)) : {
+    kFactor: '1.00',
+    bpComp: '1.00',
+    readings: ['']
+  };
+
+  const body = el('div');
+  body.appendChild(el('p', { class: 'modal-help' },
+    'Enter direct CFM readings from the flow hood. Multiple positions average to a single value. K-factor and back-pressure compensation are multipliers applied to the average.'));
+
+  const kGrid = el('div', { class: 'form-grid wide' });
+  kGrid.appendChild(makeField({
+    id: 'h-k', label: 'K-factor', type: 'number', step: 'any', value: h.kFactor,
+    help: 'Hood-specific calibration factor; default 1.00',
+    onInput: (e) => { h.kFactor = e.target.value; refresh(); }
+  }).wrap);
+  kGrid.appendChild(makeField({
+    id: 'h-bp', label: 'Back-pressure comp.', type: 'number', step: 'any', value: h.bpComp,
+    help: 'Optional; default 1.00 (no correction)',
+    onInput: (e) => { h.bpComp = e.target.value; refresh(); }
+  }).wrap);
+  body.appendChild(kGrid);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Hood positions'));
+  const list = el('div', { class: 'hood-readings' });
+  body.appendChild(list);
+
+  body.appendChild(el('div', { class: 'row gap-sm mt-sm' }, [
+    el('button', { class: 'btn btn-sm', type: 'button', onclick: () => { h.readings.push(''); drawList(); refresh(); } }, '+ Add reading'),
+    el('button', { class: 'btn btn-sm btn-ghost', type: 'button', onclick: () => {
+      if (h.readings.length > 1) { h.readings.pop(); drawList(); refresh(); }
+    } }, '- Remove last')
+  ]));
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Result'));
+  const out = el('div', { class: 'hood-result' });
+  body.appendChild(out);
+
+  function drawList() {
+    clear(list);
+    h.readings.forEach((v, idx) => {
+      const fld = makeField({
+        id: 'h-r-' + idx,
+        label: 'Position ' + (idx + 1),
+        unit: 'CFM',
+        type: 'number', step: 'any',
+        value: v,
+        onInput: (e) => { h.readings[idx] = e.target.value; refresh(); }
+      });
+      list.appendChild(fld.wrap);
+    });
+  }
+
+  function refresh() {
+    const r = hoodCFM(h.readings, h.kFactor, h.bpComp);
+    clear(out);
+    const dl = el('dl', { class: 'kv-table' });
+    dl.appendChild(el('dt', null, 'Readings entered'));
+    dl.appendChild(el('dd', { class: 'mono' }, r.n + ' / ' + h.readings.length));
+    dl.appendChild(el('dt', null, 'Raw average'));
+    dl.appendChild(el('dd', { class: 'mono' }, r.n > 0 ? r.avgRaw.toFixed(0) + ' CFM' : '-'));
+    dl.appendChild(el('dt', null, 'Corrected airflow'));
+    dl.appendChild(el('dd', { class: 'mono' }, r.n > 0 ? r.corrected.toFixed(0) + ' CFM' : '-'));
+    out.appendChild(dl);
+  }
+
+  drawList();
+  refresh();
+
+  showModal({
+    title: 'Hood reading, ' + (eq.tag || 'terminal') + ', ' + PHASE_LABELS[t.phase].toLowerCase(),
+    body: body,
+    primaryLabel: 'Save and apply to test',
+    secondaryLabel: 'Cancel',
+    onPrimary: () => {
+      const r = hoodCFM(h.readings, h.kFactor, h.bpComp);
+      if (r.n === 0) {
+        toast('Enter at least one reading', 'err');
+        return false;
+      }
+      h.computedCfm = r.corrected;
+      h.computedRawAvg = r.avgRaw;
+      t.hood = h;
+      t.readings = t.readings || {};
+      t.readings.cfm = String(Math.round(r.corrected));
+      saveState();
+      closeModal();
+      renderEquipmentDetail();
+      return true;
+    }
+  });
+}
+
+function deleteHood(eq, t) {
+  if (!confirm('Delete the hood reading on this test? The applied airflow reading will remain unless you edit it.')) return;
+  delete t.hood;
+  saveState();
+  renderEquipmentDetail();
+}
+
+/* -------------------- Pump curve editor -------------------- */
+/* Lives on the pump equipment detail. Stores pump curve points and the
+   system curve parameters on the equipment itself rather than on a test,
+   since the pump curve is a property of the installed pump and the
+   system curve is a property of the loop, not a single TAB phase. */
+
+function openPumpCurveModal(eq) {
+  const data = {
+    pumpCurve:   (eq.pumpCurve || []).slice().map(p => Object.assign({}, p)),
+    systemCurve: Object.assign({ staticHead: '', designFlow: '', designHead: '' }, eq.systemCurve || {})
+  };
+  if (data.pumpCurve.length === 0) {
+    data.pumpCurve = [
+      { flow: '', head: '' },
+      { flow: '', head: '' },
+      { flow: '', head: '' },
+      { flow: '', head: '' }
+    ];
+  }
+
+  const body = el('div');
+  body.appendChild(el('p', { class: 'modal-help' },
+    'Enter points from the manufacturer pump curve, then the system static head and the design operating point. The intersection is computed and plotted.'));
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Pump curve points'));
+  const list = el('div', { class: 'pump-points' });
+  body.appendChild(list);
+  body.appendChild(el('div', { class: 'row gap-sm mt-sm' }, [
+    el('button', { class: 'btn btn-sm', type: 'button', onclick: () => { data.pumpCurve.push({flow:'',head:''}); drawList(); refresh(); } }, '+ Add point'),
+    el('button', { class: 'btn btn-sm btn-ghost', type: 'button', onclick: () => {
+      if (data.pumpCurve.length > 2) { data.pumpCurve.pop(); drawList(); refresh(); }
+    } }, '- Remove last')
+  ]));
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'System curve'));
+  const sys = el('div', { class: 'form-grid wide' });
+  sys.appendChild(makeField({
+    id: 'sys-static', label: 'Static head', unit: 'ft wg', type: 'number', step: 'any', value: data.systemCurve.staticHead,
+    onInput: (e) => { data.systemCurve.staticHead = e.target.value; refresh(); }
+  }).wrap);
+  sys.appendChild(makeField({
+    id: 'sys-q', label: 'Design flow', unit: 'GPM', type: 'number', step: 'any', value: data.systemCurve.designFlow,
+    onInput: (e) => { data.systemCurve.designFlow = e.target.value; refresh(); }
+  }).wrap);
+  sys.appendChild(makeField({
+    id: 'sys-h', label: 'Design head', unit: 'ft wg', type: 'number', step: 'any', value: data.systemCurve.designHead,
+    onInput: (e) => { data.systemCurve.designHead = e.target.value; refresh(); }
+  }).wrap);
+  body.appendChild(sys);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Operating point'));
+  const opHost = el('div', { class: 'pump-result' });
+  body.appendChild(opHost);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Plot'));
+  const plotHost = el('div', { class: 'pump-plot-host' });
+  body.appendChild(plotHost);
+
+  function drawList() {
+    clear(list);
+    const tbl = el('table', { class: 'pump-points-table' });
+    tbl.appendChild(el('thead', null, el('tr', null, [
+      el('th', null, '#'),
+      el('th', null, 'Flow (GPM)'),
+      el('th', null, 'Head (ft wg)')
+    ])));
+    const tbody = el('tbody');
+    data.pumpCurve.forEach((p, idx) => {
+      const tr = el('tr');
+      tr.appendChild(el('td', { class: 'mono muted' }, idx + 1));
+      const inq = el('input', { type: 'number', step: 'any', value: p.flow });
+      inq.addEventListener('input', (e) => { p.flow = e.target.value; refresh(); });
+      const inh = el('input', { type: 'number', step: 'any', value: p.head });
+      inh.addEventListener('input', (e) => { p.head = e.target.value; refresh(); });
+      const tdq = el('td'); tdq.appendChild(inq); tr.appendChild(tdq);
+      const tdh = el('td'); tdh.appendChild(inh); tr.appendChild(tdh);
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+    list.appendChild(tbl);
+  }
+
+  function refresh() {
+    const op = pumpOperatingPoint(
+      data.pumpCurve, data.systemCurve.staticHead,
+      data.systemCurve.designFlow, data.systemCurve.designHead
+    );
+    clear(opHost);
+    const dl = el('dl', { class: 'kv-table' });
+    dl.appendChild(el('dt', null, 'Design flow / head'));
+    dl.appendChild(el('dd', { class: 'mono' },
+      (data.systemCurve.designFlow || '-') + ' GPM at ' + (data.systemCurve.designHead || '-') + ' ft'));
+    if (op) {
+      dl.appendChild(el('dt', null, 'Operating flow'));
+      dl.appendChild(el('dd', { class: 'mono' }, op.flow.toFixed(0) + ' GPM'));
+      dl.appendChild(el('dt', null, 'Operating head'));
+      dl.appendChild(el('dd', { class: 'mono' }, op.head.toFixed(1) + ' ft'));
+      const dq = parseFloat(data.systemCurve.designFlow);
+      if (isFinite(dq) && dq > 0) {
+        const pct = (op.flow / dq - 1) * 100;
+        dl.appendChild(el('dt', null, 'Vs design flow'));
+        dl.appendChild(el('dd', { class: 'mono' }, (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%'));
+      }
+    } else {
+      dl.appendChild(el('dt', null, 'Operating point'));
+      dl.appendChild(el('dd', { class: 'muted' }, 'Enter at least two curve points and the system parameters'));
+    }
+    opHost.appendChild(dl);
+    /* Plot */
+    clear(plotHost);
+    plotHost.appendChild(buildPumpPlot(data.pumpCurve, data.systemCurve, op));
+  }
+
+  drawList();
+  refresh();
+
+  showModal({
+    title: 'Pump curve, ' + (eq.tag || 'pump'),
+    body: body,
+    primaryLabel: 'Save',
+    secondaryLabel: 'Cancel',
+    onPrimary: () => {
+      eq.pumpCurve   = data.pumpCurve.filter(p => p.flow !== '' && p.head !== '');
+      eq.systemCurve = data.systemCurve;
+      saveState();
+      closeModal();
+      renderEquipmentDetail();
+      return true;
+    }
+  });
+}
+
+function buildPumpPlot(pumpCurve, systemCurve, op) {
+  /* SVG plot with axes, pump curve as polyline, system curve sampled,
+     operating point marker. */
+  const W = 480, H = 320, padL = 56, padR = 16, padT = 16, padB = 40;
+  const points = (pumpCurve || [])
+    .map(p => ({ flow: parseFloat(p.flow), head: parseFloat(p.head) }))
+    .filter(p => isFinite(p.flow) && isFinite(p.head))
+    .sort((a, b) => a.flow - b.flow);
+  const dq = parseFloat(systemCurve.designFlow);
+  const dh = parseFloat(systemCurve.designHead);
+  let maxFlow = 1, maxHead = 1;
+  points.forEach(p => { if (p.flow > maxFlow) maxFlow = p.flow; if (p.head > maxHead) maxHead = p.head; });
+  if (isFinite(dq) && dq > maxFlow) maxFlow = dq;
+  if (isFinite(dh) && dh > maxHead) maxHead = dh;
+  if (op) {
+    if (op.flow > maxFlow) maxFlow = op.flow;
+    if (op.head > maxHead) maxHead = op.head;
+  }
+  maxFlow = maxFlow * 1.1;
+  maxHead = maxHead * 1.1;
+
+  const xScale = q => padL + (W - padL - padR) * (q / maxFlow);
+  const yScale = h => (H - padB) - (H - padT - padB) * (h / maxHead);
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('class', 'pump-plot');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Pump and system curve plot');
+
+  /* Plot background */
+  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  bg.setAttribute('x', padL); bg.setAttribute('y', padT);
+  bg.setAttribute('width', W - padL - padR); bg.setAttribute('height', H - padT - padB);
+  bg.setAttribute('class', 'plot-bg');
+  svg.appendChild(bg);
+
+  /* Gridlines and axis ticks */
+  for (let i = 0; i <= 5; i++) {
+    const q = maxFlow * i / 5;
+    const x = xScale(q);
+    const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    ln.setAttribute('x1', x); ln.setAttribute('x2', x);
+    ln.setAttribute('y1', padT); ln.setAttribute('y2', H - padB);
+    ln.setAttribute('class', 'plot-grid');
+    svg.appendChild(ln);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('x', x); lbl.setAttribute('y', H - padB + 14);
+    lbl.setAttribute('class', 'plot-tick');
+    lbl.setAttribute('text-anchor', 'middle');
+    lbl.textContent = q.toFixed(0);
+    svg.appendChild(lbl);
+  }
+  for (let i = 0; i <= 5; i++) {
+    const h = maxHead * i / 5;
+    const y = yScale(h);
+    const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    ln.setAttribute('x1', padL); ln.setAttribute('x2', W - padR);
+    ln.setAttribute('y1', y); ln.setAttribute('y2', y);
+    ln.setAttribute('class', 'plot-grid');
+    svg.appendChild(ln);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('x', padL - 6); lbl.setAttribute('y', y + 4);
+    lbl.setAttribute('class', 'plot-tick');
+    lbl.setAttribute('text-anchor', 'end');
+    lbl.textContent = h.toFixed(0);
+    svg.appendChild(lbl);
+  }
+
+  /* Axis labels */
+  const xl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  xl.setAttribute('x', padL + (W - padL - padR) / 2); xl.setAttribute('y', H - 6);
+  xl.setAttribute('text-anchor', 'middle'); xl.setAttribute('class', 'plot-axis-label');
+  xl.textContent = 'Flow (GPM)';
+  svg.appendChild(xl);
+  const yl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  yl.setAttribute('text-anchor', 'middle'); yl.setAttribute('class', 'plot-axis-label');
+  yl.setAttribute('transform', 'rotate(-90 16 ' + (padT + (H - padT - padB) / 2) + ')');
+  yl.setAttribute('x', 16); yl.setAttribute('y', padT + (H - padT - padB) / 2);
+  yl.textContent = 'Head (ft wg)';
+  svg.appendChild(yl);
+
+  /* System curve sampled */
+  const k = fitSystemK(systemCurve.staticHead, systemCurve.designFlow, systemCurve.designHead);
+  const sh = parseFloat(systemCurve.staticHead);
+  if (k !== null && isFinite(sh)) {
+    const pts = [];
+    for (let i = 0; i <= 50; i++) {
+      const q = maxFlow * i / 50;
+      const h = sh + k * q * q;
+      pts.push(xScale(q) + ',' + yScale(h));
+    }
+    const sys = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    sys.setAttribute('points', pts.join(' '));
+    sys.setAttribute('class', 'plot-system');
+    svg.appendChild(sys);
+  }
+
+  /* Pump curve polyline */
+  if (points.length >= 2) {
+    const pts = points.map(p => xScale(p.flow) + ',' + yScale(p.head)).join(' ');
+    const pump = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    pump.setAttribute('points', pts);
+    pump.setAttribute('class', 'plot-pump');
+    svg.appendChild(pump);
+    points.forEach(p => {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', xScale(p.flow)); c.setAttribute('cy', yScale(p.head));
+      c.setAttribute('r', 3); c.setAttribute('class', 'plot-pump-dot');
+      svg.appendChild(c);
+    });
+  }
+
+  /* Operating point */
+  if (op) {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', xScale(op.flow)); c.setAttribute('cy', yScale(op.head));
+    c.setAttribute('r', 6); c.setAttribute('class', 'plot-op-point');
+    svg.appendChild(c);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('x', xScale(op.flow) + 10);
+    lbl.setAttribute('y', yScale(op.head) - 8);
+    lbl.setAttribute('class', 'plot-op-label');
+    lbl.textContent = op.flow.toFixed(0) + ' GPM, ' + op.head.toFixed(0) + ' ft';
+    svg.appendChild(lbl);
+  }
+
+  /* Design point */
+  if (isFinite(dq) && isFinite(dh)) {
+    const m = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    const cx = xScale(dq), cy = yScale(dh);
+    m.setAttribute('points',
+      cx + ',' + (cy - 6) + ' ' +
+      (cx + 6) + ',' + cy + ' ' +
+      cx + ',' + (cy + 6) + ' ' +
+      (cx - 6) + ',' + cy);
+    m.setAttribute('class', 'plot-design');
+    svg.appendChild(m);
+  }
+
+  return svg;
+}
+
+/* -------------------- Photo store (IndexedDB) -------------------- */
+/* Photos are stored as Blobs in IndexedDB rather than localStorage so we
+   don't blow through the 5-10 MB quota. The workbook JSON keeps photo IDs
+   only; the binary data lives separately. On JSON export we have the
+   option of inlining base64 or shipping the IDs and asking the user to
+   include a photo archive. For Phase 2 we keep the export simple: photo
+   metadata exports, the binaries do not. */
+
+let PHOTO_DB = null;
+
+function openPhotoDB() {
+  if (PHOTO_DB) return Promise.resolve(PHOTO_DB);
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) {
+      reject(new Error('IndexedDB not available'));
+      return;
+    }
+    const req = indexedDB.open(PHOTO_DB_NAME, PHOTO_DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(PHOTO_STORE)) {
+        const store = db.createObjectStore(PHOTO_STORE, { keyPath: 'id' });
+        store.createIndex('byEquipment', 'equipmentId', { unique: false });
+        store.createIndex('byTest', 'testId', { unique: false });
+      }
+    };
+    req.onsuccess = (e) => { PHOTO_DB = e.target.result; resolve(PHOTO_DB); };
+    req.onerror   = (e) => reject(e.target.error || new Error('IndexedDB open failed'));
+  });
+}
+
+function storePhoto(record) {
+  return openPhotoDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(PHOTO_STORE, 'readwrite');
+    tx.objectStore(PHOTO_STORE).put(record);
+    tx.oncomplete = () => resolve(record);
+    tx.onerror    = () => reject(tx.error || new Error('IndexedDB write failed'));
+  }));
+}
+
+function loadPhoto(id) {
+  return openPhotoDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(PHOTO_STORE, 'readonly');
+    const req = tx.objectStore(PHOTO_STORE).get(id);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror   = () => reject(req.error);
+  }));
+}
+
+function deletePhoto(id) {
+  return openPhotoDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(PHOTO_STORE, 'readwrite');
+    tx.objectStore(PHOTO_STORE).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror    = () => reject(tx.error);
+  }));
+}
+
+function attachPhotoToEquipment(eq, file, caption) {
+  return readFileAsBlob(file).then(blob => {
+    const rec = {
+      id: 'photo-' + shortId() + '-' + Date.now(),
+      equipmentId: eq.id,
+      testId: '',
+      caption: caption || '',
+      filename: file.name || 'photo',
+      mimeType: file.type || 'image/jpeg',
+      size: file.size || 0,
+      blob: blob,
+      added: new Date().toISOString()
+    };
+    return storePhoto(rec).then(() => {
+      eq.photos = eq.photos || [];
+      eq.photos.push({ id: rec.id, caption: rec.caption, filename: rec.filename, added: rec.added });
+      saveState();
+      return rec;
+    });
+  });
+}
+
+function attachPhotoToTest(eq, t, file, caption) {
+  return readFileAsBlob(file).then(blob => {
+    const rec = {
+      id: 'photo-' + shortId() + '-' + Date.now(),
+      equipmentId: eq.id,
+      testId: t.id,
+      caption: caption || '',
+      filename: file.name || 'photo',
+      mimeType: file.type || 'image/jpeg',
+      size: file.size || 0,
+      blob: blob,
+      added: new Date().toISOString()
+    };
+    return storePhoto(rec).then(() => {
+      t.photos = t.photos || [];
+      t.photos.push({ id: rec.id, caption: rec.caption, filename: rec.filename, added: rec.added });
+      saveState();
+      return rec;
+    });
+  });
+}
+
+function readFileAsBlob(file) {
+  return new Promise((resolve, reject) => {
+    if (file instanceof Blob) { resolve(file); return; }
+    reject(new Error('Not a file'));
+  });
+}
+
+function thumbnailFor(photoRef) {
+  /* Returns an <img> that loads its src async from IndexedDB. */
+  const img = el('img', { class: 'photo-thumb', alt: photoRef.caption || photoRef.filename || 'photo' });
+  loadPhoto(photoRef.id).then(rec => {
+    if (rec && rec.blob) {
+      img.src = URL.createObjectURL(rec.blob);
+    } else {
+      img.alt = 'Photo unavailable';
+      img.classList.add('missing');
+    }
+  }).catch(() => {
+    img.alt = 'Photo unavailable';
+    img.classList.add('missing');
+  });
+  return img;
+}
+
+function openPhotoModal(eq, t) {
+  /* If t is provided, attach to test; else attach to equipment. */
+  const target = t || eq;
+  const targetLabel = t
+    ? PHASE_LABELS[t.phase].toLowerCase() + ' test, ' + (eq.tag || '')
+    : (eq.tag || 'equipment');
+  const photos = (target.photos || []).slice();
+  const body = el('div');
+
+  body.appendChild(el('p', { class: 'modal-help' },
+    'Photos are stored locally in IndexedDB. They are not included in JSON export.'));
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Add a photo'));
+  const fileInput = el('input', { type: 'file', accept: 'image/*' });
+  body.appendChild(fileInput);
+  const captionField = makeField({
+    id: 'photo-cap', label: 'Caption', value: '',
+    onInput: () => {}
+  });
+  body.appendChild(captionField.wrap);
+  const addBtn = el('button', { class: 'btn btn-sm', type: 'button' }, '+ Add');
+  body.appendChild(addBtn);
+
+  body.appendChild(el('h4', { class: 'section-head' }, 'Existing photos'));
+  const list = el('div', { class: 'photo-grid' });
+  body.appendChild(list);
+
+  function drawList() {
+    clear(list);
+    if ((target.photos || []).length === 0) {
+      list.appendChild(el('p', { class: 'muted' }, 'No photos attached yet.'));
+      return;
+    }
+    target.photos.forEach(ph => {
+      const card = el('div', { class: 'photo-card' });
+      card.appendChild(thumbnailFor(ph));
+      if (ph.caption) card.appendChild(el('div', { class: 'photo-caption' }, ph.caption));
+      card.appendChild(el('div', { class: 'photo-meta mono muted' }, ph.filename));
+      const remove = el('button', { class: 'btn btn-xs btn-danger', type: 'button' }, 'Remove');
+      remove.addEventListener('click', () => {
+        if (!confirm('Remove this photo?')) return;
+        deletePhoto(ph.id).then(() => {
+          target.photos = target.photos.filter(p => p.id !== ph.id);
+          saveState();
+          drawList();
+        }).catch(err => toast('Delete failed: ' + err.message, 'err'));
+      });
+      card.appendChild(remove);
+      list.appendChild(card);
+    });
+  }
+
+  addBtn.addEventListener('click', () => {
+    if (!fileInput.files || !fileInput.files[0]) {
+      toast('Select a file first', 'err');
+      return;
+    }
+    const caption = captionField.input.value;
+    const file = fileInput.files[0];
+    const promise = t ? attachPhotoToTest(eq, t, file, caption) : attachPhotoToEquipment(eq, file, caption);
+    promise.then(() => {
+      fileInput.value = '';
+      captionField.input.value = '';
+      toast('Photo added', 'ok');
+      drawList();
+    }).catch(err => toast('Save failed: ' + err.message, 'err'));
+  });
+
+  drawList();
+
+  showModal({
+    title: 'Photos, ' + targetLabel,
+    body: body,
+    primaryLabel: 'Done',
+    secondaryLabel: null,
+    onPrimary: () => {
+      closeModal();
+      renderEquipmentDetail();
+      return true;
+    }
+  });
+}
+
+/* -------------------- Punch list -------------------- */
+
+function renderPunchTab() {
+  const host = document.getElementById('punch-list');
+  if (!host) return;
+  clear(host);
+
+  if (STATE.punchList.length === 0) {
+    host.appendChild(el('div', { class: 'empty' }, [
+      el('span', { class: 'empty-icon' }, '\u26A0'),
+      el('h3', null, 'No punch items'),
+      el('p', null, 'Add items for work that cannot be balanced due to upstream deficiencies. Each item should have an owner.'),
+      el('button', { class: 'btn btn-primary', type: 'button', onclick: () => openPunchModal(null) }, '+ Add punch item')
+    ]));
+    return;
+  }
+
+  const tbl = el('table', { class: 'punch-table' });
+  tbl.appendChild(el('thead', null, el('tr', null, [
+    el('th', null, 'Tag'),
+    el('th', null, 'Issue'),
+    el('th', null, 'Owner'),
+    el('th', null, 'Priority'),
+    el('th', null, 'Raised'),
+    el('th', null, 'Status'),
+    el('th', null, '')
+  ])));
+  const tbody = el('tbody');
+  const sorted = STATE.punchList.slice().sort((a, b) => {
+    const order = { open: 0, 'in-progress': 1, deferred: 2, resolved: 3 };
+    const oa = order[a.status] !== undefined ? order[a.status] : 99;
+    const ob = order[b.status] !== undefined ? order[b.status] : 99;
+    if (oa !== ob) return oa - ob;
+    const pa = PUNCH_PRIORITIES.indexOf(a.priority);
+    const pb = PUNCH_PRIORITIES.indexOf(b.priority);
+    return pb - pa;
+  });
+  sorted.forEach(p => {
+    const eq = STATE.equipment.find(e => e.id === p.equipmentId);
+    const owner = PUNCH_OWNERS.find(o => o.value === p.owner);
+    const tr = el('tr', { class: p.status === 'resolved' ? 'resolved' : '' });
+    tr.appendChild(el('td', { class: 'mono' }, eq ? eq.tag : '(general)'));
+    tr.appendChild(el('td', { class: 'issue' }, p.issue || ''));
+    tr.appendChild(el('td', null, owner ? owner.label : p.owner));
+    tr.appendChild(el('td', { class: 'priority-' + p.priority }, p.priority));
+    tr.appendChild(el('td', { class: 'mono muted' }, p.dateRaised || ''));
+    tr.appendChild(el('td', null, el('span', { class: 'status-pill status-punch' }, p.status)));
+    tr.appendChild(el('td', null, el('div', { class: 'row gap-sm' }, [
+      el('button', { class: 'btn btn-xs', type: 'button', onclick: () => openPunchModal(p) }, 'Edit'),
+      el('button', { class: 'btn btn-xs btn-danger', type: 'button', onclick: () => deletePunch(p) }, 'Delete')
+    ])));
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+  host.appendChild(el('div', { class: 'panel-bezel' }, el('div', { class: 'panel-bezel-body' }, tbl)));
+}
+
+function openPunchModal(existing) {
+  const isNew = !existing;
+  const p = existing ? JSON.parse(JSON.stringify(existing)) : {
+    id: 'punch-' + shortId(),
+    equipmentId: '',
+    issue: '',
+    owner: 'mech-contractor',
+    priority: 'medium',
+    dateRaised: new Date().toISOString().slice(0, 10),
+    dateResolved: '',
+    resolution: '',
+    status: 'open'
+  };
+
+  const body = el('div');
+  const grid = el('div', { class: 'form-grid wide' });
+
+  grid.appendChild(makeField({
+    id: 'pn-eq', label: 'Equipment', type: 'select', value: p.equipmentId,
+    options: [{ value: '', label: '(General, not tied to one piece)' }]
+      .concat(STATE.equipment.map(e => ({ value: e.id, label: e.tag + ' \u00B7 ' + (EQUIPMENT_TYPES[e.type] ? EQUIPMENT_TYPES[e.type].short : e.type) }))),
+    onChange: (e) => p.equipmentId = e.target.value
+  }).wrap);
+
+  grid.appendChild(makeField({
+    id: 'pn-owner', label: 'Owner', type: 'select', value: p.owner,
+    options: PUNCH_OWNERS,
+    onChange: (e) => p.owner = e.target.value
+  }).wrap);
+
+  grid.appendChild(makeField({
+    id: 'pn-pri', label: 'Priority', type: 'select', value: p.priority,
+    options: PUNCH_PRIORITIES.map(x => ({ value: x, label: x })),
+    onChange: (e) => p.priority = e.target.value
+  }).wrap);
+
+  grid.appendChild(makeField({
+    id: 'pn-status', label: 'Status', type: 'select', value: p.status,
+    options: PUNCH_STATUSES.map(x => ({ value: x, label: x })),
+    onChange: (e) => p.status = e.target.value
+  }).wrap);
+
+  grid.appendChild(makeField({
+    id: 'pn-raised', label: 'Date raised', type: 'date', value: p.dateRaised,
+    onInput: (e) => p.dateRaised = e.target.value
+  }).wrap);
+
+  grid.appendChild(makeField({
+    id: 'pn-resolved', label: 'Date resolved', type: 'date', value: p.dateResolved,
+    onInput: (e) => p.dateResolved = e.target.value
+  }).wrap);
+
+  body.appendChild(grid);
+
+  const issueField = makeField({
+    id: 'pn-issue', label: 'Issue', type: 'textarea', rows: 3, value: p.issue,
+    placeholder: 'Describe the deficiency that blocks balance',
+    onInput: (e) => p.issue = e.target.value
+  });
+  issueField.wrap.classList.add('full');
+  body.appendChild(issueField.wrap);
+
+  const resField = makeField({
+    id: 'pn-res', label: 'Resolution', type: 'textarea', rows: 2, value: p.resolution,
+    placeholder: 'How was the issue resolved, when, by whom',
+    onInput: (e) => p.resolution = e.target.value
+  });
+  resField.wrap.classList.add('full');
+  body.appendChild(resField.wrap);
+
+  showModal({
+    title: isNew ? 'Add punch item' : 'Edit punch item',
+    body: body,
+    primaryLabel: isNew ? 'Add' : 'Save',
+    onPrimary: () => {
+      if (!p.issue.trim()) { toast('Issue description is required', 'err'); return false; }
+      if (isNew) STATE.punchList.push(p);
+      else {
+        const idx = STATE.punchList.findIndex(x => x.id === existing.id);
+        if (idx >= 0) STATE.punchList[idx] = p;
+      }
+      saveState();
+      closeModal();
+      renderPunchTab();
+      updateTabCounts();
+      return true;
+    }
+  });
+}
+
+function deletePunch(p) {
+  if (!confirm('Delete this punch item?')) return;
+  STATE.punchList = STATE.punchList.filter(x => x.id !== p.id);
+  saveState();
+  renderPunchTab();
+  updateTabCounts();
+}
+
+/* -------------------- Report -------------------- */
+
+function renderReportTab() {
+  const host = document.getElementById('report-output');
+  if (!host) return;
+  clear(host);
+
+  const proj = STATE.project;
+  const stats = computeStats();
+
+  /* Cover */
+  const cover = el('div', { class: 'report-sheet report-cover' }, [
+    el('div', { class: 'label' }, 'Testing, Adjusting, Balancing'),
+    el('h1', null, 'TAB Report'),
+    el('div', { class: 'project' }, proj.name || '(Untitled project)'),
+    el('div', { class: 'address' }, proj.address || ''),
+    el('dl', { class: 'report-cover-meta' }, [
+      proj.projectNumber ? [el('dt', null, 'Project number'), el('dd', null, proj.projectNumber)] : null,
+      proj.owner          ? [el('dt', null, 'Owner'),          el('dd', { class: 'text' }, proj.owner)] : null,
+      proj.mechanicalContractor ? [el('dt', null, 'Mechanical contractor'), el('dd', { class: 'text' }, proj.mechanicalContractor)] : null,
+      proj.tabContractor  ? [el('dt', null, 'TAB contractor'), el('dd', { class: 'text' }, proj.tabContractor)] : null,
+      proj.technician     ? [el('dt', null, 'Technician'),     el('dd', { class: 'text' }, proj.technician + (proj.technicianCertification ? ' (' + proj.technicianCertification + ')' : ''))] : null,
+      proj.startDate || proj.endDate ? [el('dt', null, 'Period'), el('dd', null, (proj.startDate || '') + (proj.endDate ? ' to ' + proj.endDate : ''))] : null,
+      proj.weather        ? [el('dt', null, 'Outdoor conditions'), el('dd', { class: 'text' }, proj.weather)] : null
+    ])
+  ]);
+  host.appendChild(cover);
+
+  /* Summary */
+  const summary = el('div', { class: 'report-sheet' });
+  summary.appendChild(el('h3', null, 'Executive summary'));
+
+  summary.appendChild(el('div', { class: 'dash' }, [
+    el('div', { class: 'dash-tile' }, [el('span', { class: 'num' }, String(stats.total)),                   el('span', { class: 'lbl' }, 'Total equipment')]),
+    el('div', { class: 'dash-tile', dataset: { tone: 'balanced'    } }, [el('span', { class: 'num' }, String(stats.byStatus.balanced)),    el('span', { class: 'lbl' }, 'Balanced')]),
+    el('div', { class: 'dash-tile', dataset: { tone: 'out-of-spec' } }, [el('span', { class: 'num' }, String(stats.byStatus['out-of-spec'])), el('span', { class: 'lbl' }, 'Out of spec')]),
+    el('div', { class: 'dash-tile', dataset: { tone: 'punch'       } }, [el('span', { class: 'num' }, String(stats.punchOpen)),              el('span', { class: 'lbl' }, 'Punch open')])
+  ]));
+
+  /* By type breakdown */
+  summary.appendChild(el('h3', null, 'Equipment by type'));
+  const typeTbl = el('table', { class: 'read-table' });
+  typeTbl.appendChild(el('thead', null, el('tr', null, [
+    el('th', null, 'Type'),
+    el('th', { class: 'num' }, 'Total'),
+    el('th', { class: 'num' }, 'Balanced'),
+    el('th', { class: 'num' }, 'Percent')
+  ])));
+  const typeTbody = el('tbody');
+  let anyByType = false;
+  for (const [k, def] of Object.entries(EQUIPMENT_TYPES)) {
+    const t = stats.byType[k];
+    if (!t || t.total === 0) continue;
+    anyByType = true;
+    const pct = t.total ? Math.round((t.balanced / t.total) * 100) : 0;
+    typeTbody.appendChild(el('tr', null, [
+      el('td', { class: 'label' }, def.label),
+      el('td', { class: 'num' }, String(t.total)),
+      el('td', { class: 'num' }, String(t.balanced)),
+      el('td', { class: 'num' }, pct + '%')
+    ]));
+  }
+  typeTbl.appendChild(typeTbody);
+  if (anyByType) summary.appendChild(typeTbl);
+  else summary.appendChild(el('p', { class: 'muted' }, 'No equipment recorded.'));
+
+  if (proj.notes) {
+    summary.appendChild(el('h3', null, 'Project notes'));
+    summary.appendChild(el('div', { style: 'white-space:pre-wrap;' }, proj.notes));
+  }
+
+  host.appendChild(summary);
+
+  /* Per-equipment detail */
+  if (STATE.equipment.length > 0) {
+    const detail = el('div', { class: 'report-sheet' });
+    detail.appendChild(el('h3', null, 'Equipment detail'));
+    const grouped = {};
+    for (const eq of STATE.equipment) {
+      grouped[eq.type] = grouped[eq.type] || [];
+      grouped[eq.type].push(eq);
+    }
+    for (const [t, list] of Object.entries(grouped)) {
+      const type = EQUIPMENT_TYPES[t];
+      detail.appendChild(el('h3', null, type ? type.label : t));
+      list.slice().sort((a, b) => (a.tag || '').localeCompare(b.tag || '', undefined, { numeric: true }))
+        .forEach(eq => detail.appendChild(reportEqBlock(eq)));
+    }
+    host.appendChild(detail);
+  }
+
+  /* Phase 2: air balance verification */
+  const abRows = airBalanceReport();
+  const abAssigned = abRows.filter(r => r.terminalCount > 0);
+  if (abAssigned.length > 0) {
+    const ab = el('div', { class: 'report-sheet' });
+    ab.appendChild(el('h3', null, 'Air balance verification'));
+    ab.appendChild(el('p', { class: 'muted' }, 'For each AHU, the sum of associated terminal final-phase airflows is compared against the AHU final-phase total. Imbalance is reported as a percentage of the AHU total.'));
+    const tbl = el('table', { class: 'report-table' });
+    tbl.appendChild(el('thead', null, el('tr', null, [
+      el('th', null, 'AHU'),
+      el('th', { class: 'num' }, 'Design CFM'),
+      el('th', { class: 'num' }, 'AHU measured'),
+      el('th', { class: 'num' }, 'Terminals (with reading)'),
+      el('th', { class: 'num' }, 'Terminal sum'),
+      el('th', { class: 'num' }, 'Imbalance')
+    ])));
+    const tbody = el('tbody');
+    abAssigned.forEach(r => {
+      const cls = r.imbalancePercent === null ? 'na'
+        : Math.abs(r.imbalancePercent) <= 10 ? 'pass' : 'fail';
+      tbody.appendChild(el('tr', null, [
+        el('td', { class: 'mono' }, r.ahuTag),
+        el('td', { class: 'num' }, r.designCfm !== null ? r.designCfm.toLocaleString() : '-'),
+        el('td', { class: 'num' }, r.ahuCfm !== null ? Math.round(r.ahuCfm).toLocaleString() : '-'),
+        el('td', { class: 'num' }, r.terminalsWithReadings + ' / ' + r.terminalCount),
+        el('td', { class: 'num' }, r.terminalSum > 0 ? Math.round(r.terminalSum).toLocaleString() : '-'),
+        el('td', { class: 'num result ' + cls },
+          r.imbalancePercent === null ? '-' : (r.imbalancePercent >= 0 ? '+' : '') + r.imbalancePercent.toFixed(1) + '%')
+      ]));
+    });
+    tbl.appendChild(tbody);
+    ab.appendChild(tbl);
+    host.appendChild(ab);
+  }
+
+  /* Punch list */
+  if (STATE.punchList.length > 0) {
+    const punch = el('div', { class: 'report-sheet' });
+    punch.appendChild(el('h3', null, 'Punch list'));
+    const tbl = el('table', { class: 'punch-table' });
+    tbl.appendChild(el('thead', null, el('tr', null, [
+      el('th', null, 'Tag'),
+      el('th', null, 'Issue'),
+      el('th', null, 'Owner'),
+      el('th', null, 'Priority'),
+      el('th', null, 'Raised'),
+      el('th', null, 'Status')
+    ])));
+    const tbody = el('tbody');
+    STATE.punchList.forEach(p => {
+      const eq = STATE.equipment.find(e => e.id === p.equipmentId);
+      const owner = PUNCH_OWNERS.find(o => o.value === p.owner);
+      tbody.appendChild(el('tr', { class: p.status === 'resolved' ? 'resolved' : '' }, [
+        el('td', { class: 'mono' }, eq ? eq.tag : '(general)'),
+        el('td', null, p.issue || ''),
+        el('td', null, owner ? owner.label : p.owner),
+        el('td', { class: 'priority-' + p.priority }, p.priority),
+        el('td', { class: 'mono muted' }, p.dateRaised || ''),
+        el('td', null, p.status)
+      ]));
+    });
+    tbl.appendChild(tbody);
+    punch.appendChild(tbl);
+    host.appendChild(punch);
+  }
+
+  /* Signature block */
+  const sig = el('div', { class: 'report-sheet' });
+  sig.appendChild(el('h3', null, 'Signatures'));
+  sig.appendChild(el('p', { class: 'muted' }, 'This report is provided as a working document. Formal AABC, NEBB, or TABB submissions require the certifying body\u2019s prescribed format and a signature from a certified TAB supervisor.'));
+  sig.appendChild(el('div', { class: 'signature-block' }, [
+    el('div', { class: 'signature' }, 'TAB technician'),
+    el('div', { class: 'signature' }, 'TAB supervisor (certified)')
+  ]));
+  host.appendChild(sig);
+}
+
+function reportEqBlock(eq) {
+  const type = EQUIPMENT_TYPES[eq.type];
+  const status = classifyStatus(eq);
+  const finalTest = (eq.tests || []).find(t => t.phase === 'final');
+  const wrap = el('div', { class: 'report-eq-block' });
+  wrap.appendChild(el('div', { class: 'report-eq-head' }, [
+    el('div', null, [
+      el('span', { class: 'tag' }, eq.tag || '(no tag)'),
+      ' ',
+      el('span', { class: 'type' }, type ? type.label : eq.type)
+    ]),
+    el('span', { class: 'status-pill status-' + status }, STATUS_LABELS[status])
+  ]));
+
+  if (eq.location || eq.serves || eq.manufacturer || eq.model || eq.serial) {
+    const meta = el('dl', { class: 'kv-table mb-md' });
+    if (eq.location)     { meta.appendChild(el('dt', null, 'Location'));     meta.appendChild(el('dd', { class: 'text' }, eq.location)); }
+    if (eq.serves)       { meta.appendChild(el('dt', null, 'Serves'));       meta.appendChild(el('dd', { class: 'text' }, eq.serves)); }
+    if (eq.manufacturer) { meta.appendChild(el('dt', null, 'Manufacturer')); meta.appendChild(el('dd', { class: 'text' }, eq.manufacturer)); }
+    if (eq.model)        { meta.appendChild(el('dt', null, 'Model'));        meta.appendChild(el('dd', null, eq.model)); }
+    if (eq.serial)       { meta.appendChild(el('dt', null, 'Serial'));       meta.appendChild(el('dd', null, eq.serial)); }
+    wrap.appendChild(meta);
+  }
+
+  if (type) {
+    const tbl = el('table', { class: 'read-table' });
+    tbl.appendChild(el('thead', null, el('tr', null, [
+      el('th', null, 'Field'),
+      el('th', { class: 'num' }, 'Design'),
+      el('th', { class: 'num' }, 'Final'),
+      el('th', null, 'Unit'),
+      el('th', { class: 'result' }, 'Result')
+    ])));
+    const tbody = el('tbody');
+    type.fields.forEach(f => {
+      const dv = eq.design[f.key];
+      const rv = finalTest && finalTest.readings ? finalTest.readings[f.key] : '';
+      const pf = passFailField(dv, rv, f.tolerance, eq.tolerance);
+      const resultCell = pf === 'pass'
+        ? el('td', { class: 'result pass' }, 'PASS')
+        : pf === 'fail'
+          ? el('td', { class: 'result fail' }, 'FAIL')
+          : el('td', { class: 'result na' }, '-');
+      tbody.appendChild(el('tr', null, [
+        el('td', { class: 'label' }, f.label),
+        el('td', { class: 'num' }, dv !== undefined && dv !== '' ? fmtNum(dv) : el('span', { class: 'muted' }, '-')),
+        el('td', { class: 'num' }, rv !== undefined && rv !== '' ? fmtNum(rv) : el('span', { class: 'muted' }, '-')),
+        el('td', { class: 'unit' }, f.unit || ''),
+        resultCell
+      ]));
+    });
+    tbl.appendChild(tbody);
+    wrap.appendChild(tbl);
+  }
+
+  /* Per-phase log */
+  if ((eq.tests || []).length > 0) {
+    const phaseDl = el('dl', { class: 'kv-table mt-md' });
+    PHASES.forEach(phase => {
+      const t = eq.tests.find(x => x.phase === phase);
+      if (!t) return;
+      phaseDl.appendChild(el('dt', null, PHASE_LABELS[phase]));
+      const bits = [];
+      bits.push(t.date || '(no date)');
+      if (t.technician) bits.push(t.technician);
+      if (t.instrumentUsed) bits.push(t.instrumentUsed);
+      if (t.instrumentCalDate) bits.push('cal. ' + t.instrumentCalDate);
+      phaseDl.appendChild(el('dd', { class: 'text' }, bits.join(' \u00B7 ')));
+    });
+    wrap.appendChild(phaseDl);
+  }
+
+  if (eq.notes) {
+    wrap.appendChild(el('p', { class: 'muted mt-sm', style: 'white-space:pre-wrap;' }, eq.notes));
+  }
+
+  return wrap;
+}
+
+/* -------------------- Modal plumbing -------------------- */
+
+function showModal(opts) {
+  const root = document.getElementById('modal-root');
+  clear(root);
+  root.classList.remove('hidden');
+  root.setAttribute('aria-hidden', 'false');
+
+  const modal = el('div', { class: 'modal' });
+  modal.appendChild(el('div', { class: 'modal-head' }, [
+    el('h3', { class: 'modal-title' }, opts.title || ''),
+    el('button', { class: 'modal-close', type: 'button', 'aria-label': 'Close', onclick: closeModal }, '\u2715')
+  ]));
+  const modalBody = el('div', { class: 'modal-body' });
+  modalBody.appendChild(opts.body);
+  modal.appendChild(modalBody);
+  modal.appendChild(el('div', { class: 'modal-foot' }, [
+    el('button', { class: 'btn', type: 'button', onclick: closeModal }, 'Cancel'),
+    el('button', { class: 'btn btn-primary', type: 'button', onclick: () => {
+      const ok = opts.onPrimary ? opts.onPrimary() : true;
+      if (ok === false) return;
+    }}, opts.primaryLabel || 'Save')
+  ]));
+  root.appendChild(modal);
+  modal.addEventListener('click', (e) => e.stopPropagation());
+  root.onclick = closeModal;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const root = document.getElementById('modal-root');
+  if (!root) return;
+  root.classList.add('hidden');
+  root.setAttribute('aria-hidden', 'true');
+  clear(root);
+  document.body.style.overflow = '';
+}
+
+/* -------------------- Tabs / counts -------------------- */
+
+function setActiveTab(name) {
+  UI.activeTab = name;
+  document.querySelectorAll('#tab-nav button').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === name);
+  });
+  document.querySelectorAll('main > section').forEach(s => {
+    s.classList.toggle('active', s.id === 'view-' + name);
+  });
+  if (name === 'project')   renderProjectView();
+  if (name === 'equipment') {
+    closeEquipmentDetail.skip = true;
+    document.getElementById('equipment-list-view').classList.remove('hidden');
+    document.getElementById('equipment-detail-view').classList.add('hidden');
+    UI.selectedEquipmentId = null;
+    renderEquipmentTab();
+  }
+  if (name === 'punch')     renderPunchTab();
+  if (name === 'report')    renderReportTab();
+  updateTabCounts();
+}
+
+function updateTabCounts() {
+  const ce = document.getElementById('count-equipment');
+  const cp = document.getElementById('count-punch');
+  if (ce) ce.textContent = String(STATE.equipment.length);
+  if (cp) {
+    const openCount = STATE.punchList.filter(p => p.status === 'open' || p.status === 'in-progress').length;
+    cp.textContent = String(openCount);
+  }
+}
+
+/* -------------------- Import / export -------------------- */
+
+function exportJson() {
+  const data = JSON.stringify(STATE, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const proj = STATE.project.name ? STATE.project.name.replace(/[^a-z0-9]+/gi, '-').toLowerCase() : 'workbook';
+  const date = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = 'pitot-' + proj + '-' + date + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Workbook exported');
+}
+
+function importJson(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      const migrated = migrate(parsed);
+      if (!migrated) { toast('File does not match the PITOT workbook schema', 'err'); return; }
+      if (!confirm('Replace the current workbook with the imported one? This cannot be undone.')) return;
+      STATE = migrated;
+      saveState();
+      setActiveTab(UI.activeTab);
+      toast('Workbook imported');
+    } catch (err) {
+      toast('Import failed: ' + err.message, 'err');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function wipeWorkbook() {
+  if (!confirm('Clear the entire workbook? This cannot be undone.')) return;
+  STATE = defaultState();
+  saveState();
+  setActiveTab('project');
+  toast('Workbook cleared');
+}
+
+/* -------------------- Self-test (logic) -------------------- */
+/* These run silently and only log to console on failure. */
+
+function selfTest() {
+  const results = [];
+  function ok(name, cond) { results.push({ name, ok: !!cond }); }
+
+  /* passFailField */
+  const tol = { airPercent: 10, waterPercent: 10, tempDegF: 2 };
+  ok('air in-band low',     passFailField(1000, 910, 'air', tol)  === 'pass');
+  ok('air at upper edge',   passFailField(1000, 1100, 'air', tol) === 'pass');
+  ok('air just over',       passFailField(1000, 1101, 'air', tol) === 'fail');
+  ok('air just under',      passFailField(1000, 899, 'air', tol)  === 'fail');
+  ok('temp in-band',        passFailField(55, 56.5, 'temp', tol)  === 'pass');
+  ok('temp out',            passFailField(55, 58, 'temp', tol)    === 'fail');
+  ok('water null skip',     passFailField('', 100, 'water', tol)  === null);
+  ok('no tolerance type',   passFailField(1000, 950, null, tol)   === null);
+
+  /* classifyStatus */
+  function mkEq(type, design, tests, status) {
+    return { id: 'x', tag: 'X-1', type: type, design: design, tests: tests, status: status || 'pending',
+             tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 } };
+  }
+  ok('pending (no tests)',
+    classifyStatus(mkEq('ahu', { cfm: 1000 }, [])) === 'pending');
+  ok('in-progress (no final)',
+    classifyStatus(mkEq('ahu', { cfm: 1000 }, [{ id: 't1', phase: 'initial', readings: { cfm: 900 } }])) === 'in-progress');
+  ok('balanced (critical pass)',
+    classifyStatus(mkEq('ahu', { cfm: 1000 }, [{ id: 't2', phase: 'final', readings: { cfm: 980 } }])) === 'balanced');
+  ok('out-of-spec (critical fail)',
+    classifyStatus(mkEq('ahu', { cfm: 1000 }, [{ id: 't3', phase: 'final', readings: { cfm: 1200 } }])) === 'out-of-spec');
+  ok('in-progress (final missing critical reading)',
+    classifyStatus(mkEq('ahu', { cfm: 1000 }, [{ id: 't4', phase: 'final', readings: {} }])) === 'in-progress');
+  ok('punch flag wins',
+    classifyStatus(mkEq('ahu', { cfm: 1000 }, [{ id: 't5', phase: 'final', readings: { cfm: 980 } }], 'punch')) === 'punch');
+  ok('VAV both criticals must pass',
+    classifyStatus(mkEq('vav', { cfmMin: 200, cfmMax: 800 },
+      [{ id: 't6', phase: 'final', readings: { cfmMin: 210, cfmMax: 1000 } }])) === 'out-of-spec');
+
+  /* Phase 2: traverse helpers */
+  ok('vp to velocity at standard',
+    Math.abs(vpToVelocity(0.5, STANDARD_AIR_DENSITY) - 4005 * Math.sqrt(0.5)) < 0.5);
+  ok('vp zero -> velocity 0',
+    vpToVelocity(0, STANDARD_AIR_DENSITY) === 0);
+  ok('vp negative -> velocity 0',
+    vpToVelocity(-1, STANDARD_AIR_DENSITY) === 0);
+  ok('air density at standard',
+    Math.abs(airDensity(70, 29.92) - 0.075) < 1e-9);
+  ok('air density at altitude (cooler thinner air)',
+    airDensity(40, 24.0) < 0.075);
+  ok('rectangular duct area 24x12',
+    Math.abs(ductArea('rectangular', 24, 12) - 2.0) < 1e-9);
+  ok('round duct area 12 in',
+    Math.abs(ductArea('round', 12) - (Math.PI * 36 / 144)) < 1e-9);
+  ok('equal-area positions',
+    JSON.stringify(equalAreaPositions(5)) === JSON.stringify([0.1, 0.3, 0.5, 0.7, 0.9]));
+  ok('log-Tchebycheff rect 5',
+    JSON.stringify(logTchebycheffRectangular(5)) === JSON.stringify([0.074, 0.288, 0.500, 0.712, 0.926]));
+  /* Traverse CFM */
+  (function() {
+    const velocities = [1500, 1500, 1500, 1500];
+    const r = traverseCFM(velocities, 4); /* 4 sq ft, all velocities 1500 fpm */
+    ok('traverse CFM at uniform 1500 fpm, 4 sf',
+      Math.abs(r.cfm - 6000) < 1e-6 && r.vAvg === 1500 && r.n === 4);
+  })();
+  (function() {
+    /* Mixed velocities should arithmetic-average */
+    const r = traverseCFM([1000, 2000], 1);
+    ok('traverse CFM arithmetic mean of velocities',
+      Math.abs(r.vAvg - 1500) < 1e-6 && Math.abs(r.cfm - 1500) < 1e-6);
+  })();
+  ok('traverse skips invalid velocities',
+    traverseCFM([0, 1500, -1, NaN, 1500], 2).vAvg === 1500);
+
+  /* Hood */
+  (function() {
+    const r = hoodCFM([400, 410, 390], 1, 1);
+    ok('hood CFM raw average', Math.abs(r.avgRaw - 400) < 1e-9);
+    ok('hood CFM identity at K=1, BP=1', Math.abs(r.corrected - 400) < 1e-9);
+  })();
+  (function() {
+    const r = hoodCFM([500], 0.95, 1.02);
+    ok('hood CFM with K and BP', Math.abs(r.corrected - 500 * 0.95 * 1.02) < 1e-6);
+  })();
+  ok('hood empty -> n=0',
+    hoodCFM([], 1, 1).n === 0);
+
+  /* Coil heat balance */
+  (function() {
+    /* 10 GPM, 10 dT water -> 50,000 BTU/h */
+    ok('coil water btuh 10 gpm 10 dT',
+      Math.abs(coilWaterBtuh(10, 50, 60) - 50000) < 1e-6);
+    /* 1000 CFM, 20 dT air sensible -> 1.08 * 1000 * 20 = 21,600 BTU/h */
+    ok('coil air sensible btuh 1000 cfm 20 dT',
+      Math.abs(coilAirSensibleBtuh(1000, 75, 55) - 21600) < 1e-6);
+  })();
+  (function() {
+    const eq = { type: 'coil', design: { btuh: 50000 } };
+    const t  = { readings: { gpm: 10, ewt: 50, lwt: 60, cfm: 2000, eat: 75, lat: 55 } };
+    const hb = coilHeatBalance(eq, t);
+    /* water=50000, air=43200; ratio ~ 1.157; off ~ 13.6% */
+    ok('coil heat balance water', Math.abs(hb.water - 50000) < 1e-6);
+    ok('coil heat balance air',   Math.abs(hb.airSensible - 43200) < 1e-6);
+    ok('coil heat balance error percent', Math.abs(hb.balanceErrorPercent - 13.6) < 0.1);
+  })();
+  ok('coil heat balance with no data',
+    coilHeatBalance({ type:'coil', design:{} }, { readings:{} }) !== null);
+
+  /* Pump operating point */
+  (function() {
+    /* Pump curve: monotonic decreasing head with flow.
+       At Q=0, H=120; Q=100, H=100; Q=200, H=60; Q=300, H=0.
+       System: static=30, design Q=200, design H=80.
+       k = (80 - 30) / 40000 = 0.00125.
+       System head at flows: Q=0->30, Q=100->42.5, Q=200->80, Q=300->142.5.
+       Pump - System: 90, 57.5, -20, -142.5. Crossing between Q=100 and Q=200.
+       Linear interp on flow: at Q=100, dPump=57.5; at Q=200, dPump=-20.
+       tFrac = 57.5 / (57.5 - (-20)) = 57.5/77.5 = 0.7419...
+       flow = 100 + 0.7419*100 = 174.19
+       head = 30 + 0.00125 * 174.19^2 = 30 + 37.93 = 67.93 */
+    const curve = [{flow:0,head:120}, {flow:100,head:100}, {flow:200,head:60}, {flow:300,head:0}];
+    const op = pumpOperatingPoint(curve, 30, 200, 80);
+    ok('pump operating point found', op !== null);
+    ok('pump operating flow ~174', op && Math.abs(op.flow - 174.19) < 1.0);
+    ok('pump operating head ~67.9', op && Math.abs(op.head - 67.93) < 1.0);
+  })();
+  ok('pump operating point: not enough points',
+    pumpOperatingPoint([{flow:0,head:50}], 10, 50, 30) === null);
+  ok('pump operating point: invalid system',
+    pumpOperatingPoint([{flow:0,head:50},{flow:100,head:0}], '', '', '') === null);
+
+  /* Air balance: relies on STATE; skip in headless self-test where STATE is empty. */
+  ok('air balance returns array', Array.isArray(airBalanceReport()));
+
+  /* Schema migration: v1 to v2 */
+  (function() {
+    const v1 = { schema: 'pitot/workbook@1', version: '0.1.0',
+      project: { name: 'Old' }, equipment: [{
+        id: 'eq-old', tag: 'AHU-OLD', type: 'ahu',
+        design: { cfm: 1000 }, tests: [{ id: 't1', phase: 'final', readings: { cfm: 1000 } }],
+        tolerance: { airPercent: 10, waterPercent: 10, tempDegF: 2 }
+      }], punchList: [] };
+    const m = migrate(JSON.parse(JSON.stringify(v1)));
+    ok('migrate v1 -> v2 schema bumps',     m && m.schema === SCHEMA);
+    ok('migrate v1 -> v2 keeps equipment',  m && m.equipment.length === 1);
+    ok('migrate v1 -> v2 adds photos[]',    m && Array.isArray(m.equipment[0].photos));
+    ok('migrate v1 -> v2 adds associatedAhu', m && typeof m.equipment[0].associatedAhu === 'string');
+    ok('migrate v1 -> v2 adds test.photos[]', m && Array.isArray(m.equipment[0].tests[0].photos));
+  })();
+  ok('migrate rejects unknown schema',
+    migrate({ schema: 'pitot/workbook@9999', project:{}, equipment:[], punchList:[] }) === null);
+
+  const failed = results.filter(r => !r.ok);
+  if (failed.length > 0) {
+    console.error('PITOT self-test failures:', failed);
+  } else {
+    console.log('PITOT self-test: ' + results.length + ' checks passed.');
+  }
+}
+
+/* -------------------- Boot -------------------- */
+
+function init() {
+  /* Tab nav */
+  document.getElementById('tab-nav').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-tab]');
+    if (btn) setActiveTab(btn.dataset.tab);
+  });
+
+  /* Equipment toolbar */
+  const search = document.getElementById('eq-search');
+  const filterT = document.getElementById('eq-filter-type');
+  const filterS = document.getElementById('eq-filter-status');
+  if (search)  search.addEventListener('input',  (e) => { UI.searchTerm = e.target.value; renderEquipmentGrid(); });
+  if (filterT) filterT.addEventListener('change', (e) => { UI.filterType = e.target.value; renderEquipmentGrid(); });
+  if (filterS) filterS.addEventListener('change', (e) => { UI.filterStatus = e.target.value; renderEquipmentGrid(); });
+
+  /* Add buttons */
+  document.getElementById('btn-add-eq').addEventListener('click', () => openEquipmentModal(null));
+  document.getElementById('btn-add-punch').addEventListener('click', () => openPunchModal(null));
+  document.getElementById('btn-print').addEventListener('click', () => { renderReportTab(); window.print(); });
+
+  /* Header controls */
+  document.getElementById('btn-export').addEventListener('click', exportJson);
+  document.getElementById('btn-wipe').addEventListener('click', wipeWorkbook);
+  document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-file').click());
+  document.getElementById('import-file').addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) importJson(f);
+    e.target.value = '';
+  });
+
+  /* Keyboard */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !document.getElementById('modal-root').classList.contains('hidden')) closeModal();
+  });
+
+  setActiveTab('project');
+  updateTabCounts();
+  selfTest();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+</script>
+</body>
+</html>
